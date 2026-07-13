@@ -1,0 +1,28 @@
+provider pyscf
+geometry h3.xyz
+geometry_units angstrom
+momenta momenta.txt
+
+num_states 2
+initial_state 1
+time_step 0.1 au
+simulation_time 0.4 au
+random_seed 1234
+
+electronic_method sa_casscf
+scf_method rohf
+basis sto-3g
+charge 0
+spin 1
+active_electrons 3
+active_orbitals 3
+state_weights 0.5 0.5
+
+coupling_mode auto
+spawn_threshold 0.01
+population_to_spawn 0.001
+max_trajectories 32
+run_directory run
+
+observable bond h3_bond 0 1
+observable angle h3_angle 0 1 2

@@ -1,0 +1,23 @@
+provider pyscf
+geometry ethylene.xyz
+geometry_units angstrom
+num_states 2
+initial_state 1
+time_step 0.2 au
+simulation_time 1.0 au
+random_seed 8
+
+electronic_method sa_casscf
+scf_method rhf
+basis 6-31g
+charge 0
+spin 0
+active_electrons 2
+active_orbitals 2
+state_weights 0.5 0.5
+coupling_mode nac
+max_trajectories 8
+run_directory run
+
+observable bond cc_distance 0 1
+observable dihedral torsion 2 0 1 4

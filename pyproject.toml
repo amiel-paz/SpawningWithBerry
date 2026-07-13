@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aims-berry"
+version = "0.1.0"
+description = "Modular ab initio multiple spawning dynamics with Berry-phase support"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "h5py>=3.10",
+]
+
+[project.optional-dependencies]
+pyscf = ["pyscf>=2.13,<3"]
+analysis = ["matplotlib>=3.8"]
+optimize = ["cma>=4"]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.9", "matplotlib>=3.8"]
+all = ["pyscf>=2.13,<3", "matplotlib>=3.8", "cma>=4"]
+
+[project.scripts]
+aims-berry = "aims_berry.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aims_berry"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "pyscf: requires the optional PySCF dependency",
+  "slow: computationally expensive integration test",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"

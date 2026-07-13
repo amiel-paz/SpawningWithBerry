@@ -1,4 +1,23 @@
 .DS_Store
 __pycache__/
 *.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
 
+# New simulation products (legacy products remain tracked under legacy/results).
+run/
+run-*/
+simulation.h5
+checkpoint/
+analysis/
+*.chk
+*.h5.tmp
+pyscf-scratch/
+scratch/
+plots/

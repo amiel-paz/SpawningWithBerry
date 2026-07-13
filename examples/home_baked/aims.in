@@ -1,0 +1,12 @@
+provider custom
+provider_option factory calculator:make_provider
+geometry h2.xyz
+geometry_units bohr
+num_states 2
+initial_state 0
+time_step 0.05 au
+simulation_time 0.2 au
+electronic_method custom
+coupling_mode nac
+run_directory run
+observable bond h2_bond 0 1

@@ -1,0 +1,13 @@
+provider berry_2d
+geometry particle.xyz
+geometry_units bohr
+num_states 2
+initial_state 0
+time_step 0.02 au
+simulation_time 0.2 au
+electronic_method analytic
+coupling_mode nac
+provider_option energy 0.02
+provider_option sharpness 3.0
+provider_option phase_gradient 5.0
+run_directory run
