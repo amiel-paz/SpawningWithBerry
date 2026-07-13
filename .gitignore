@@ -11,11 +11,14 @@ build/
 *.egg-info/
 
 # New simulation products (legacy products remain tracked under legacy/results).
-run/
-run-*/
-simulation.h5
-checkpoint/
-analysis/
+# Anchor directory names so they do not hide package modules such as
+# ``src/aims_berry/analysis`` from version control.
+/**/run/
+/**/run-*/
+/**/simulation.h5
+/**/checkpoint/
+/analysis/
+/**/reference-output/
 *.chk
 *.h5.tmp
 pyscf-scratch/

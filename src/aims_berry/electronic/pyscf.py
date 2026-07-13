@@ -49,10 +49,10 @@ class PySCFProvider(BaseProvider):
 
     def _imports(self):
         try:
-            from pyscf import gto, mcscf, scf
+            from pyscf import fci, gto, mcscf, scf
         except ImportError as exc:
             raise ElectronicStructureError("PySCF provider requires `pip install aims-berry[pyscf]`") from exc
-        return gto, mcscf, scf
+        return fci, gto, mcscf, scf
 
     def _previous_payload(self, previous: WavefunctionState | None) -> dict[str, Any] | None:
         if previous is None:
@@ -101,7 +101,7 @@ class PySCFProvider(BaseProvider):
 
     def evaluate(self, request: ElectronicStructureRequest) -> ElectronicStructureResult:
         self.capabilities.require(request.properties)
-        gto, mcscf, scf = self._imports()
+        fci, gto, mcscf, scf = self._imports()
         molecule = gto.M(
             atom=[(atom, tuple(position)) for atom, position in zip(request.atoms, request.geometry)],
             unit="Bohr",
@@ -116,6 +116,9 @@ class PySCFProvider(BaseProvider):
         if method is None:
             raise ElectronicStructureError(f"unsupported scf_method {self.scf_method!r}")
         mean_field = method(molecule)
+        if bool(self.options.get("density_fit", False)):
+            auxiliary_basis = self.options.get("density_fit_auxbasis")
+            mean_field = mean_field.density_fit(auxbasis=auxiliary_basis)
         mean_field.conv_tol = float(self.options.get("scf_conv_tol", 1.0e-10))
         mean_field.kernel()
         if not mean_field.converged:
@@ -123,6 +126,15 @@ class PySCFProvider(BaseProvider):
         casscf = mcscf.CASSCF(mean_field, self.active_orbitals, self.active_electrons)
         casscf.conv_tol = float(self.options.get("casscf_conv_tol", 1.0e-8))
         casscf.max_cycle_macro = int(self.options.get("casscf_max_cycle", 50))
+        target_spin = 0.5 * molecule.spin
+        target_spin_square = float(
+            self.options.get("spin_square", target_spin * (target_spin + 1.0))
+        )
+        if bool(self.options.get("fix_spin", True)):
+            casscf.fix_spin_(
+                shift=float(self.options.get("spin_penalty", 0.5)),
+                ss=target_spin_square,
+            )
         weights = self.state_weights or tuple([1.0 / len(request.states)] * len(request.states))
         casscf = casscf.state_average(weights)
         previous = self._previous_payload(request.previous)
@@ -147,6 +159,13 @@ class PySCFProvider(BaseProvider):
 
         raw_energies = np.asarray(casscf.e_states, dtype=float)
         raw_ci = list(casscf.ci)
+        spin_squares = np.asarray(
+            [
+                fci.spin_op.spin_square0(ci_vector, casscf.ncas, casscf.nelecas)[0]
+                for ci_vector in raw_ci
+            ],
+            dtype=float,
+        )
         permutation = np.arange(len(request.states))
         phases = np.ones(len(request.states), dtype=np.complex128)
         tracking_overlap = None
@@ -203,6 +222,8 @@ class PySCFProvider(BaseProvider):
                 "provider": "pyscf", "pyscf_converged": True,
                 "state_permutation": permutation.tolist(),
                 "tracking_overlap": tracking_overlap,
+                "spin_squares": spin_squares[permutation].tolist(),
+                "target_spin_square": target_spin_square,
             },
         )
         return result.validate(request)

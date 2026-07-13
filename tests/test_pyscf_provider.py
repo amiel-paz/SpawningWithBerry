@@ -28,3 +28,4 @@ def test_h3_sa_casscf_energies_gradients_and_nacs():
     assert result.gradients.shape == (2, 3, 3)
     assert result.nacs.shape == (2, 2, 3, 3)
     assert np.linalg.norm(result.nacs + result.nacs.swapaxes(0, 1).conj()) < 1e-8
+    assert np.allclose(result.metadata["spin_squares"], [0.75, 0.75], atol=1e-8)

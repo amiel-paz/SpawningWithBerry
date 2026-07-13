@@ -27,6 +27,17 @@ aims-berry = "aims_berry.cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/aims_berry"]
 
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src",
+  "/tests",
+  "/examples",
+  "/docs",
+  "/README.md",
+  "/pyproject.toml",
+  "/uv.lock",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
@@ -37,3 +48,4 @@ markers = [
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+extend-exclude = ["legacy"]

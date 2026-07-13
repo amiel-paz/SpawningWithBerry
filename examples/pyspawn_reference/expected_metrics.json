@@ -1,0 +1,19 @@
+{
+  "final_parent_bond_angstrom": 3.8023089992074,
+  "final_parent_dihedral_degree": 41.40656601642559,
+  "final_representative_s1_population": 0.02071531363736937,
+  "initial_bond_angstrom": 5.236511938451036,
+  "initial_dihedral_degree": 74.10537081199593,
+  "minimum_gap_ev": 0.07793726291856728,
+  "minimum_gap_time_fs": 165.45168793846187,
+  "population_norm_max_error": 2.149525002437258e-11,
+  "pyspawn_paper_minimum_gap_labeled_ev": 0.03895232554897095,
+  "quantum_frames": 944,
+  "spawn_times_fs": {
+    "00b0": 164.96791107314473,
+    "00b1": 171.74078718758471,
+    "00b2": 197.6228494820517,
+    "00b3": 204.1538371638331
+  },
+  "trajectory_count": 5
+}

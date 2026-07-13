@@ -41,6 +41,8 @@ values. `#` begins a comment and shell-style quoted paths are supported. Atomic 
 and zero-based state/atom indices are the defaults. See
 [the input reference](docs/input-reference.md), [provider guide](docs/providers.md),
 and [legacy migration map](docs/migration.md).
+The [corroboration report](docs/corroboration.md) records the quantitative comparison
+with the PySpawn paper and separates published-data reproduction from new dynamics.
 
 ## Scientific scope
 

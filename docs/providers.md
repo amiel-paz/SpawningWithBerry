@@ -25,3 +25,12 @@ result = run(config, provider=provider)
 `dump_state(directory)` and `load_state(directory, metadata)` let sophisticated
 providers persist orbital/CI guesses or external checkpoint artifacts atomically with
 the simulation. Subclassing `BaseProvider` supplies no-op implementations.
+
+For large PySCF exploratory calculations, `provider_option density_fit true` enables
+PySCF density fitting; `provider_option density_fit_auxbasis NAME` optionally selects
+the auxiliary basis. It is opt-in because it changes the electronic approximation.
+
+SA-CASSCF roots are spin-purified by default to the multiplicity implied by `spin`.
+The result metadata records every root's measured `spin_squares`. Advanced workflows
+may set `provider_option spin_square VALUE`, `spin_penalty VALUE`, or disable the
+constraint with `provider_option fix_spin false`.

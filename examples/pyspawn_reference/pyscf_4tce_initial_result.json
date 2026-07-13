@@ -1,0 +1,21 @@
+{
+  "absolute_gap_difference_ev": 0.002016762096303637,
+  "basis": "6-31g*",
+  "density_fitting": true,
+  "elapsed_seconds": 458.1942086249983,
+  "energies_hartree": [
+    -2461.903993047257,
+    -2461.756473452279
+  ],
+  "gap_ev": 4.014212677795173,
+  "gap_hartree": 0.14751959497789358,
+  "method": "SA(2)-CASSCF(2e,2o)",
+  "pyscf_version": "2.13.1",
+  "reference_gap_ev_physical": 4.016229439891477,
+  "reference_gap_hartree": 0.1475937096179223,
+  "relative_gap_difference": 0.0005021531081546307,
+  "spin_squares": [
+    8.09829933749231e-21,
+    1.4098679617855478e-21
+  ]
+}
