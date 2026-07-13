@@ -1,0 +1,1012 @@
+(0.2783676411799021-0j)
+Trajectory added with 0.26700406473187943% deviation from total energy.
+Trajectory added with 11.262208981504784% deviation from total energy.
+Trajectory added with 12.825041045458407% deviation from total energy.
+Trajectory added with 10.531207517287422% deviation from total energy.
+Trajectory added with 4.94430736795487% deviation from total energy.
+Trajectory added with 2.2199800305450212% deviation from total energy.
+Trajectory added with 10.614350628187829% deviation from total energy.
+Trajectory added with 5.341159293648001% deviation from total energy.
+Trajectory added with 14.97875333371197% deviation from total energy.
+Trajectory added with 12.458832132667519% deviation from total energy.
+Trajectory added with 14.740823079590548% deviation from total energy.
+Trajectory added with 1.213766896470947% deviation from total energy.
+(0.2783052632430565+1.905149495898678e-17j)
+[1.21702637e-04 1.26459323e-03 6.17010135e-03 2.51278446e-02
+ 7.22719990e-02 1.65791499e-01 3.84526363e-01 4.59595120e-01
+ 8.05380830e-01 1.44936241e+00 1.96000592e+00 6.67038161e+00]
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278305263243
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.1
+Norm before renormalization: (0.9948444292321555-5.551115123125783e-17j)
+  ⟨H⟩: 0.278305263243 → 0.277765795364   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -8.882e-16, rel Δ = -8.882e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 2.776e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -1.110e-16)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -1.665e-16)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.665e-16 on traj 8
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.05
+Norm before renormalization: (0.9976548608732001-2.7755575615628914e-16j)
+Norm before renormalization: (0.997182962012938+5.551115123125783e-17j)
+  ⟨H⟩: 0.278305263243 → 0.277765795364   (|Δ⟨H⟩_end| vs prev attempt = 3.331e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 0.000e+00, rel Δ = 0.000e+00)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 8.327e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -1.110e-16)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -5.551e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -1.110e-16)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 6
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+Completed 1 stepper
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278305263243
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.02
+Norm before renormalization: (0.9991042730550069-1.6653345369377348e-16j)
+  ⟨H⟩: 0.278305263243 → 0.278193556518   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -8.882e-16, rel Δ = -8.882e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -1.110e-16)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 2.776e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -8.327e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 0
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9995580916824665+1.3877787807814457e-16j)
+Norm before renormalization: (0.999545980737619+6.938893903907228e-17j)
+  ⟨H⟩: 0.278305263243 → 0.278193556518   (|Δ⟨H⟩_end| vs prev attempt = 3.886e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 4.441e-16, rel Δ = 4.441e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 8.327e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -8.327e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = -5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -1.110e-16)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 10
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278193556518
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.02
+Norm before renormalization: (0.9990492015106842+2.498001805406602e-16j)
+  ⟨H⟩: 0.278193556518 → 0.278083443975   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -2.109e-15, rel Δ = -2.109e-15)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 1.110e-16)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 8.327e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 5.551e-17)
+  Worst |ΔE_class| = 1.110e-16 on traj 1
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9995322123101872+0j)
+Norm before renormalization: (0.9995167631481652-1.942890293094024e-16j)
+  ⟨H⟩: 0.278193556518 → 0.278083443975   (|Δ⟨H⟩_end| vs prev attempt = 1.166e-15)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -1.110e-15, rel Δ = -1.110e-15)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = -5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 1.110e-16)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 5.551e-17)
+  Worst |ΔE_class| = 1.110e-16 on traj 7
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278083443975
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.02
+Norm before renormalization: (0.9989806061399099-1.1102230246251565e-16j)
+  ⟨H⟩: 0.278083443975 → 0.277975232103   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -9.992e-16, rel Δ = -9.992e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = -5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 5.551e-17 on traj 1
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9994996110968887+5.551115123125783e-16j)
+Norm before renormalization: (0.999480735208667+1.6653345369377348e-16j)
+  ⟨H⟩: 0.278083443975 → 0.277975232103   (|Δ⟨H⟩_end| vs prev attempt = 4.996e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -1.110e-15, rel Δ = -1.110e-15)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 8.327e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 8.327e-17 on traj 8
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.277975232103
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.02
+Norm before renormalization: (0.9988981543004137+0j)
+  ⟨H⟩: 0.277975232103 → 0.277869239178   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 8.882e-16, rel Δ = 8.882e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 1.110e-16)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 1.110e-16)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 1.110e-16)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -5.551e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = -5.551e-17)
+  Worst |ΔE_class| = 1.110e-16 on traj 4
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9994601158606646-1.6653345369377348e-16j)
+Norm before renormalization: (0.999437734881659-5.551115123125783e-17j)
+  ⟨H⟩: 0.277975232103 → 0.277869239178   (|Δ⟨H⟩_end| vs prev attempt = 1.110e-15)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 7.772e-16, rel Δ = 7.772e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 1.110e-16)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 1.110e-16)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = -5.551e-17)
+  Worst |ΔE_class| = 1.110e-16 on traj 4
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.277869239178
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.02
+Norm before renormalization: (0.9988015582331808+1.6653345369377348e-16j)
+  ⟨H⟩: 0.277869239178 → 0.277765795364   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 1.110e-16, rel Δ = 1.110e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = -5.551e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = -1.110e-16)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -5.551e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 3
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9994135756883625-4.440892098500626e-16j)
+Norm before renormalization: (0.9993876234321877+2.220446049250313e-16j)
+  ⟨H⟩: 0.277869239178 → 0.277765795364   (|Δ⟨H⟩_end| vs prev attempt = 1.832e-15)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 3.331e-16, rel Δ = 3.331e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = -5.551e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -5.551e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 5.551e-17 on traj 1
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+Completed 5 stepper
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278305263243
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9995580916824665+1.3877787807814457e-16j)
+  ⟨H⟩: 0.278305263243 → 0.278249229306   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -1.110e-15, rel Δ = -1.110e-15)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 5.551e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -5.551e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = -2.776e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 5.551e-17 on traj 1
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9997804329498428+2.7755575615628914e-16j)
+Norm before renormalization: (0.9997776099030831-1.6653345369377348e-16j)
+  ⟨H⟩: 0.278305263243 → 0.278249229306   (|Δ⟨H⟩_end| vs prev attempt = 2.776e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -1.110e-15, rel Δ = -1.110e-15)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 5.551e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -5.551e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = -2.776e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -1.110e-16)
+    traj  11: 0.28318022 → 0.28318022 (Δ = -5.551e-17)
+  Worst |ΔE_class| = 1.110e-16 on traj 10
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278249229306
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9995459807376201-6.938893903907228e-17j)
+  ⟨H⟩: 0.278249229306 → 0.278193556518   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -2.220e-16, rel Δ = -2.220e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 2.776e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = -2.776e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 5.551e-17 on traj 0
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9997745818682451-1.942890293094024e-16j)
+Norm before renormalization: (0.9997713473269142+1.249000902703301e-16j)
+  ⟨H⟩: 0.278249229306 → 0.278193556518   (|Δ⟨H⟩_end| vs prev attempt = 3.886e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 2.220e-16, rel Δ = 2.220e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -1.665e-16)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 2.776e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = -5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 0.000e+00)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 2.776e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -1.665e-16)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 5.551e-17)
+  Worst |ΔE_class| = 1.665e-16 on traj 0
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278193556518
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9995322123101862+2.7755575615628914e-16j)
+  ⟨H⟩: 0.278193556518 → 0.278138282093   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 0.000e+00, rel Δ = 0.000e+00)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = -8.327e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 1.110e-16)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = -5.551e-17)
+  Worst |ΔE_class| = 1.110e-16 on traj 9
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9997679047908565-8.326672684688674e-17j)
+Norm before renormalization: (0.9997642528035318-6.106226635438361e-16j)
+  ⟨H⟩: 0.278193556518 → 0.278138282093   (|Δ⟨H⟩_end| vs prev attempt = 2.220e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 0.000e+00, rel Δ = 0.000e+00)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 1.110e-16)
+    traj   2: 0.24390184 → 0.24390184 (Δ = -8.327e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = -5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 2.776e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = -5.551e-17)
+  Worst |ΔE_class| = 1.110e-16 on traj 1
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278138282093
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9995167631481676-3.3306690738754696e-16j)
+  ⟨H⟩: 0.278138282093 → 0.278083443975   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 0.000e+00, rel Δ = 0.000e+00)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 2.776e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = -5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 5.551e-17 on traj 3
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9997603899416981+2.220446049250313e-16j)
+Norm before renormalization: (0.9997563148170451-1.942890293094024e-16j)
+  ⟨H⟩: 0.278138282093 → 0.278083443975   (|Δ⟨H⟩_end| vs prev attempt = 5.551e-17)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 4.441e-16, rel Δ = 4.441e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -1.110e-16)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 2.776e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = -1.110e-16)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 1
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278083443975
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9994996110968888-1.942890293094024e-16j)
+  ⟨H⟩: 0.278083443975 → 0.278029080840   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -6.661e-16, rel Δ = -6.661e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 5.551e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 5.551e-17 on traj 3
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9997520260779268+3.608224830031759e-16j)
+Norm before renormalization: (0.9997475224111032-3.3306690738754696e-16j)
+  ⟨H⟩: 0.278083443975 → 0.278029080840   (|Δ⟨H⟩_end| vs prev attempt = 1.665e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -8.882e-16, rel Δ = -8.882e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 5.551e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = -5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = -5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = -5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = -5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 5.551e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 0.000e+00)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 5.551e-17 on traj 1
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.278029080840
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9994807352086664-5.551115123125783e-17j)
+  ⟨H⟩: 0.278029080840 → 0.277975232103   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 1.110e-16, rel Δ = 1.110e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 5.551e-17)
+  Worst |ΔE_class| = 5.551e-17 on traj 0
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9997428025436152+1.1102230246251565e-16j)
+Norm before renormalization: (0.9997378652446575-5.551115123125783e-17j)
+  ⟨H⟩: 0.278029080840 → 0.277975232103   (|Δ⟨H⟩_end| vs prev attempt = 2.220e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 8.882e-16, rel Δ = 8.882e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -1.665e-16)
+    traj   5: 0.28599545 → 0.28599545 (Δ = -5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = -2.776e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 5.551e-17)
+  Worst |ΔE_class| = 1.665e-16 on traj 4
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.277975232103
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9994601158606655+1.1102230246251565e-16j)
+  ⟨H⟩: 0.277975232103 → 0.277921937917   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -2.220e-16, rel Δ = -2.220e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 5.551e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 1.110e-16)
+    traj   5: 0.28599545 → 0.28599545 (Δ = -5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 0.000e+00)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 4
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9997327093275779+1.1102230246251565e-16j)
+Norm before renormalization: (0.9997273336519151-2.220446049250313e-16j)
+  ⟨H⟩: 0.277975232103 → 0.277921937917   (|Δ⟨H⟩_end| vs prev attempt = 1.110e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = -8.882e-16, rel Δ = -8.882e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 5.551e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = -5.551e-17)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 1.110e-16)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 0.000e+00)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -1.110e-16)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 4
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.277921937917
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9994377348816569+2.220446049250313e-16j)
+  ⟨H⟩: 0.277921937917 → 0.277869239178   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 1.110e-16, rel Δ = 1.110e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = -5.551e-17)
+  Worst |ΔE_class| = 5.551e-17 on traj 0
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9997217371255378-2.220446049250313e-16j)
+Norm before renormalization: (0.9997159187068413-3.3306690738754696e-16j)
+  ⟨H⟩: 0.277921937917 → 0.277869239178   (|Δ⟨H⟩_end| vs prev attempt = 5.551e-17)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 1.110e-16, rel Δ = 1.110e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = -1.110e-16)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 8.327e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 0.000e+00)
+    traj  10: 0.32102680 → 0.32102680 (Δ = -5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 1
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.277869239178
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9994135756883625-1.6653345369377348e-16j)
+  ⟨H⟩: 0.277869239178 → 0.277817177529   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 3.331e-16, rel Δ = 3.331e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 2.776e-17)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = -1.110e-16)
+  Worst |ΔE_class| = 1.110e-16 on traj 11
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.999709877407041-1.1102230246251565e-16j)
+Norm before renormalization: (0.9997036122925508+3.885780586188048e-16j)
+  ⟨H⟩: 0.277869239178 → 0.277817177529   (|Δ⟨H⟩_end| vs prev attempt = 1.665e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 3.331e-16, rel Δ = 3.331e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = -5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 0.000e+00)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 0.000e+00)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 5.551e-17)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 0.000e+00)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = -1.110e-16)
+  Worst |ΔE_class| = 1.110e-16 on traj 11
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+
+[RK45 adaptive] Initial state metrics:
+  ⟨H⟩_initial   = 0.277817177529
+  S-norm_initial = 1.000000000000
+  Classical E_initial (per TBF):
+    traj   0: 0.27903726
+    traj   1: 0.31129418
+    traj   2: 0.24390184
+    traj   3: 0.30924896
+    traj   4: 0.26595090
+    traj   5: 0.28599545
+    traj   6: 0.25008701
+    traj   7: 0.29472802
+    traj   8: 0.23787609
+    traj   9: 0.24492644
+    traj  10: 0.32102680
+    traj  11: 0.28318022
+
+
+[RK45 adaptive] Attempt 1/6 with 1 segment(s), dt_seg = 0.01
+Norm before renormalization: (0.9993876234321859+1.1102230246251565e-16j)
+  ⟨H⟩: 0.277817177529 → 0.277765795364   (first attempt, no previous ⟨H⟩ to compare)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 8.882e-16, rel Δ = 8.882e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 0.000e+00)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 0.000e+00)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 0.000e+00)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = 0.000e+00)
+    traj   5: 0.28599545 → 0.28599545 (Δ = 5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = -2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = 2.776e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 1.110e-16)
+  Worst |ΔE_class| = 1.110e-16 on traj 11
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=False
+
+[RK45 adaptive] Attempt 2/6 with 2 segment(s), dt_seg = 0.005
+Norm before renormalization: (0.9996971224874477+1.1102230246251565e-16j)
+Norm before renormalization: (0.9996904071760332+1.1102230246251565e-16j)
+  ⟨H⟩: 0.277817177529 → 0.277765795364   (|Δ⟨H⟩_end| vs prev attempt = 2.776e-16)
+  S-norm: 1.000000000000 → 1.000000000000 (Δ = 4.441e-16, rel Δ = 4.441e-16)
+  Classical E (per TBF):
+    traj   0: 0.27903726 → 0.27903726 (Δ = 5.551e-17)
+    traj   1: 0.31129418 → 0.31129418 (Δ = 5.551e-17)
+    traj   2: 0.24390184 → 0.24390184 (Δ = 1.110e-16)
+    traj   3: 0.30924896 → 0.30924896 (Δ = 0.000e+00)
+    traj   4: 0.26595090 → 0.26595090 (Δ = -5.551e-17)
+    traj   5: 0.28599545 → 0.28599545 (Δ = -5.551e-17)
+    traj   6: 0.25008701 → 0.25008701 (Δ = 5.551e-17)
+    traj   7: 0.29472802 → 0.29472802 (Δ = 0.000e+00)
+    traj   8: 0.23787609 → 0.23787609 (Δ = 2.776e-17)
+    traj   9: 0.24492644 → 0.24492644 (Δ = -5.551e-17)
+    traj  10: 0.32102680 → 0.32102680 (Δ = 5.551e-17)
+    traj  11: 0.28318022 → 0.28318022 (Δ = 0.000e+00)
+  Worst |ΔE_class| = 1.110e-16 on traj 2
+  Tolerances: norm_tol=1.0e-09, eclass_tol=1.0e-09, H_tol=1.0e-09
+  norm_ok=True, eclass_ok=True, H_ok=True
+  ✅ Accepted attempt 2 with 2 segment(s).
+Completed 10 stepper

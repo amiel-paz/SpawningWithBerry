@@ -1,0 +1,4206 @@
+State 1 energy: -0.02
+State 2 energy: 0.02
+[[1.-0.j]]
+[0.02+0.j 0.  +0.j]
+[-1.68275187e-71-0.j -0.00000000e+00-0.j]
+Starting simple sim on excited state
+step 0  r = [-2.99  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 1  r = [-2.98  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 2  r = [-2.97  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 3  r = [-2.96  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 4  r = [-2.95  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 5  r = [-2.94  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 6  r = [-2.93  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 7  r = [-2.92  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 8  r = [-2.91  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 9  r = [-2.9  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 10  r = [-2.89  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 11  r = [-2.88  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 12  r = [-2.87  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 13  r = [-2.86  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 14  r = [-2.85  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 15  r = [-2.84  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 16  r = [-2.83  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 17  r = [-2.82  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 18  r = [-2.81  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 19  r = [-2.8  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 20  r = [-2.79  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 21  r = [-2.78  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 22  r = [-2.77  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 23  r = [-2.76  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 24  r = [-2.75  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 25  r = [-2.74  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 26  r = [-2.73  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 27  r = [-2.72  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 28  r = [-2.71  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 29  r = [-2.7  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 30  r = [-2.69  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 31  r = [-2.68  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 32  r = [-2.67  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 33  r = [-2.66  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 34  r = [-2.65  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 35  r = [-2.64  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 36  r = [-2.63  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 37  r = [-2.62  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 38  r = [-2.61  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 39  r = [-2.6  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 40  r = [-2.59  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 41  r = [-2.58  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 42  r = [-2.57  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 43  r = [-2.56  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 44  r = [-2.55  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 45  r = [-2.54  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 46  r = [-2.53  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 47  r = [-2.52  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 48  r = [-2.51  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 49  r = [-2.5  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 50  r = [-2.49  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 51  r = [-2.48  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 52  r = [-2.47  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 53  r = [-2.46  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 54  r = [-2.45  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 55  r = [-2.44  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 56  r = [-2.43  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 57  r = [-2.42  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 58  r = [-2.41  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 59  r = [-2.4  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 60  r = [-2.39  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 61  r = [-2.38  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 62  r = [-2.37  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 63  r = [-2.36  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 64  r = [-2.35  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 65  r = [-2.34  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 66  r = [-2.33  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 67  r = [-2.32  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 68  r = [-2.31  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 69  r = [-2.3  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 70  r = [-2.29  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 71  r = [-2.28  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 72  r = [-2.27  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 73  r = [-2.26  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 74  r = [-2.25  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 75  r = [-2.24  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 76  r = [-2.23  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 77  r = [-2.22  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 78  r = [-2.21  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 79  r = [-2.2  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 80  r = [-2.19  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 81  r = [-2.18  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 82  r = [-2.17  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 83  r = [-2.16  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 84  r = [-2.15  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 85  r = [-2.14  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 86  r = [-2.13  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 87  r = [-2.12  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 88  r = [-2.11  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 89  r = [-2.1  0. ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 90  r = [-2.09  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 91  r = [-2.08  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 92  r = [-2.07  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 93  r = [-2.06  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 94  r = [-2.05  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 95  r = [-2.04  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 96  r = [-2.03  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 97  r = [-2.02  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999984186313j)
+Deviation:              1.5813689246968465e-10
+step 98  r = [-2.01  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 99  r = [-2.  0.]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 100  r = [-1.99  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 101  r = [-1.98  0.  ]
+canonical P = [20.  0.]
+mechanical p = [20.+0.j  0.+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 102  r = [-1.97000000e+00  7.42019828e-36]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.80163333e-32+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 103  r = [-1.96000000e+00  2.64283649e-35]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.80163333e-32+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 104  r = [-1.95000000e+00  4.54365316e-35]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.80163333e-32+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 105  r = [-1.94000000e+00  8.67173265e-35]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.52065333e-31+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 106  r = [-1.93000000e+00  1.62749993e-34]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.52065333e-31+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 107  r = [-1.92000000e+00  3.16849967e-34]
+canonical P = [20.  0.]
+mechanical p = [2.00000e+01+0.j 3.42147e-31+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 108  r = [-1.91000000e+00  6.77068334e-34]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 9.50408333e-31+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 109  r = [-1.90000000e+00  1.27365222e-33]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.86280033e-30+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 110  r = [-1.89000000e+00  2.59201895e-33]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.80163333e-30+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 111  r = [-1.88000000e+00  5.21539983e-33]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 7.45120133e-30+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 112  r = [-1.87000000e+00  1.02139198e-32]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.37238963e-29+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 113  r = [-1.86000000e+00  1.99952178e-32]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 2.7713907e-29+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 114  r = [-1.85000000e+00  3.98404223e-32]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 5.48955853e-29+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 115  r = [-1.84000000e+00  7.85022909e-32]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 1.0678788e-28+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 116  r = [-1.83000000e+00  1.54761621e-31]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.08177441e-28+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 117  r = [-1.82000000e+00  3.04079682e-31]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 4.0331528e-28+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 118  r = [-1.81000000e+00  5.91383333e-31]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 7.88306688e-28+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 119  r = [-1.80000000e+00  1.15411273e-30]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.53589788e-27+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 120  r = [-1.79000000e+00  2.24010576e-30]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 2.9592294e-27+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 121  r = [-1.78000000e+00  4.31817871e-30]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 5.6642816e-27+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 122  r = [-1.77000000e+00  8.31759845e-30]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 1.0881225e-26+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 123  r = [-1.76000000e+00  1.59596767e-29]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 2.0761518e-26+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 124  r = [-1.75000000e+00  3.05285356e-29]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.94746779e-26+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 125  r = [-1.74000000e+00  5.81479384e-29]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 7.47250568e-26+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 126  r = [-1.73000000e+00  1.10414471e-28]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.41167153e-25+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 127  r = [-1.72000000e+00  2.08891205e-28]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 2.6576215e-25+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 128  r = [-1.71000000e+00  3.93854789e-28]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 4.98181238e-25+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 129  r = [-1.70000000e+00  7.40033213e-28]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 9.30742636e-25+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 130  r = [-1.69000000e+00  1.38566248e-27]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.73314578e-24+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 131  r = [-1.68000000e+00  2.58518342e-27]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.21560429e-24+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 132  r = [-1.67000000e+00  4.80647087e-27]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 5.94480507e-24+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 133  r = [-1.66000000e+00  8.90529484e-27]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 1.0951849e-23+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 134  r = [-1.65000000e+00  1.64413622e-26]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.01036459e-23+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 135  r = [-1.64000000e+00  3.02477754e-26]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.67745071e-23+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999987739027j)
+Deviation:              1.2260975568167964e-10
+step 136  r = [-1.63000000e+00  5.54558779e-26]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 6.70352674e-23+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 137  r = [-1.62000000e+00  1.01314508e-25]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.21757482e-22+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 138  r = [-1.61000000e+00  1.84449981e-25]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.20380496e-22+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 139  r = [-1.60000000e+00  3.34629004e-25]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.97470915e-22+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 140  r = [-1.59000000e+00  6.04964337e-25]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 7.14341276e-22+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 141  r = [-1.58000000e+00  1.08988063e-24]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.27931429e-21+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 142  r = [-1.57000000e+00  1.95663543e-24]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.28304822e-21+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 143  r = [-1.56000000e+00  3.50044196e-24]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 4.05992841e-21+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 144  r = [-1.55000000e+00  6.24049107e-24]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 7.19433525e-21+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 145  r = [-1.54000000e+00  1.10865914e-23]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.27037252e-20+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 146  r = [-1.5300000e+00  1.9627353e-23]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.23532786e-20+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 147  r = [-1.52000000e+00  3.46265947e-23]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.91940907e-20+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 148  r = [-1.51000000e+00  6.08755492e-23]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 6.84808437e-20+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 149  r = [-1.50000000e+00  1.06650213e-22]
+canonical P = [20.  0.]
+mechanical p = [2.000000e+01+0.j 1.192306e-19+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 150  r = [-1.49000000e+00  1.86194465e-22]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.06859972e-19+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 151  r = [-1.48000000e+00  3.23935478e-22]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.57631936e-19+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 152  r = [-1.4700000e+00  5.6161376e-22]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 6.16122802e-19+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 153  r = [-1.4600000e+00  9.7029759e-22]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.05771754e-18+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 154  r = [-1.45000000e+00  1.67055475e-21]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.80944039e-18+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 155  r = [-1.44000000e+00  2.86619502e-21]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.08454569e-18+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 156  r = [-1.43000000e+00  4.90050209e-21]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 5.23975622e-18+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 157  r = [-1.42000000e+00  8.34960473e-21]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 8.86960404e-18+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 158  r = [-1.41000000e+00  1.41769361e-20]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.49613632e-17+0.j]
+classical energy = 0.22
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 159  r = [-1.4000000e+00  2.3987812e-20]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.51485138e-17+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 160  r = [-1.39000000e+00  4.04474693e-20]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 4.2123864e-17+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 161  r = [-1.38000000e+00  6.79649834e-20]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 7.03103532e-17+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 162  r = [-1.37000000e+00  1.13808033e-19]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.16946176e-16+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 163  r = [-1.36000000e+00  1.89913208e-19]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.93833548e-16+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 164  r = [-1.3500000e+00  3.1581495e-19]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.20146324e-16+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 165  r = [-1.34000000e+00  5.23366839e-19]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 5.26920727e-16+0.j]
+classical energy = 0.22000000000000006
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484618728767714e-10
+step 166  r = [-1.33000000e+00  8.64323783e-19]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 8.64210926e-16+0.j]
+classical energy = 0.22000000000000006
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 167  r = [-1.32000000e+00  1.42247364e-18]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.41244798e-15+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.4j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708261889367463e-11
+step 168  r = [-1.31000000e+00  2.33297599e-18]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.30040311e-15+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.39999999999999986j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484602075422345e-10
+step 169  r = [-1.30000000e+00  3.81307523e-18]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.73348803e-15+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.39999999999999974j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708234133791848e-11
+step 170  r = [-1.290000e+00  6.210697e-18]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 6.03817193e-15+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.39999999999999947j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708206378216232e-11
+step 171  r = [-1.28000000e+00  1.00810551e-17]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 9.73142977e-15+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.399999999999999j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.708161969295247e-11
+step 172  r = [-1.27000000e+00  1.63069653e-17]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 1.5628917e-14+0.j]
+classical energy = 0.22000000000000006
+Computed Sdot:          -0.3999999999999983j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484446644198897e-10
+step 173  r = [-1.26000000e+00  2.62870991e-17]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 2.5012826e-14+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.3999999999999972j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0484335621896435e-10
+step 174  r = [-1.25000000e+00  4.22294468e-17]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.98913646e-14+0.j]
+classical energy = 0.22000000000000006
+Computed Sdot:          -0.3999999999999956j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.707817800157613e-11
+step 175  r = [-1.24000000e+00  6.76070861e-17]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 6.33983413e-14+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.3999999999999931j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0483924839377323e-10
+step 176  r = [-1.23000000e+00  1.07863382e-16]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 1.0040617e-13+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.39999999999998903j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.707162768573085e-11
+step 177  r = [-1.2200000e+00  1.7149906e-16]
+canonical P = [20.  0.]
+mechanical p = [2.000000e+01+0.j 1.584627e-13+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.3999999999999829j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.706552145909541e-11
+step 178  r = [-1.21000000e+00  2.71741698e-16]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.49217481e-13+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.3999999999999736j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0481976397969106e-10
+step 179  r = [-1.2000000e+00  4.2910008e-16]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.90584875e-13+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999999999592j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.704181819751966e-11
+step 180  r = [-1.19000000e+00  6.75257851e-16]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 6.10012157e-13+0.j]
+classical energy = 0.2200000000000001
+Computed Sdot:          -0.399999999999937j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.701961373702716e-11
+step 181  r = [-1.18000000e+00  1.05898646e-15]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 9.49398201e-13+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999999999034j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0474954237338352e-10
+step 182  r = [-1.17000000e+00  1.65509104e-15]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.47246802e-12+0.j]
+classical energy = 0.2200000000000001
+Computed Sdot:          -0.3999999999998522j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.046983610919483e-10
+step 183  r = [-1.16000000e+00  2.57789429e-15]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.27578703e-12+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999999997749j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0462108956943439e-10
+step 184  r = [-1.15000000e+00  4.00148414e-15]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 3.50514814e-12+0.j]
+classical energy = 0.22000000000000017
+Computed Sdot:          -0.3999999999996585j
+Finite difference Sdot: (-0-0.3999999999129174j)
+Deviation:              8.674111429129994e-11
+step 185  r = [-1.14000000e+00  6.19000403e-15]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 5.37985914e-12+0.j]
+classical energy = 0.2200000000000002
+Computed Sdot:          -0.39999999999948377j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0432993358122644e-10
+step 186  r = [-1.1300000e+00  9.5427969e-15]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 8.22860033e-12+0.j]
+classical energy = 0.22000000000000025
+Computed Sdot:          -0.3999999999992224j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              1.0406858708122968e-10
+step 187  r = [-1.1200000e+00  1.4661434e-14]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.25421604e-11+0.j]
+classical energy = 0.22000000000000025
+Computed Sdot:          -0.3999999999988329j
+Finite difference Sdot: (-0-0.39999999990865415j)
+Deviation:              9.017875335359804e-11
+step 188  r = [-1.11000000e+00  2.24488635e-14]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.90506964e-11+0.j]
+classical energy = 0.22000000000000025
+Computed Sdot:          -0.39999999999825464j
+Finite difference Sdot: (-0-0.39999999990900936j)
+Deviation:              8.924527783449321e-11
+step 189  r = [-1.10000000e+00  3.42555196e-14]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.88364833e-11+0.j]
+classical energy = 0.2200000000000002
+Computed Sdot:          -0.39999999999739927j
+Finite difference Sdot: (-0-0.39999999990936475j)
+Deviation:              8.803452411498824e-11
+step 190  r = [-1.09000000e+00  5.20938214e-14]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 4.34978216e-11+0.j]
+classical energy = 0.22000000000000022
+Computed Sdot:          -0.3999999999961388j
+Finite difference Sdot: (-0-0.3999999999065225j)
+Deviation:              8.96162588581717e-11
+step 191  r = [-1.08000000e+00  7.89518885e-14]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 6.53863872e-11+0.j]
+classical energy = 0.22000000000000017
+Computed Sdot:          -0.3999999999942878j
+Finite difference Sdot: (-0-0.39999999990439083j)
+Deviation:              8.989697874994818e-11
+step 192  r = [-1.07000000e+00  1.19250634e-13]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 9.79496001e-11+0.j]
+classical energy = 0.2200000000000002
+Computed Sdot:          -0.3999999999915801j
+Finite difference Sdot: (-0-0.3999999998827194j)
+Deviation:              1.0886069823357047e-10
+step 193  r = [-1.06000000e+00  1.79507242e-13]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.46222556e-10+0.j]
+classical energy = 0.22000000000000017
+Computed Sdot:          -0.39999999998763297j
+Finite difference Sdot: (-0-0.399999999897996j)
+Deviation:              8.963696451758096e-11
+step 194  r = [-1.05000000e+00  2.69294587e-13]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.17532105e-10+0.j]
+classical energy = 0.2200000000000002
+Computed Sdot:          -0.3999999999819006j
+Finite difference Sdot: (-0-0.39999999989515383j)
+Deviation:              8.674677642872552e-11
+step 195  r = [-1.04000000e+00  4.02623332e-13]
+canonical P = [20.  0.]
+mechanical p = [2.0000000e+01+0.j 3.2250063e-10+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999999736056j
+Finite difference Sdot: (-0-0.39999999983973145j)
+Deviation:              1.3387413400067771e-10
+step 196  r = [-1.0300000e+00  5.9992538e-13]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 4.76471501e-10+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999999616465j
+Finite difference Sdot: (-0-0.39999999983831047j)
+Deviation:              1.233360080732382e-10
+step 197  r = [-1.0200000e+00  8.9088954e-13]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 7.01525427e-10+0.j]
+classical energy = 0.2200000000000001
+Computed Sdot:          -0.3999999999444675j
+Finite difference Sdot: (-0-0.3999999998212574j)
+Deviation:              1.232101087822457e-10
+step 198  r = [-1.01000000e+00  1.31850015e-12]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.02932144e-09+0.j]
+classical energy = 0.2200000000000001
+Computed Sdot:          -0.3999999999198808j
+Finite difference Sdot: (-0-0.39999999980953344j)
+Deviation:              1.1034734237469479e-10
+step 199  r = [-1.00000000e+00  1.94476716e-12]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 1.50508401e-09+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999998848205j
+Finite difference Sdot: (-0-0.39999999977080886j)
+Deviation:              1.1401163346747012e-10
+step 200  r = [-9.90000000e-01  2.85882502e-12]
+canonical P = [20.  0.]
+mechanical p = [2.00000000e+01+0.j 2.19317667e-09+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999998350077j
+Finite difference Sdot: (-0-0.39999999972924216j)
+Deviation:              1.0576556297436923e-10
+step 201  r = [-9.80000000e-01  4.18833615e-12]
+canonical P = [19.99999999  0.        ]
+mechanical p = [2.00000000e+01+0.j 3.18486262e-09+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999997644939j
+Finite difference Sdot: (-0-0.3999999996585431j)
+Deviation:              1.0595080368602794e-10
+step 202  r = [-9.70000000e-01  6.11548595e-12]
+canonical P = [19.99999999  0.        ]
+mechanical p = [2.00000000e+01+0.j 4.60906759e-09+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.3999999996650414j
+Finite difference Sdot: (-0-0.3999999995558697j)
+Deviation:              1.0917172721391921e-10
+step 203  r = [-9.60000000e-01  8.89933233e-12]
+canonical P = [19.99999999  0.        ]
+mechanical p = [2.00000000e+01+0.j 6.64724734e-09+0.j]
+classical energy = 0.2200000000000001
+Computed Sdot:          -0.399999999525287j
+Finite difference Sdot: (-0-0.39999999942548503j)
+Deviation:              9.980194448644397e-11
+step 204  r = [-9.50000000e-01  1.29069148e-11]
+canonical P = [19.99999998  0.        ]
+mechanical p = [2.00000000e+01+0.j 9.55384335e-09+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.39999999932961755j
+Finite difference Sdot: (-0-0.3999999992094801j)
+Deviation:              1.2013745553929311e-10
+step 205  r = [-9.40000000e-01  1.86563901e-11]
+canonical P = [19.99999998  0.        ]
+mechanical p = [2.0000000e+01+0.j 1.3684315e-08+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.3999999990566643j
+Finite difference Sdot: (-0-0.3999999989380528j)
+Deviation:              1.1861145399194584e-10
+step 206  r = [-9.30000000e-01  2.68766147e-11]
+canonical P = [19.99999997  0.        ]
+mechanical p = [2.00000000e+01+0.j 1.95334005e-08+0.j]
+classical energy = 0.2200000000000001
+Computed Sdot:          -0.3999999986772967j
+Finite difference Sdot: (-0-0.3999999985742549j)
+Deviation:              1.030417973169051e-10
+step 207  r = [-9.20000000e-01  3.85891267e-11]
+canonical P = [19.99999995  0.        ]
+mechanical p = [2.00000000e+01+0.j 2.77871304e-08+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.399999998151958j
+Finite difference Sdot: (-0-0.39999999805484815j)
+Deviation:              9.710987569633289e-11
+step 208  r = [-9.10000000e-01  5.52205167e-11]
+canonical P = [19.99999994  0.        ]
+mechanical p = [1.99999999e+01+0.j 3.93932517e-08+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.39999999742714737j
+Finite difference Sdot: (-0-0.399999997329384j)
+Deviation:              9.776335296862726e-11
+step 209  r = [-9.00000000e-01  7.87558533e-11]
+canonical P = [19.99999991  0.        ]
+mechanical p = [1.99999999e+01+0.j 5.56561947e-08+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.3999999964307877j
+Finite difference Sdot: (-0-0.3999999963246766j)
+Deviation:              1.0611111989078381e-10
+step 210  r = [-8.90000000e-01  1.11947357e-10]
+canonical P = [19.99999988  0.        ]
+mechanical p = [1.99999999e+01+0.j 7.83646191e-08+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.3999999950661625j
+Finite difference Sdot: (-0-0.3999999949554607j)
+Deviation:              1.107018365864576e-10
+step 211  r = [-8.80000000e-01  1.58597116e-10]
+canonical P = [19.99999983  0.        ]
+mechanical p = [1.99999998e+01+0.j 1.09962019e-07+0.j]
+classical energy = 0.2200000000000001
+Computed Sdot:          -0.39999999320400653j
+Finite difference Sdot: (-0-0.3999999930924176j)
+Deviation:              1.115889047831331e-10
+step 212  r = [-8.70000000e-01  2.23938626e-10]
+canonical P = [19.99999977  0.        ]
+mechanical p = [1.99999998e+01+0.j 1.53773994e-07+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.399999990672239j
+Finite difference Sdot: (-0-0.39999999054867463j)
+Deviation:              1.2356438094940358e-10
+step 213  r = [-8.60000000e-01  3.15149704e-10]
+canonical P = [19.99999968  0.        ]
+mechanical p = [1.99999997e+01+0.j 2.14309776e-07+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.3999999872426954j
+Finite difference Sdot: (-0-0.3999999871267008j)
+Deviation:              1.1599460281175311e-10
+step 214  r = [-8.50000001e-01  4.42039317e-10]
+canonical P = [19.99999957  0.        ]
+mechanical p = [1.99999996e+01+0.j 2.97660620e-07+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.39999998261405756j
+Finite difference Sdot: (-0-0.3999999825099492j)
+Deviation:              1.0410833306551126e-10
+step 215  r = [-8.40000001e-01  6.17963705e-10]
+canonical P = [19.99999941  0.        ]
+mechanical p = [1.99999994e+01+0.j 4.12024032e-07+0.j]
+classical energy = 0.22000000000000006
+Computed Sdot:          -0.3999999763899917j
+Finite difference Sdot: (-0-0.3999999762852395j)
+Deviation:              1.0475220690864262e-10
+step 216  r = [-8.30000001e-01  8.61043570e-10]
+canonical P = [19.9999992  0.       ]
+mechanical p = [1.99999992e+01+0.j 5.68390699e-07+0.j]
+classical energy = 0.2200000000000001
+Computed Sdot:          -0.3999999680512817j
+Finite difference Sdot: (-0-0.39999996793494097j)
+Deviation:              1.1634071483968e-10
+step 217  r = [-8.20000002e-01  1.19577492e-09]
+canonical P = [19.99999892  0.        ]
+mechanical p = [1.99999989e+01+0.j 7.81440919e-07+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.3999999569204664j
+Finite difference Sdot: (-0-0.3999999568110387j)
+Deviation:              1.0942768913224654e-10
+step 218  r = [-8.10000002e-01  1.65515249e-09]
+canonical P = [19.99999855  0.        ]
+mechanical p = [1.99999986e+01+0.j 1.07070952e-06+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.3999999421171797j
+Finite difference Sdot: (-0-0.3999999420152288j)
+Deviation:              1.0195089217290842e-10
+step 219  r = [-8.00000003e-01  2.28345786e-09]
+canonical P = [19.99999806  0.        ]
+mechanical p = [1.99999981e+01+0.j 1.46209335e-06+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.3999999225020098j
+Finite difference Sdot: (-0-0.39999992238026694j)
+Deviation:              1.217428380329011e-10
+step 220  r = [-7.90000004e-01  3.13990577e-09]
+canonical P = [19.99999742  0.        ]
+mechanical p = [1.99999974e+01+0.j 1.98979392e-06+0.j]
+classical energy = 0.22000000000000003
+Computed Sdot:          -0.3999998966062633j
+Finite difference Sdot: (-0-0.39999989648559997j)
+Deviation:              1.2066331267490682e-10
+step 221  r = [-7.80000006e-01  4.30339394e-09]
+canonical P = [19.99999656  0.        ]
+mechanical p = [1.99999966e+01+0.j 2.69881011e-06+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.3999998625445162j
+Finite difference Sdot: (-0-0.3999998624331897j)
+Deviation:              1.1132650357126295e-10
+step 222  r = [-7.70000008e-01  5.87866589e-09]
+canonical P = [19.99999545  0.        ]
+mechanical p = [1.99999954e+01+0.j 3.64812328e-06+0.j]
+classical energy = 0.22000000000000017
+Computed Sdot:          -0.39999981790625955j
+Finite difference Sdot: (-0-0.39999981779759713j)
+Deviation:              1.0866241240137242e-10
+step 223  r = [-7.6000001e-01  8.0042749e-09]
+canonical P = [19.99999399  0.        ]
+mechanical p = [1.9999994e+01+0.j 4.9147495e-06+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.399999759622299j
+Finite difference Sdot: (-0-0.3999997595245516j)
+Deviation:              9.774742126822389e-11
+step 224  r = [-7.50000014e-01  1.08628347e-08]
+canonical P = [19.9999921  0.       ]
+mechanical p = [1.99999921e+01+0.j 6.59887302e-06+0.j]
+classical energy = 0.22000000000000008
+Computed Sdot:          -0.3999996838008425j
+Finite difference Sdot: (-0-0.3999996837035769j)
+Deviation:              9.726558447553657e-11
+step 225  r = [-7.40000018e-01  1.46941602e-08]
+canonical P = [19.99998964  0.        ]
+mechanical p = [1.99999896e+01+0.j 8.83032124e-06+0.j]
+classical energy = 0.22000000000000014
+Computed Sdot:          -0.39999958552740456j
+Finite difference Sdot: (-0-0.3999995854223287j)
+Deviation:              1.0507583692032085e-10
+step 226  r = [-7.30000024e-01  1.98120457e-08]
+canonical P = [19.99998647  0.        ]
+mechanical p = [1.99999865e+01+0.j 1.17766962e-05+0.j]
+classical energy = 0.22000000000000017
+Computed Sdot:          -0.3999994586217794j
+Finite difference Sdot: (-0-0.39999945851612645j)
+Deviation:              1.0565293084852101e-10
+step 227  r = [-7.20000032e-01  2.66256001e-08]
+canonical P = [19.99998238  0.        ]
+mechanical p = [1.99999824e+01+0.j 1.56535415e-05+0.j]
+classical energy = 0.22000000000000022
+Computed Sdot:          -0.39999929534439316j
+Finite difference Sdot: (-0-0.3999992952407454j)
+Deviation:              1.0364775704374551e-10
+step 228  r = [-7.10000042e-01  3.56662677e-08]
+canonical P = [19.99997715  0.        ]
+mechanical p = [1.99999772e+01+0.j 2.07369987e-05+0.j]
+classical energy = 0.22000000000000025
+Computed Sdot:          -0.39999908604334106j
+Finite difference Sdot: (-0-0.3999990859313518j)
+Deviation:              1.1198925120581293e-10
+step 229  r = [-7.00000055e-01  4.76219096e-08]
+canonical P = [19.99997047  0.        ]
+mechanical p = [1.99999705e+01+0.j 2.73794911e-05+0.j]
+classical energy = 0.22000000000000028
+Computed Sdot:          -0.3999988187323815j
+Finite difference Sdot: (-0-0.3999988186205787j)
+Deviation:              1.1180284475997837e-10
+step 230  r = [-6.90000072e-01  6.33796141e-08]
+canonical P = [19.99996196  0.        ]
+mechanical p = [1.99999620e+01+0.j 3.60290741e-05+0.j]
+classical energy = 0.22000000000000028
+Computed Sdot:          -0.3999984785891023j
+Finite difference Sdot: (-0-0.3999984784707911j)
+Deviation:              1.1831119417493596e-10
+step 231  r = [-6.80000094e-01  8.40792534e-08]
+canonical P = [19.99995118  0.        ]
+mechanical p = [1.99999512e+01+0.j 4.72531992e-05+0.j]
+classical energy = 0.22000000000000036
+Computed Sdot:          -0.3999980473614413j
+Finite difference Sdot: (-0-0.3999980472564383j)
+Deviation:              1.0500300628990544e-10
+step 232  r = [-6.70000121e-01  1.11180204e-07]
+canonical P = [19.99993757  0.        ]
+mechanical p = [1.99999376e+01+0.j 6.17677661e-05+0.j]
+classical energy = 0.22000000000000045
+Computed Sdot:          -0.399997502669755j
+Finite difference Sdot: (-0-0.3999975025639557j)
+Deviation:              1.057992582431666e-10
+step 233  r = [-6.60000157e-01  1.46544123e-07]
+canonical P = [19.99992043  0.        ]
+mechanical p = [1.99999204e+01+0.j 8.04724753e-05+0.j]
+classical energy = 0.22000000000000042
+Computed Sdot:          -0.39999681719075536j
+Finite difference Sdot: (-0-0.39999681708544493j)
+Deviation:              1.0531042704542415e-10
+step 234  r = [-6.50000202e-01  1.92537217e-07]
+canonical P = [19.99989894  0.        ]
+mechanical p = [1.99998989e+01+0.j 1.04493647e-04+0.j]
+classical energy = 0.22000000000000056
+Computed Sdot:          -0.39999595770890756j
+Finite difference Sdot: (-0-0.39999595760786494j)
+Deviation:              1.0104261871646258e-10
+step 235  r = [-6.40000259e-01  2.52156059e-07]
+canonical P = [19.9998721  0.       ]
+mechanical p = [1.99998721e+01+0.j 1.35235841e-04+0.j]
+classical energy = 0.22000000000000064
+Computed Sdot:          -0.3999948840203855j
+Finite difference Sdot: (-0-0.3999948839179938j)
+Deviation:              1.0239170622483584e-10
+step 236  r = [-6.30000331e-01  3.29181724e-07]
+canonical P = [19.99983869  0.        ]
+mechanical p = [1.99998387e+01+0.j 1.74443779e-04+0.j]
+classical energy = 0.2200000000000007
+Computed Sdot:          -0.39999354767449063j
+Finite difference Sdot: (-0-0.39999354756310584j)
+Deviation:              1.1138479028005577e-10
+step 237  r = [-6.20000421e-01  4.28367821e-07]
+canonical P = [19.99979726  0.        ]
+mechanical p = [1.99997973e+01+0.j 2.24276284e-04+0.j]
+classical energy = 0.22000000000000075
+Computed Sdot:          -0.39999189053761564j
+Finite difference Sdot: (-0-0.3999918904371456j)
+Deviation:              1.0047002119151216e-10
+step 238  r = [-6.10000535e-01  5.55668876e-07]
+canonical P = [19.99974608  0.        ]
+mechanical p = [1.99997461e+01+0.j 2.87394114e-04+0.j]
+classical energy = 0.2200000000000008
+Computed Sdot:          -0.39998984316550223j
+Finite difference Sdot: (-0-0.39998984306038865j)
+Deviation:              1.0511358450315811e-10
+step 239  r = [-6.00000677e-01  7.18516547e-07]
+canonical P = [19.99968307  0.        ]
+mechanical p = [1.99996831e+01+0.j 3.67063799e-04+0.j]
+classical energy = 0.2200000000000009
+Computed Sdot:          -0.39998732297076584j
+Finite difference Sdot: (-0-0.39998732286749816j)
+Deviation:              1.0326767219126509e-10
+step 240  r = [-5.90000854e-01  9.26152230e-07]
+canonical P = [19.9996058  0.       ]
+mechanical p = [1.99996058e+01+0.j 4.67279752e-04+0.j]
+classical energy = 0.22000000000000092
+Computed Sdot:          -0.39998423217455265j
+Finite difference Sdot: (-0-0.3999842320648095j)
+Deviation:              1.0974315900469378e-10
+step 241  r = [-5.80001074e-01  1.19002580e-06]
+canonical P = [19.99951138  0.        ]
+mechanical p = [1.99995114e+01+0.j 5.92907149e-04+0.j]
+classical energy = 0.22000000000000103
+Computed Sdot:          -0.3999804555338549j
+Finite difference Sdot: (-0-0.3999804554166593j)
+Deviation:              1.171956420797926e-10
+step 242  r = [-5.70001346e-01  1.52427151e-06]
+canonical P = [19.99939644  0.        ]
+mechanical p = [1.99993964e+01+0.j 7.49848207e-04+0.j]
+classical energy = 0.22000000000000108
+Computed Sdot:          -0.39997585783951595j
+Finite difference Sdot: (-0-0.3999758577434166j)
+Deviation:              9.609935069931907e-11
+step 243  r = [-5.60001682e-01  1.94627353e-06]
+canonical P = [19.99925702  0.        ]
+mechanical p = [1.99992570e+01+0.j 9.45234649e-04+0.j]
+classical energy = 0.22000000000000114
+Computed Sdot:          -0.39997028118441125j
+Finite difference Sdot: (-0-0.39997028108081445j)
+Deviation:              1.0359679780691522e-10
+step 244  r = [-5.50002094e-01  2.47733474e-06]
+canonical P = [19.99908853  0.        ]
+mechanical p = [1.99990885e+01+0.j 1.18764925e-03+0.j]
+classical energy = 0.22000000000000122
+Computed Sdot:          -0.3999635420067379j
+Finite difference Sdot: (-0-0.39996354189583255j)
+Deviation:              1.109053404668714e-10
+step 245  r = [-5.40002599e-01  3.14346432e-06]
+canonical P = [19.99888567  0.        ]
+mechanical p = [1.99988857e+01+0.j 1.48737938e-03+0.j]
+classical energy = 0.2200000000000013
+Computed Sdot:          -0.39995542791985095j
+Finite difference Sdot: (-0-0.3999554278160563j)
+Deviation:              1.0379463954990342e-10
+step 246  r = [-5.30003215e-01  3.97630059e-06]
+canonical P = [19.99864231  0.        ]
+mechanical p = [1.99986423e+01+0.j 1.85670548e-03+0.j]
+classical energy = 0.22000000000000144
+Computed Sdot:          -0.39994569434765265j
+Finite difference Sdot: (-0-0.3999456942248399j)
+Deviation:              1.2281275996173235e-10
+step 247  r = [-5.20003965e-01  5.01418751e-06]
+canonical P = [19.99835146  0.        ]
+mechanical p = [1.99983515e+01+0.j 2.31022724e-03+0.j]
+classical energy = 0.22000000000000147
+Computed Sdot:          -0.3999340609931675j
+Finite difference Sdot: (-0-0.39993406087663874j)
+Deviation:              1.1652873110890027e-10
+step 248  r = [-5.10004873e-01  6.30342418e-06]
+canonical P = [19.9980051  0.       ]
+mechanical p = [1.99980051e+01+0.j 2.86523010e-03+0.j]
+classical energy = 0.22000000000000147
+Computed Sdot:          -0.39992020817755525j
+Finite difference Sdot: (-0-0.3999202080780346j)
+Deviation:              9.952066948315519e-11
+step 249  r = [-5.00005970e-01  7.89970816e-06]
+canonical P = [19.99759418  0.        ]
+mechanical p = [1.99975942e+01+0.j 3.54209432e-03+0.j]
+classical energy = 0.22000000000000153
+Computed Sdot:          -0.39990377309733816j
+Finite difference Sdot: (-0-0.39990377299061436j)
+Deviation:              1.067237964669232e-10
+step 250  r = [-4.90007291e-01  9.86979434e-06]
+canonical P = [19.99710844  0.        ]
+mechanical p = [1.99971084e+01+0.j 4.36474829e-03+0.j]
+classical energy = 0.22000000000000144
+Computed Sdot:          -0.3998843460588854j
+Finite difference Sdot: (-0-0.3998843459513093j)
+Deviation:              1.0757611468292794e-10
+step 251  r = [-4.80008876e-01  1.22933918e-05]
+canonical P = [19.99653637  0.        ]
+mechanical p = [1.99965364e+01+0.j 5.36116729e-03+0.j]
+classical energy = 0.22000000000000133
+Computed Sdot:          -0.3998614667610176j
+Finite difference Sdot: (-0-0.39986146665699146j)
+Deviation:              1.0402612105053777e-10
+step 252  r = [-4.70010771e-01  1.52653215e-05]
+canonical P = [19.99586509  0.        ]
+mechanical p = [1.99958651e+01+0.j 6.56391783e-03+0.j]
+classical energy = 0.22000000000000128
+Computed Sdot:          -0.3998346207086892j
+Finite difference Sdot: (-0-0.39983462060427233j)
+Deviation:              1.0441686404405459e-10
+step 253  r = [-4.60013030e-01  1.88979571e-05]
+canonical P = [19.99508029  0.        ]
+mechanical p = [1.99950803e+01+0.j 8.01074679e-03+0.j]
+classical energy = 0.22000000000000108
+Computed Sdot:          -0.39980323585278355j
+Finite difference Sdot: (-0-0.3998032357464972j)
+Deviation:              1.0628636859522089e-10
+step 254  r = [-4.50015713e-01  2.33239718e-05]
+canonical P = [19.99416614  0.        ]
+mechanical p = [1.99941661e+01+0.j 9.74521316e-03+0.j]
+classical energy = 0.22000000000000086
+Computed Sdot:          -0.3997666795627367j
+Finite difference Sdot: (-0-0.3997666794582266j)
+Deviation:              1.045101227781231e-10
+step 255  r = [-4.40018888e-01  2.86994102e-05]
+canonical P = [19.99310521  0.        ]
+mechanical p = [1.99931052e+01+0.j 1.18173587e-02+0.j]
+classical energy = 0.2200000000000006
+Computed Sdot:          -0.39972425604957174j
+Finite difference Sdot: (-0-0.39972425594108324j)
+Deviation:              1.0848849596456489e-10
+step 256  r = [-4.30022635e-01  3.52071044e-05]
+canonical P = [19.99187846  0.        ]
+mechanical p = [1.99918785e+01+0.j 1.42844117e-02+0.j]
+classical energy = 0.22000000000000036
+Computed Sdot:          -0.39967520436654463j
+Finite difference Sdot: (-0-0.399675204260724j)
+Deviation:              1.0582063003639064e-10
+step 257  r = [-4.20027041e-01  4.30604492e-05]
+canonical P = [19.99046516  0.        ]
+mechanical p = [1.99904652e+01+0.j 1.72115171e-02+0.j]
+classical energy = 0.21999999999999997
+Computed Sdot:          -0.3996186971224677j
+Finite difference Sdot: (-0-0.3996186970160089j)
+Deviation:              1.0645884174209641e-10
+step 258  r = [-4.10032205e-01  5.25075458e-05]
+canonical P = [19.98884289  0.        ]
+mechanical p = [19.98884289+0.j  0.02067248+0.j]
+classical energy = 0.21999999999999958
+Computed Sdot:          -0.3995538400484092j
+Finite difference Sdot: (-0-0.39955383993547783j)
+Deviation:              1.1293138646450984e-10
+step 259  r = [-4.00038237e-01  6.38357205e-05]
+canonical P = [19.98698758  0.        ]
+mechanical p = [19.98698758+0.j  0.02475052+0.j]
+classical energy = 0.21999999999999906
+Computed Sdot:          -0.3994796725613533j
+Finite difference Sdot: (-0-0.3994796724533839j)
+Deviation:              1.079694111894014e-10
+step 260  r = [-3.90045260e-01  7.73764143e-05]
+canonical P = [19.98487352  0.        ]
+mechanical p = [19.98487352+0.j  0.029539  +0.j]
+classical energy = 0.2199999999999985
+Computed Sdot:          -0.3993951694680805j
+Finite difference Sdot: (-0-0.39939516935795316j)
+Deviation:              1.1012735168236532e-10
+step 261  r = [-3.80053411e-01  9.35104347e-05]
+canonical P = [19.98247342  0.        ]
+mechanical p = [19.98247342+0.j  0.03514214+0.j]
+classical energy = 0.2199999999999979
+Computed Sdot:          -0.3992992439485148j
+Finite difference Sdot: (-0-0.39929924384493215j)
+Deviation:              1.0358264246335125e-10
+step 262  r = [-3.70062839e-01  1.12673547e-04]
+canonical P = [19.97975856  0.        ]
+mechanical p = [19.97975856+0.j  0.04167565+0.j]
+classical energy = 0.21999999999999723
+Computed Sdot:          -0.39919075194971776j
+Finite difference Sdot: (-0-0.3991907518463069j)
+Deviation:              1.034108354502905e-10
+step 263  r = [-3.60073710e-01  1.35362376e-04]
+canonical P = [19.97669888  0.        ]
+mechanical p = [19.97669888+0.j  0.04926733+0.j]
+classical energy = 0.2199999999999966
+Computed Sdot:          -0.3990684981092312j
+Finite difference Sdot: (-0-0.39906849800012084j)
+Deviation:              1.0911033188065744e-10
+step 264  r = [-3.50086203e-01  1.62140565e-04]
+canonical P = [19.97326321  0.        ]
+mechanical p = [19.97326321+0.j  0.05805755+0.j]
+classical energy = 0.21999999999999584
+Computed Sdot:          -0.39893124330935537j
+Finite difference Sdot: (-0-0.39893124320150697j)
+Deviation:              1.0784839687971726e-10
+step 265  r = [-3.40100515e-01  1.93645149e-04]
+canonical P = [19.96941947  0.        ]
+mechanical p = [19.96941947+0.j  0.06819954+0.j]
+classical energy = 0.21999999999999512
+Computed Sdot:          -0.39877771394204925j
+Finite difference Sdot: (-0-0.3987777138328194j)
+Deviation:              1.0922984738925834e-10
+step 266  r = [-3.30116857e-01  2.30593040e-04]
+canonical P = [19.96513493  0.        ]
+mechanical p = [19.96513493+0.j  0.07985959+0.j]
+classical energy = 0.21999999999999437
+Computed Sdot:          -0.3986066129374139j
+Finite difference Sdot: (-0-0.3986066128279916j)
+Deviation:              1.0942230455057711e-10
+step 267  r = [-3.20135459e-01  2.73787560e-04]
+canonical P = [19.96037656  0.        ]
+mechanical p = [19.96037656+0.j  0.09321701+0.j]
+classical energy = 0.2199999999999937
+Computed Sdot:          -0.39841663257727633j
+Finite difference Sdot: (-0-0.3984166324649504j)
+Deviation:              1.1232592633803051e-10
+step 268  r = [-0.31015657  0.00032412]
+canonical P = [19.95511135  0.        ]
+mechanical p = [19.95511135+0.j  0.10846386+0.j]
+classical energy = 0.21999999999999298
+Computed Sdot:          -0.3982064690794202j
+Finite difference Sdot: (-0-0.3982064689737403j)
+Deviation:              1.056799092680194e-10
+step 269  r = [-0.30018044  0.0003826 ]
+canonical P = [19.94930673  0.        ]
+mechanical p = [19.94930673+0.j  0.12580436+0.j]
+classical energy = 0.21999999999999229
+Computed Sdot:          -0.39797483889788726j
+Finite difference Sdot: (-0-0.3979748387858404j)
+Deviation:              1.1204687178079098e-10
+step 270  r = [-0.29020735  0.00045031]
+canonical P = [19.94293099  0.        ]
+mechanical p = [19.94293099+0.j  0.14545407+0.j]
+classical energy = 0.21999999999999167
+Computed Sdot:          -0.39772049664095077j
+Finite difference Sdot: (-0-0.3977204965400212j)
+Deviation:              1.0092959801255574e-10
+step 271  r = [-0.28023761  0.00052848]
+canonical P = [19.93595381  0.        ]
+mechanical p = [19.93595381+0.j  0.16763863+0.j]
+classical energy = 0.21999999999999115
+Computed Sdot:          -0.3974422544614883j
+Finite difference Sdot: (-0-0.39744225435585745j)
+Deviation:              1.0563083741033097e-10
+step 272  r = [-0.2702715   0.00061841]
+canonical P = [19.92834671  0.        ]
+mechanical p = [19.92834671+0.j  0.19259222+0.j]
+classical energy = 0.21999999999999076
+Computed Sdot:          -0.39713900272528657j
+Finite difference Sdot: (-0-0.39713900261908586j)
+Deviation:              1.0620071488887106e-10
+step 273  r = [-0.26030937  0.00072157]
+canonical P = [19.92008363  0.        ]
+mechanical p = [19.92008363+0.j  0.22055553+0.j]
+classical energy = 0.21999999999999048
+Computed Sdot:          -0.3968097317122097j
+Finite difference Sdot: (-0-0.39680973160681j)
+Deviation:              1.0539968897660401e-10
+step 274  r = [-0.25035153  0.00083951]
+canonical P = [19.91114146  0.        ]
+mechanical p = [19.91114146+0.j  0.25177338+0.j]
+classical energy = 0.2199999999999905
+Computed Sdot:          -0.3964535540541971j
+Finite difference Sdot: (-0-0.3964535539507896j)
+Deviation:              1.0340750478121663e-10
+step 275  r = [-0.24039834  0.00097393]
+canonical P = [19.90150064  0.        ]
+mechanical p = [19.90150064+0.j  0.28649189+0.j]
+classical energy = 0.21999999999999065
+Computed Sdot:          -0.396069727563922j
+Finite difference Sdot: (-0-0.39606972745743113j)
+Deviation:              1.0649087167635685e-10
+step 276  r = [-0.23045015  0.00112663]
+canonical P = [19.89114572  0.        ]
+mechanical p = [19.89114572+0.j  0.32495523+0.j]
+classical energy = 0.21999999999999081
+Computed Sdot:          -0.3956576780600103j
+Finite difference Sdot: (-0-0.39565767795468537j)
+Deviation:              1.0532491545589551e-10
+step 277  r = [-0.22050732  0.00129955]
+canonical P = [19.88006594  0.        ]
+mechanical p = [19.88006594+0.j  0.36740202+0.j]
+classical energy = 0.2199999999999912
+Computed Sdot:          -0.3952170217504925j
+Finite difference Sdot: (-0-0.3952170216484076j)
+Deviation:              1.0208489609198068e-10
+step 278  r = [-0.21057021  0.00149473]
+canonical P = [19.86825575  0.        ]
+mechanical p = [19.86825575+0.j  0.41406131+0.j]
+classical energy = 0.21999999999999176
+Computed Sdot:          -0.39474758669734844j
+Finite difference Sdot: (-0-0.3947475865939626j)
+Deviation:              1.0338585543223644e-10
+step 279  r = [-0.20063919  0.00171435]
+canonical P = [19.85571537  0.        ]
+mechanical p = [19.85571537+0.j  0.46514827+0.j]
+classical energy = 0.2199999999999924
+Computed Sdot:          -0.3942494328534178j
+Finite difference Sdot: (-0-0.39424943274886404j)
+Deviation:              1.0455375454299087e-10
+step 280  r = [-0.19071461  0.00196065]
+canonical P = [19.84245121  0.        ]
+mechanical p = [19.84245121+0.j  0.52085963+0.j]
+classical energy = 0.21999999999999317
+Computed Sdot:          -0.3937228701405458j
+Finite difference Sdot: (-0-0.3937228700350498j)
+Deviation:              1.0549600082399024e-10
+step 281  r = [-0.18079685  0.00223601]
+canonical P = [19.82847634  0.        ]
+mechanical p = [19.82847634+0.j  0.581369  +0.j]
+classical energy = 0.21999999999999398
+Computed Sdot:          -0.393168474026627j
+Finite difference Sdot: (-0-0.3931684739241832j)
+Deviation:              1.02443831195842e-10
+step 282  r = [-0.17088625  0.00254284]
+canonical P = [19.81381079  0.        ]
+mechanical p = [19.81381079+0.j  0.64682208+0.j]
+classical energy = 0.2199999999999949
+Computed Sdot:          -0.3925870980612149j
+Finite difference Sdot: (-0-0.3925870979583461j)
+Deviation:              1.0286876905851727e-10
+step 283  r = [-0.16098315  0.00288367]
+canonical P = [19.79848183  0.        ]
+mechanical p = [19.79848183+0.j  0.71733194+0.j]
+classical energy = 0.21999999999999584
+Computed Sdot:          -0.391979882846463j
+Finite difference Sdot: (-0-0.39197988274488255j)
+Deviation:              1.0158046626074224e-10
+step 284  r = [-0.15108788  0.00326103]
+canonical P = [19.78252413  0.        ]
+mechanical p = [19.78252413+0.j  0.79297448+0.j]
+classical energy = 0.21999999999999686
+Computed Sdot:          -0.3913482609540342j
+Finite difference Sdot: (-0-0.39134826085044994j)
+Deviation:              1.0358425228673696e-10
+step 285  r = [-0.14120073  0.00367751]
+canonical P = [19.7659798  0.       ]
+mechanical p = [19.7659798 +0.j  0.87378421+0.j]
+classical energy = 0.21999999999999797
+Computed Sdot:          -0.39069395735048873j
+Finite difference Sdot: (-0-0.3906939572497724j)
+Deviation:              1.0071632416952525e-10
+step 286  r = [-0.13132199  0.00413568]
+canonical P = [19.74889832  0.        ]
+mechanical p = [19.74889832+0.j  0.95975049+0.j]
+classical energy = 0.21999999999999914
+Computed Sdot:          -0.39001898496428716j
+Finite difference Sdot: (-0-0.39001898486432734j)
+Deviation:              9.995981820054567e-11
+step 287  r = [-0.12145191  0.00463811]
+canonical P = [19.73133637  0.        ]
+mechanical p = [19.73133637+0.j  1.05081433+0.j]
+classical energy = 0.2200000000000002
+Computed Sdot:          -0.3893256351168723j
+Finite difference Sdot: (-0-0.38932563501763967j)
+Deviation:              9.923262211941619e-11
+step 288  r = [-0.11159072  0.00518732]
+canonical P = [19.71335747  0.        ]
+mechanical p = [19.71335747+0.j  1.14686593+0.j]
+classical energy = 0.2200000000000012
+Computed Sdot:          -0.38861646264748867j
+Finite difference Sdot: (-0-0.3886164625492264j)
+Deviation:              9.82622871958938e-11
+step 289  r = [-0.10173861  0.00578578]
+canonical P = [19.6950315  0.       ]
+mechanical p = [19.6950315 +0.j  1.24774302+0.j]
+classical energy = 0.2200000000000022
+Computed Sdot:          -0.38789426568458124j
+Finite difference Sdot: (-0-0.3878942655862998j)
+Deviation:              9.828143854306859e-11
+step 290  r = [-0.09189573  0.00643583]
+canonical P = [19.67643413  0.        ]
+mechanical p = [19.67643413+0.j  1.35323023+0.j]
+classical energy = 0.22000000000000314
+Computed Sdot:          -0.38716206015293836j
+Finite difference Sdot: (-0-0.3871620600552675j)
+Deviation:              9.767087139067598e-11
+step 291  r = [-0.08206221  0.00713973]
+canonical P = [19.65764608  0.        ]
+mechanical p = [19.65764608+0.j  1.46305931+0.j]
+classical energy = 0.2200000000000038
+Computed Sdot:          -0.38642304925129856j
+Finite difference Sdot: (-0-0.38642304915341213j)
+Deviation:              9.788642119090696e-11
+step 292  r = [-0.0722381   0.00789956]
+canonical P = [19.63875221  0.        ]
+mechanical p = [19.63875221+0.j  1.57691056+0.j]
+classical energy = 0.2200000000000044
+Computed Sdot:          -0.385680588285117j
+Finite difference Sdot: (-0-0.3856805881886162j)
+Deviation:              9.65007518338723e-11
+step 293  r = [-0.06242346  0.00871725]
+canonical P = [19.61984061  0.        ]
+mechanical p = [19.61984061+0.j  1.69441525+0.j]
+classical energy = 0.22000000000000475
+Computed Sdot:          -0.3849381453880122j
+Finite difference Sdot: (-0-0.3849381452911694j)
+Deviation:              9.684281154775931e-11
+step 294  r = [-0.05261825  0.00959452]
+canonical P = [19.60100147  0.        ]
+mechanical p = [19.60100147+0.j  1.81515909+0.j]
+classical energy = 0.22000000000000505
+Computed Sdot:          -0.38419925880704786j
+Finite difference Sdot: (-0-0.38419925871211985j)
+Deviation:              9.49280098971883e-11
+step 295  r = [-0.04282243  0.01053287]
+canonical P = [19.582326  0.      ]
+mechanical p = [19.582326  +0.j  1.93868679+0.j]
+classical energy = 0.2200000000000052
+Computed Sdot:          -0.38346749155516957j
+Finite difference Sdot: (-0-0.38346749145935904j)
+Deviation:              9.581052617946284e-11
+step 296  r = [-0.03303588  0.01153359]
+canonical P = [19.56390514  0.        ]
+mechanical p = [19.56390514+0.j  2.0645074 +0.j]
+classical energy = 0.2200000000000052
+Computed Sdot:          -0.3827463843427978j
+Finite difference Sdot: (-0-0.3827463842477341j)
+Deviation:              9.50636791507975e-11
+step 297  r = [-0.02325847  0.01259768]
+canonical P = [19.5458284  0.       ]
+mechanical p = [19.5458284 +0.j  2.19210061+0.j]
+classical energy = 0.2200000000000051
+Computed Sdot:          -0.38203940778423j
+Finite difference Sdot: (-0-0.38203940769030453j)
+Deviation:              9.392547850595179e-11
+step 298  r = [-0.01348998  0.01372589]
+canonical P = [19.52818258  0.        ]
+mechanical p = [19.52818258+0.j  2.32092356+0.j]
+classical energy = 0.220000000000005
+Computed Sdot:          -0.3813499149285573j
+Finite difference Sdot: (-0-0.38134991483506026j)
+Deviation:              9.349704344074894e-11
+step 299  r = [-0.0037302   0.01491871]
+canonical P = [19.51105059  0.        ]
+mechanical p = [19.51105059+0.j  2.4504183 +0.j]
+classical energy = 0.22000000000000489
+Computed Sdot:          -0.38068109518586096j
+Finite difference Sdot: (-0-0.38068109509284226j)
+Deviation:              9.301870385058919e-11
+step 300  r = [0.00602117 0.01617633]
+canonical P = [19.49451027  0.        ]
+mechanical p = [19.49451027+0.j  2.58001943+0.j]
+classical energy = 0.22000000000000475
+Computed Sdot:          -0.3800359307056071j
+Finite difference Sdot: (-0-0.3800359306131147j)
+Deviation:              9.249240262576564e-11
+step 301  r = [0.01576442 0.01749866]
+canonical P = [19.47863333  0.        ]
+mechanical p = [19.47863333+0.j  2.70916193+0.j]
+classical energy = 0.22000000000000466
+Computed Sdot:          -0.37941715621506905j
+Finite difference Sdot: (-0-0.379417156122892j)
+Deviation:              9.217704377562086e-11
+step 302  r = [0.02549992 0.01888532]
+canonical P = [19.46348436  0.        ]
+mechanical p = [19.46348436+0.j  2.83728894+0.j]
+classical energy = 0.22000000000000447
+Computed Sdot:          -0.37882722324259505j
+Finite difference Sdot: (-0-0.37882722315131456j)
+Deviation:              9.128048317208481e-11
+step 303  r = [0.03522804 0.02033569]
+canonical P = [19.44912002  0.        ]
+mechanical p = [19.44912002+0.j  2.96385927+0.j]
+classical energy = 0.2200000000000041
+Computed Sdot:          -0.3782682695364751j
+Finite difference Sdot: (-0-0.3782682694458629j)
+Deviation:              9.06121844224117e-11
+step 304  r = [0.04494918 0.02184884]
+canonical P = [19.43558835  0.        ]
+mechanical p = [19.43558835+0.j  3.08835442+0.j]
+classical energy = 0.22000000000000366
+Computed Sdot:          -0.37774209434933365j
+Finite difference Sdot: (-0-0.3777420942585012j)
+Deviation:              9.083245267049733e-11
+step 305  r = [0.05466377 0.02342361]
+canonical P = [19.42292821  0.        ]
+mechanical p = [19.42292821+0.j  3.21028514+0.j]
+classical energy = 0.22000000000000286
+Computed Sdot:          -0.3772501400958268j
+Finite difference Sdot: (-0-0.37725014000474755j)
+Deviation:              9.10792552488715e-11
+step 306  r = [0.06437226 0.02505862]
+canonical P = [19.41116897  0.        ]
+mechanical p = [19.41116897+0.j  3.32919716+0.j]
+classical energy = 0.22000000000000192
+Computed Sdot:          -0.37679348071426483j
+Finite difference Sdot: (-0-0.3767934806237462j)
+Deviation:              9.051864813258703e-11
+step 307  r = [0.07407509 0.02675224]
+canonical P = [19.40033033  0.        ]
+mechanical p = [19.40033033+0.j  3.44467613+0.j]
+classical energy = 0.22000000000000094
+Computed Sdot:          -0.37637281687741897j
+Finite difference Sdot: (-0-0.37637281678756673j)
+Deviation:              8.985223676205578e-11
+step 308  r = [0.08377274 0.02850266]
+canonical P = [19.39042233  0.        ]
+mechanical p = [19.39042233+0.j  3.55635167+0.j]
+classical energy = 0.21999999999999986
+Computed Sdot:          -0.37598847801122065j
+Finite difference Sdot: (-0-0.3759884779205115j)
+Deviation:              9.070916240361271e-11
+step 309  r = [0.09346567 0.0303079 ]
+canonical P = [19.38144553  0.        ]
+mechanical p = [19.38144553+0.j  3.66390039+0.j]
+classical energy = 0.21999999999999872
+Computed Sdot:          -0.37564043089912486j
+Finite difference Sdot: (-0-0.3756404308099483j)
+Deviation:              8.917655502926891e-11
+step 310  r = [0.10315434 0.03216583]
+canonical P = [19.3733914  0.       ]
+mechanical p = [19.3733914 +0.j  3.76704803+0.j]
+classical energy = 0.2199999999999976
+Computed Sdot:          -0.3753282944809404j
+Finite difference Sdot: (-0-0.37532829439175064j)
+Deviation:              8.918976668326195e-11
+step 311  r = [0.11283921 0.03407418]
+canonical P = [19.3662428  0.       ]
+mechanical p = [19.3662428 +0.j  3.86557052+0.j]
+classical energy = 0.2199999999999966
+Computed Sdot:          -0.3750513603035519j
+Finite difference Sdot: (-0-0.37505136021393437j)
+Deviation:              8.961753561465002e-11
+step 312  r = [0.12252073 0.0360306 ]
+canonical P = [19.35997464  0.        ]
+mechanical p = [19.35997464+0.j  3.95929415+0.j]
+classical energy = 0.21999999999999573
+Computed Sdot:          -0.3748086179518227j
+Finite difference Sdot: (-0-0.37480861786399056j)
+Deviation:              8.783213045759908e-11
+step 313  r = [0.13219933 0.03803265]
+canonical P = [19.35455462  0.        ]
+mechanical p = [19.35455462+0.j  4.04809487+0.j]
+classical energy = 0.2199999999999951
+Computed Sdot:          -0.37459878468466257j
+Finite difference Sdot: (-0-0.3745987845968872j)
+Deviation:              8.77753425498895e-11
+step 314  r = [0.14187542 0.04007786]
+canonical P = [19.34994415  0.        ]
+mechanical p = [19.34994415+0.j  4.13189676+0.j]
+classical energy = 0.21999999999999464
+Computed Sdot:          -0.37442033842616107j
+Finite difference Sdot: (-0-0.3744203383368441j)
+Deviation:              8.931694273073276e-11
+step 315  r = [0.1515494  0.04216371]
+canonical P = [19.34609917  0.        ]
+mechanical p = [19.34609917+0.j  4.21066977+0.j]
+classical energy = 0.21999999999999453
+Computed Sdot:          -0.37427155321601496j
+Finite difference Sdot: (-0-0.37427155312997795j)
+Deviation:              8.603701084908266e-11
+step 316  r = [0.16122164 0.04428769]
+canonical P = [19.34297124  0.        ]
+mechanical p = [19.34297124+0.j  4.28442686+0.j]
+classical energy = 0.2199999999999946
+Computed Sdot:          -0.37415053620722294j
+Finite difference Sdot: (-0-0.3741505361203241j)
+Deviation:              8.689882147194794e-11
+step 317  r = [0.17089248 0.04644731]
+canonical P = [19.3405084  0.       ]
+mechanical p = [19.3405084 +0.j  4.35322067+0.j]
+classical energy = 0.21999999999999503
+Computed Sdot:          -0.3740552653110777j
+Finite difference Sdot: (-0-0.3740552652231625j)
+Deviation:              8.791517513984104e-11
+step 318  r = [0.18056225 0.0486401 ]
+canonical P = [19.33865628  0.        ]
+mechanical p = [19.33865628+0.j  4.41713979+0.j]
+classical energy = 0.2199999999999957
+Computed Sdot:          -0.3739836266277461j
+Finite difference Sdot: (-0-0.37398362654055767j)
+Deviation:              8.718842314792141e-11
+step 319  r = [0.19023123 0.05086366]
+canonical P = [19.33735894  0.        ]
+mechanical p = [19.33735894+0.j  4.47630469+0.j]
+classical energy = 0.21999999999999664
+Computed Sdot:          -0.3739334508622648j
+Finite difference Sdot: (-0-0.37393345077524964j)
+Deviation:              8.701517284492866e-11
+step 320  r = [0.19989969 0.05311564]
+canonical P = [19.33655988  0.        ]
+mechanical p = [19.33655988+0.j  4.53086358+0.j]
+classical energy = 0.21999999999999792
+Computed Sdot:          -0.37390254800694545j
+Finite difference Sdot: (-0-0.3739025479208276j)
+Deviation:              8.611783508527537e-11
+step 321  r = [0.20956787 0.05539378]
+canonical P = [19.33620282  0.        ]
+mechanical p = [19.33620282+0.j  4.58098819+0.j]
+classical energy = 0.21999999999999942
+Computed Sdot:          -0.37388873966790825j
+Finite difference Sdot: (-0-0.37388873958160385j)
+Deviation:              8.630440806456363e-11
+step 322  r = [0.21923596 0.05769592]
+canonical P = [19.33623253  0.        ]
+mechanical p = [19.33623253+0.j  4.62686951+0.j]
+classical energy = 0.22000000000000103
+Computed Sdot:          -0.3738898885213451j
+Finite difference Sdot: (-0-0.37388988843590665j)
+Deviation:              8.543843410535601e-11
+step 323  r = [0.22890416 0.06001998]
+canonical P = [19.33659547  0.        ]
+mechanical p = [19.33659547+0.j  4.66871373+0.j]
+classical energy = 0.22000000000000267
+Computed Sdot:          -0.37390392449969617j
+Finite difference Sdot: (-0-0.3739039244100239j)
+Deviation:              8.967226960976404e-11
+step 324  r = [0.2385726  0.06236399]
+canonical P = [19.33724043  0.        ]
+mechanical p = [19.33724043+0.j  4.70673829+0.j]
+classical energy = 0.22000000000000436
+Computed Sdot:          -0.37392886742484105j
+Finite difference Sdot: (-0-0.37392886733885455j)
+Deviation:              8.598649570146222e-11
+step 325  r = [0.24824143 0.06472612]
+canonical P = [19.33811899  0.        ]
+mechanical p = [19.33811899+0.j  4.74116826+0.j]
+classical energy = 0.22000000000000605
+Computed Sdot:          -0.3739628459205672j
+Finite difference Sdot: (-0-0.3739628458347982j)
+Deviation:              8.576900301093815e-11
+step 326  r = [0.25791075 0.0671046 ]
+canonical P = [19.33918593  0.        ]
+mechanical p = [19.33918593+0.j  4.7722329 +0.j]
+classical energy = 0.22000000000000763
+Computed Sdot:          -0.3740041125463177j
+Finite difference Sdot: (-0-0.3740041124598517j)
+Deviation:              8.646600102579782e-11
+step 327  r = [0.26758064 0.06949783]
+canonical P = [19.34039956  0.        ]
+mechanical p = [19.34039956+0.j  4.8001626 +0.j]
+classical energy = 0.2200000000000091
+Computed Sdot:          -0.37405105519538234j
+Finite difference Sdot: (-0-0.3740510551089766j)
+Deviation:              8.640571591556068e-11
+step 328  r = [0.27725117 0.07190428]
+canonical P = [19.34172187  0.        ]
+mechanical p = [19.34172187+0.j  4.82518616+0.j]
+classical energy = 0.22000000000001044
+Computed Sdot:          -0.3741022048907685j
+Finite difference Sdot: (-0-0.37410220480116796j)
+Deviation:              8.960054920237326e-11
+step 329  r = [0.28692238 0.07432257]
+canonical P = [19.34311868  0.        ]
+mechanical p = [19.34311868+0.j  4.8475284 +0.j]
+classical energy = 0.22000000000001163
+Computed Sdot:          -0.37415624018909194j
+Finite difference Sdot: (-0-0.37415624010691506j)
+Deviation:              8.217687641476346e-11
+step 330  r = [0.2965943 0.0767514]
+canonical P = [19.34455966  0.        ]
+mechanical p = [19.34455966+0.j  4.86740813+0.j]
+classical energy = 0.2200000000000127
+Computed Sdot:          -0.3742119884657663j
+Finite difference Sdot: (-0-0.3742119883775701j)
+Deviation:              8.81962280985249e-11
+step 331  r = [0.30626694 0.0791896 ]
+canonical P = [19.34601831  0.        ]
+mechanical p = [19.34601831+0.j  4.88503644+0.j]
+classical energy = 0.22000000000001357
+Computed Sdot:          -0.3742684244029983j
+Finite difference Sdot: (-0-0.37426842431625346j)
+Deviation:              8.674483353843243e-11
+step 332  r = [0.31594031 0.08163609]
+canonical P = [19.34747183  0.        ]
+mechanical p = [19.34747183+0.j  4.90061538+0.j]
+classical energy = 0.22000000000001427
+Computed Sdot:          -0.374324666035664j
+Finite difference Sdot: (-0-0.3743246659492428j)
+Deviation:              8.64212035267542e-11
+step 333  r = [0.32561441 0.0840899 ]
+canonical P = [19.34890097  0.        ]
+mechanical p = [19.34890097+0.j  4.91433684+0.j]
+classical energy = 0.2200000000000148
+Computed Sdot:          -0.3743799687296396j
+Finite difference Sdot: (-0-0.37437996864078127j)
+Deviation:              8.885830959926011e-11
+step 334  r = [0.33528921 0.08655015]
+canonical P = [19.35028986  0.        ]
+mechanical p = [19.35028986+0.j  4.92638185+0.j]
+classical energy = 0.2200000000000151
+Computed Sdot:          -0.3744337174736183j
+Finite difference Sdot: (-0-0.3744337173812657j)
+Deviation:              9.235262554696533e-11
+step 335  r = [0.34496469 0.08901604]
+canonical P = [19.35162572  0.        ]
+mechanical p = [19.35162572+0.j  4.93692005+0.j]
+classical energy = 0.22000000000001535
+Computed Sdot:          -0.3744854178602503j
+Finite difference Sdot: (-0-0.37448541777070543j)
+Deviation:              8.954487151768831e-11
+step 336  r = [0.35464082 0.09148685]
+canonical P = [19.35289865  0.        ]
+mechanical p = [19.35289865+0.j  4.94610939+0.j]
+classical energy = 0.2200000000000155
+Computed Sdot:          -0.3745346861172173j
+Finite difference Sdot: (-0-0.3745346860276393j)
+Deviation:              8.957801167497337e-11
+step 337  r = [0.36431758 0.09396194]
+canonical P = [19.35410134  0.        ]
+mechanical p = [19.35410134+0.j  4.95409612+0.j]
+classical energy = 0.2200000000000155
+Computed Sdot:          -0.374581238525394j
+Finite difference Sdot: (-0-0.3745812384401464j)
+Deviation:              8.524758676742294e-11
+step 338  r = [0.37399491 0.09644076]
+canonical P = [19.35522876  0.        ]
+mechanical p = [19.35522876+0.j  4.96101483+0.j]
+classical energy = 0.22000000000001538
+Computed Sdot:          -0.37462488053137893j
+Finite difference Sdot: (-0-0.3746248804461877j)
+Deviation:              8.519124294892322e-11
+step 339  r = [0.38367279 0.0989228 ]
+canonical P = [19.35627794  0.        ]
+mechanical p = [19.35627794+0.j  4.96698873+0.j]
+classical energy = 0.22000000000001513
+Computed Sdot:          -0.374665495827232j
+Finite difference Sdot: (-0-0.3746654957394179j)
+Deviation:              8.781414484460015e-11
+step 340  r = [0.39335118 0.10140761]
+canonical P = [19.35724763  0.        ]
+mechanical p = [19.35724763+0.j  4.97213003+0.j]
+classical energy = 0.2200000000000149
+Computed Sdot:          -0.3747030356329519j
+Finite difference Sdot: (-0-0.3747030355478888j)
+Deviation:              8.506306770073024e-11
+step 341  r = [0.40303003 0.10389481]
+canonical P = [19.35813804  0.        ]
+mechanical p = [19.35813804+0.j  4.97654038+0.j]
+classical energy = 0.22000000000001463
+Computed Sdot:          -0.37473750837864533j
+Finite difference Sdot: (-0-0.37473750829033153j)
+Deviation:              8.83138007168327e-11
+step 342  r = [0.4127093  0.10638405]
+canonical P = [19.35895064  0.        ]
+mechanical p = [19.35895064+0.j  4.98031144+0.j]
+classical energy = 0.2200000000000143
+Computed Sdot:          -0.37476896994488335j
+Finite difference Sdot: (-0-0.37476896985717517j)
+Deviation:              8.770817405689968e-11
+step 343  r = [0.42238897 0.10887503]
+canonical P = [19.35968787  0.        ]
+mechanical p = [19.35968787+0.j  4.98352544+0.j]
+classical energy = 0.22000000000001396
+Computed Sdot:          -0.374797514582571j
+Finite difference Sdot: (-0-0.37479751450308024j)
+Deviation:              7.949074731783412e-11
+step 344  r = [0.43206898 0.11136749]
+canonical P = [19.36035296  0.        ]
+mechanical p = [19.36035296+0.j  4.98625583+0.j]
+classical energy = 0.22000000000001363
+Computed Sdot:          -0.37482326659875687j
+Finite difference Sdot: (-0-0.3748232665069688j)
+Deviation:              9.178807713894344e-11
+step 345  r = [0.44174931 0.11386121]
+canonical P = [19.36094969  0.        ]
+mechanical p = [19.36094969+0.j  4.9885679 +0.j]
+classical energy = 0.22000000000001327
+Computed Sdot:          -0.37484637286288464j
+Finite difference Sdot: (-0-0.37484637277699573j)
+Deviation:              8.588890709759767e-11
+step 346  r = [0.45142992 0.116356  ]
+canonical P = [19.36148228  0.        ]
+mechanical p = [19.36148228+0.j  4.99051942+0.j]
+classical energy = 0.22000000000001296
+Computed Sdot:          -0.37486699615957036j
+Finite difference Sdot: (-0-0.3748669960717823j)
+Deviation:              8.778805460352146e-11
+step 347  r = [0.46111078 0.11885168]
+canonical P = [19.36195521  0.        ]
+mechanical p = [19.36195521+0.j  4.99216133+0.j]
+classical energy = 0.22000000000001266
+Computed Sdot:          -0.37488530938937753j
+Finite difference Sdot: (-0-0.3748853093068926j)
+Deviation:              8.24849077929457e-11
+step 348  r = [0.47079186 0.12134812]
+canonical P = [19.36237306  0.        ]
+mechanical p = [19.36237306+0.j  4.99353831+0.j]
+classical energy = 0.22000000000001232
+Computed Sdot:          -0.3749014905983991j
+Finite difference Sdot: (-0-0.3749014905139026j)
+Deviation:              8.449652089126403e-11
+step 349  r = [0.48047314 0.12384518]
+canonical P = [19.36274048  0.        ]
+mechanical p = [19.36274048+0.j  4.9946894 +0.j]
+classical energy = 0.22000000000001205
+Computed Sdot:          -0.3749157188007073j
+Finite difference Sdot: (-0-0.3749157187183393j)
+Deviation:              8.236800130845268e-11
+step 350  r = [0.4901546  0.12634278]
+canonical P = [19.36306201  0.        ]
+mechanical p = [19.36306201+0.j  4.99564856+0.j]
+classical energy = 0.2200000000000118
+Computed Sdot:          -0.3749281705447609j
+Finite difference Sdot: (-0-0.37492817045284693j)
+Deviation:              9.191397642993593e-11
+step 351  r = [0.4998362 0.1288408]
+canonical P = [19.3633421  0.       ]
+mechanical p = [19.3633421 +0.j  4.99644523+0.j]
+classical energy = 0.22000000000001163
+Computed Sdot:          -0.37493901716541383j
+Finite difference Sdot: (-0-0.3749390170699719j)
+Deviation:              9.544193213528729e-11
+step 352  r = [0.50951793 0.1313392 ]
+canonical P = [19.36358496  0.        ]
+mechanical p = [19.36358496+0.j  4.99710481+0.j]
+classical energy = 0.2200000000000114
+Computed Sdot:          -0.37494842265691436j
+Finite difference Sdot: (-0-0.37494842256314587j)
+Deviation:              9.376849297026979e-11
+step 353  r = [0.51919978 0.13383789]
+canonical P = [19.36379462  0.        ]
+mechanical p = [19.36379462+0.j  4.99764914+0.j]
+classical energy = 0.22000000000001124
+Computed Sdot:          -0.3749565420988727j
+Finite difference Sdot: (-0-0.37495654202125545j)
+Deviation:              7.761724596377917e-11
+step 354  r = [0.52888172 0.13633683]
+canonical P = [19.36397481  0.        ]
+mechanical p = [19.36397481+0.j  4.99809692+0.j]
+classical energy = 0.22000000000001113
+Computed Sdot:          -0.37496352056618054j
+Finite difference Sdot: (-0-0.37496352048775694j)
+Deviation:              7.842360094656442e-11
+step 355  r = [0.53856375 0.13883597]
+canonical P = [19.36412901  0.        ]
+mechanical p = [19.36412901+0.j  4.99846408+0.j]
+classical energy = 0.22000000000001102
+Computed Sdot:          -0.37496949245490874j
+Finite difference Sdot: (-0-0.37496949236429145j)
+Deviation:              9.061729144832498e-11
+step 356  r = [0.54824585 0.14133528]
+canonical P = [19.36426041  0.        ]
+mechanical p = [19.36426041+0.j  4.99876418+0.j]
+classical energy = 0.22000000000001094
+Computed Sdot:          -0.3749745811588713j
+Finite difference Sdot: (-0-0.37497458107578996j)
+Deviation:              8.308131960177434e-11
+step 357  r = [0.55792801 0.14383473]
+canonical P = [19.3643719  0.       ]
+mechanical p = [19.3643719 +0.j  4.99900867+0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3749788990354572j
+Finite difference Sdot: (-0-0.3749788989456222j)
+Deviation:              8.983502830517409e-11
+step 358  r = [0.56761022 0.14633428]
+canonical P = [19.36446611  0.        ]
+mechanical p = [19.36446611+0.j  4.99920723+0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.37498254760414895j
+Finite difference Sdot: (-0-0.3749825475111696j)
+Deviation:              9.297934644436623e-11
+step 359  r = [0.57729247 0.14883393]
+canonical P = [19.36454538  0.        ]
+mechanical p = [19.36454538+0.j  4.99936795+0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.3749856179265468j
+Finite difference Sdot: (-0-0.3749856178474669j)
+Deviation:              7.907985377642035e-11
+step 360  r = [0.58697476 0.15133365]
+canonical P = [19.36461182  0.        ]
+mechanical p = [19.36461182+0.j  4.99949763+0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.37498819112244497j
+Finite difference Sdot: (-0-0.3749881910253399j)
+Deviation:              9.710504622617577e-11
+step 361  r = [0.59665708 0.15383342]
+canonical P = [19.36466728  0.        ]
+mechanical p = [19.36466728+0.j  4.99960194+0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3749903389823158j
+Finite difference Sdot: (-0-0.374990338893965j)
+Deviation:              8.835082665470395e-11
+step 362  r = [0.60633943 0.15633325]
+canonical P = [19.36471339  0.        ]
+mechanical p = [19.36471339+0.j  4.99968555+0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.37499212464227116j
+Finite difference Sdot: (-0-0.3749921245526119j)
+Deviation:              8.965928000037593e-11
+step 363  r = [0.61602179 0.15883311]
+canonical P = [19.36475157  0.        ]
+mechanical p = [19.36475157+0.j  4.99975237+0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3749936032930404j
+Finite difference Sdot: (-0-0.3749936031931703j)
+Deviation:              9.987005666900473e-11
+step 364  r = [0.62570418 0.161333  ]
+canonical P = [19.36478306  0.        ]
+mechanical p = [19.36478306+0.j  4.99980559+0.j]
+classical energy = 0.2200000000000109
+Computed Sdot:          -0.37499482289961394j
+Finite difference Sdot: (-0-0.3749948228258335j)
+Deviation:              7.378042621297709e-11
+step 365  r = [0.63538657 0.16383291]
+canonical P = [19.36480893  0.        ]
+mechanical p = [19.36480893+0.j  4.99984785+0.j]
+classical energy = 0.22000000000001096
+Computed Sdot:          -0.3749958249128812j
+Finite difference Sdot: (-0-0.3749958248322404j)
+Deviation:              8.064077183789209e-11
+step 366  r = [0.64506898 0.16633284]
+canonical P = [19.3648301  0.       ]
+mechanical p = [19.3648301 +0.j  4.99988129+0.j]
+classical energy = 0.220000000000011
+Computed Sdot:          -0.37499664495879076j
+Finite difference Sdot: (-0-0.3749966448642365j)
+Deviation:              9.455425331594824e-11
+step 367  r = [0.6547514  0.16883279]
+canonical P = [19.36484737  0.        ]
+mechanical p = [19.36484737+0.j  4.99990766+0.j]
+classical energy = 0.2200000000000111
+Computed Sdot:          -0.37499731349425486j
+Finite difference Sdot: (-0-0.37499731340743475j)
+Deviation:              8.682010665950202e-11
+step 368  r = [0.66443383 0.17133275]
+canonical P = [19.36486138  0.        ]
+mechanical p = [19.36486138+0.j  4.9999284 +0.j]
+classical energy = 0.22000000000001113
+Computed Sdot:          -0.37499785642221306j
+Finite difference Sdot: (-0-0.3749978563329067j)
+Deviation:              8.930634010084759e-11
+step 369  r = [0.67411626 0.17383272]
+canonical P = [19.36487273  0.        ]
+mechanical p = [19.36487273+0.j  4.99994466+0.j]
+classical energy = 0.22000000000001116
+Computed Sdot:          -0.37499829566097126j
+Finite difference Sdot: (-0-0.3749982955738833j)
+Deviation:              8.708794796419284e-11
+step 370  r = [0.6837987  0.17633269]
+canonical P = [19.36488187  0.        ]
+mechanical p = [19.36488187+0.j  4.99995736+0.j]
+classical energy = 0.2200000000000112
+Computed Sdot:          -0.37499864966516827j
+Finite difference Sdot: (-0-0.37499864957001927j)
+Deviation:              9.514899979023994e-11
+step 371  r = [0.69348115 0.17883267]
+canonical P = [19.3648892  0.       ]
+mechanical p = [19.3648892 +0.j  4.99996724+0.j]
+classical energy = 0.22000000000001121
+Computed Sdot:          -0.37499893389753614j
+Finite difference Sdot: (-0-0.37499893381184435j)
+Deviation:              8.569178699957547e-11
+step 372  r = [0.70316359 0.18133266]
+canonical P = [19.36489507  0.        ]
+mechanical p = [19.36489507+0.j  4.99997492+0.j]
+classical energy = 0.22000000000001121
+Computed Sdot:          -0.3749991612520452j
+Finite difference Sdot: (-0-0.3749991611652906j)
+Deviation:              8.675460350104913e-11
+step 373  r = [0.71284604 0.18383265]
+canonical P = [19.36489975  0.        ]
+mechanical p = [19.36489975+0.j  4.99998085+0.j]
+classical energy = 0.22000000000001121
+Computed Sdot:          -0.374999342430107j
+Finite difference Sdot: (-0-0.3749993423391506j)
+Deviation:              9.095640907119673e-11
+step 374  r = [0.72252849 0.18633264]
+canonical P = [19.36490347  0.        ]
+mechanical p = [19.36490347+0.j  4.99998543+0.j]
+classical energy = 0.22000000000001124
+Computed Sdot:          -0.3749994862723007j
+Finite difference Sdot: (-0-0.3749994861887844j)
+Deviation:              8.351624947167124e-11
+step 375  r = [0.73221094 0.18883263]
+canonical P = [19.3649064  0.       ]
+mechanical p = [19.3649064 +0.j  4.99998895+0.j]
+classical energy = 0.22000000000001127
+Computed Sdot:          -0.37499960004862276j
+Finite difference Sdot: (-0-0.37499959996546284j)
+Deviation:              8.31599233919178e-11
+step 376  r = [0.7418934  0.19133263]
+canonical P = [19.36490872  0.        ]
+mechanical p = [19.36490872+0.j  4.99999164+0.j]
+classical energy = 0.2200000000000113
+Computed Sdot:          -0.3749996897105929j
+Finite difference Sdot: (-0-0.37499968962794894j)
+Deviation:              8.264394724122326e-11
+step 377  r = [0.75157585 0.19383263]
+canonical P = [19.36491054  0.        ]
+mechanical p = [19.36491054+0.j  4.9999937 +0.j]
+classical energy = 0.22000000000001133
+Computed Sdot:          -0.3749997601087042j
+Finite difference Sdot: (-0-0.37499976002332286j)
+Deviation:              8.538136864189028e-11
+step 378  r = [0.76125831 0.19633262]
+canonical P = [19.36491196  0.        ]
+mechanical p = [19.36491196+0.j  4.99999527+0.j]
+classical energy = 0.22000000000001135
+Computed Sdot:          -0.3749998151787348j
+Finite difference Sdot: (-0-0.37499981509295627j)
+Deviation:              8.577855092894993e-11
+step 379  r = [0.77094076 0.19883262]
+canonical P = [19.36491307  0.        ]
+mechanical p = [19.36491307+0.j  4.99999645+0.j]
+classical energy = 0.22000000000001133
+Computed Sdot:          -0.37499985810035946j
+Finite difference Sdot: (-0-0.37499985801849106j)
+Deviation:              8.186840094737136e-11
+step 380  r = [0.78062322 0.20133262]
+canonical P = [19.36491393  0.        ]
+mechanical p = [19.36491393+0.j  4.99999735+0.j]
+classical energy = 0.22000000000001135
+Computed Sdot:          -0.37499989143134776j
+Finite difference Sdot: (-0-0.3749998913488927j)
+Deviation:              8.245504279358329e-11
+step 381  r = [0.79030568 0.20383262]
+canonical P = [19.36491459  0.        ]
+mechanical p = [19.36491459+0.j  4.99999803+0.j]
+classical energy = 0.22000000000001135
+Computed Sdot:          -0.37499991722042814j
+Finite difference Sdot: (-0-0.3749999171406595j)
+Deviation:              7.97686361408978e-11
+step 382  r = [0.79998814 0.20633262]
+canonical P = [19.36491511  0.        ]
+mechanical p = [19.36491511+0.j  4.99999854+0.j]
+classical energy = 0.22000000000001135
+Computed Sdot:          -0.37499993710166224j
+Finite difference Sdot: (-0-0.37499993700879425j)
+Deviation:              9.286799107499633e-11
+step 383  r = [0.80967059 0.20883262]
+canonical P = [19.3649155  0.       ]
+mechanical p = [19.3649155 +0.j  4.99999892+0.j]
+classical energy = 0.22000000000001133
+Computed Sdot:          -0.3749999523729134j
+Finite difference Sdot: (-0-0.3749999522785933j)
+Deviation:              9.43201072800548e-11
+step 384  r = [0.81935305 0.21133262]
+canonical P = [19.3649158  0.       ]
+mechanical p = [19.3649158+0.j  4.9999992+0.j]
+classical energy = 0.22000000000001133
+Computed Sdot:          -0.37499996406073205j
+Finite difference Sdot: (-0-0.3749999639754684j)
+Deviation:              8.526362949012878e-11
+step 385  r = [0.82903551 0.21383262]
+canonical P = [19.36491603  0.        ]
+mechanical p = [19.36491603+0.j  4.99999941+0.j]
+classical energy = 0.22000000000001135
+Computed Sdot:          -0.37499997297372306j
+Finite difference Sdot: (-0-0.37499997286383624j)
+Deviation:              1.0988682186408028e-10
+step 386  r = [0.83871797 0.21633262]
+canonical P = [19.36491621  0.        ]
+mechanical p = [19.36491621+0.j  4.99999957+0.j]
+classical energy = 0.22000000000001135
+Computed Sdot:          -0.3749999797462076j
+Finite difference Sdot: (-0-0.3749999796673859j)
+Deviation:              7.882167141204377e-11
+step 387  r = [0.84840043 0.21883262]
+canonical P = [19.36491634  0.        ]
+mechanical p = [19.36491634+0.j  4.99999969+0.j]
+classical energy = 0.2200000000000113
+Computed Sdot:          -0.37499998487376307j
+Finite difference Sdot: (-0-0.37499998477954355j)
+Deviation:              9.421952107402376e-11
+step 388  r = [0.85808288 0.22133262]
+canonical P = [19.36491644  0.        ]
+mechanical p = [19.36491644+0.j  4.99999977+0.j]
+classical energy = 0.22000000000001124
+Computed Sdot:          -0.3749999887420048j
+Finite difference Sdot: (-0-0.37499998865670003j)
+Deviation:              8.530476325319114e-11
+step 389  r = [0.86776534 0.22383262]
+canonical P = [19.36491652  0.        ]
+mechanical p = [19.36491652+0.j  4.99999983+0.j]
+classical energy = 0.22000000000001124
+Computed Sdot:          -0.37499999164977904j
+Finite difference Sdot: (-0-0.37499999156639724j)
+Deviation:              8.338180146338914e-11
+step 390  r = [0.8774478  0.22633262]
+canonical P = [19.36491657  0.        ]
+mechanical p = [19.36491657+0.j  4.99999988+0.j]
+classical energy = 0.22000000000001133
+Computed Sdot:          -0.3749999938277616j
+Finite difference Sdot: (-0-0.3749999937491863j)
+Deviation:              7.857531292287945e-11
+step 391  r = [0.88713026 0.22883262]
+canonical P = [19.36491661  0.        ]
+mechanical p = [19.36491661+0.j  4.99999991+0.j]
+classical energy = 0.22000000000001127
+Computed Sdot:          -0.3749999954533005j
+Finite difference Sdot: (-0-0.37499999536704226j)
+Deviation:              8.625822278673922e-11
+step 392  r = [0.89681272 0.23133262]
+canonical P = [19.36491664  0.        ]
+mechanical p = [19.36491664+0.j  4.99999994+0.j]
+classical energy = 0.22000000000001127
+Computed Sdot:          -0.3749999966622057j
+Finite difference Sdot: (-0-0.3749999965702746j)
+Deviation:              9.193107386451516e-11
+step 393  r = [0.90649518 0.23383262]
+canonical P = [19.36491667  0.        ]
+mechanical p = [19.36491667+0.j  4.99999996+0.j]
+classical energy = 0.2200000000000112
+Computed Sdot:          -0.3749999975580682j
+Finite difference Sdot: (-0-0.37499999748159735j)
+Deviation:              7.647082966855123e-11
+step 394  r = [0.91617763 0.23633262]
+canonical P = [19.36491669  0.        ]
+mechanical p = [19.36491669+0.j  4.99999997+0.j]
+classical energy = 0.2200000000000112
+Computed Sdot:          -0.37499999821959457j
+Finite difference Sdot: (-0-0.3749999981262055j)
+Deviation:              9.338907425160414e-11
+step 395  r = [0.92586009 0.23883262]
+canonical P = [19.3649167  0.       ]
+mechanical p = [19.3649167 +0.j  4.99999998+0.j]
+classical energy = 0.22000000000001113
+Computed Sdot:          -0.3749999987063512j
+Finite difference Sdot: (-0-0.3749999986192695j)
+Deviation:              8.70816752041037e-11
+step 396  r = [0.93554255 0.24133262]
+canonical P = [19.36491671  0.        ]
+mechanical p = [19.36491671+0.j  4.99999998+0.j]
+classical energy = 0.2200000000000111
+Computed Sdot:          -0.37499999906324377j
+Finite difference Sdot: (-0-0.37499999896422703j)
+Deviation:              9.901673925227783e-11
+step 397  r = [0.94522501 0.24383262]
+canonical P = [19.36491671  0.        ]
+mechanical p = [19.36491671+0.j  4.99999999+0.j]
+classical energy = 0.22000000000001108
+Computed Sdot:          -0.37499999932399497j
+Finite difference Sdot: (-0-0.3749999992359156j)
+Deviation:              8.80793771251831e-11
+step 398  r = [0.95490747 0.24633262]
+canonical P = [19.36491672  0.        ]
+mechanical p = [19.36491672+0.j  4.99999999+0.j]
+classical energy = 0.22000000000001108
+Computed Sdot:          -0.3749999995138316j
+Finite difference Sdot: (-0-0.37499999941049966j)
+Deviation:              1.0333195410439089e-10
+step 399  r = [0.96458993 0.24883262]
+canonical P = [19.36491672  0.        ]
+mechanical p = [19.36491672+0.j  4.99999999+0.j]
+classical energy = 0.22000000000001108
+Computed Sdot:          -0.37499999965155284j
+Finite difference Sdot: (-0-0.374999999569237j)
+Deviation:              8.23158208262953e-11
+step 400  r = [0.97427238 0.25133262]
+canonical P = [19.36491672  0.        ]
+mechanical p = [19.36491672+0.j  5.        +0.j]
+classical energy = 0.22000000000001102
+Computed Sdot:          -0.374999999751114j
+Finite difference Sdot: (-0-0.3749999996622846j)
+Deviation:              8.882938828946862e-11
+step 401  r = [0.98395484 0.25383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001102
+Computed Sdot:          -0.3749999998228356j
+Finite difference Sdot: (-0-0.37499999974304504j)
+Deviation:              7.979056304563414e-11
+step 402  r = [0.9936373  0.25633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001105
+Computed Sdot:          -0.3749999998743208j
+Finite difference Sdot: (-0-0.374999999778177j)
+Deviation:              9.614381513145531e-11
+step 403  r = [1.00331976 0.25883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001102
+Computed Sdot:          -0.3749999999111496j
+Finite difference Sdot: (-0-0.3749999998119193j)
+Deviation:              9.923029065106448e-11
+step 404  r = [1.01300222 0.26133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.220000000000011
+Computed Sdot:          -0.3749999999374019j
+Finite difference Sdot: (-0-0.37499999987349913j)
+Deviation:              6.390277196288707e-11
+step 405  r = [1.02268468 0.26383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001094
+Computed Sdot:          -0.3749999999560496j
+Finite difference Sdot: (-0-0.37499999986974475j)
+Deviation:              8.630485215377348e-11
+step 406  r = [1.03236713 0.26633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000109
+Computed Sdot:          -0.3749999999692492j
+Finite difference Sdot: (-0-0.37499999988764593j)
+Deviation:              8.160327968909087e-11
+step 407  r = [1.04204959 0.26883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001088
+Computed Sdot:          -0.37499999997855976j
+Finite difference Sdot: (-0-0.3749999998896116j)
+Deviation:              8.894818215310352e-11
+step 408  r = [1.05173205 0.27133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000109
+Computed Sdot:          -0.37499999998510425j
+Finite difference Sdot: (-0-0.37499999989134136j)
+Deviation:              9.376288634399543e-11
+step 409  r = [1.06141451 0.27383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000109
+Computed Sdot:          -0.37499999998968836j
+Finite difference Sdot: (-0-0.37499999989295324j)
+Deviation:              9.673511991437067e-11
+step 410  r = [1.07109697 0.27633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001088
+Computed Sdot:          -0.3749999999928881j
+Finite difference Sdot: (-0-0.374999999895941j)
+Deviation:              9.694706148977161e-11
+step 411  r = [1.08077943 0.27883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3749999999951137j
+Finite difference Sdot: (-0-0.37499999989743493j)
+Deviation:              9.767875397415082e-11
+step 412  r = [1.09046188 0.28133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001088
+Computed Sdot:          -0.37499999999665645j
+Finite difference Sdot: (-0-0.3749999998996168j)
+Deviation:              9.703965409002535e-11
+step 413  r = [1.10014434 0.28383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001088
+Computed Sdot:          -0.3749999999977221j
+Finite difference Sdot: (-0-0.37499999988472305j)
+Deviation:              1.1299905455786075e-10
+step 414  r = [1.1098268  0.28633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3749999999984556j
+Finite difference Sdot: (-0-0.37499999990214267j)
+Deviation:              9.631295760925696e-11
+step 415  r = [1.11950926 0.28883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3749999999989588j
+Finite difference Sdot: (-0-0.3749999999017987j)
+Deviation:              9.716005777704595e-11
+step 416  r = [1.12919172 0.29133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001088
+Computed Sdot:          -0.3749999999993028j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.110218583733058e-10
+step 417  r = [1.13887418 0.29383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001088
+Computed Sdot:          -0.3749999999995371j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1125617094265294e-10
+step 418  r = [1.14855663 0.29633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.374999999999696j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1141509936862803e-10
+step 419  r = [1.15823909 0.29883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.37499999999980366j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1152273549086544e-10
+step 420  r = [1.16792155 0.30133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.37499999999987615j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1159523305437347e-10
+step 421  r = [1.17760401 0.30383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3749999999999249j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1164397184515451e-10
+step 422  r = [1.18728647 0.30633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.37499999999995753j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1167661240207849e-10
+step 423  r = [1.19696893 0.30883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001077
+Computed Sdot:          -0.3749999999999792j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1169826175105868e-10
+step 424  r = [1.20665138 0.31133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001077
+Computed Sdot:          -0.37499999999999367j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1171275016153004e-10
+step 425  r = [1.21633384 0.31383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.37500000000000333j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.395884070784177e-11
+step 426  r = [1.2260163  0.31633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.37500000000000966j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.396516897908214e-11
+step 427  r = [1.23569876 0.31883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3750000000000139j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1173295622057822e-10
+step 428  r = [1.24538122 0.32133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.37500000000001665j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397216338413727e-11
+step 429  r = [1.25506368 0.32383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.37500000000001843j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397393974097668e-11
+step 430  r = [1.26474613 0.32633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000195j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397499445285007e-11
+step 431  r = [1.27442859 0.32883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3750000000000204j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1173945102527227e-10
+step 432  r = [1.28411105 0.33133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000109
+Computed Sdot:          -0.3750000000000209j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174000613678459e-10
+step 433  r = [1.29379351 0.33383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001088
+Computed Sdot:          -0.3750000000000212j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174028369254074e-10
+step 434  r = [1.30347597 0.33633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.3750000000000213j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.117403947148432e-10
+step 435  r = [1.31315843 0.33883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3750000000000215j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.39769928542944e-11
+step 436  r = [1.32284088 0.34133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 437  r = [1.33252334 0.34383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 438  r = [1.3422058  0.34633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001085
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 439  r = [1.35188826 0.34883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 440  r = [1.36157072 0.35133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 441  r = [1.37125318 0.35383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.22000000000001083
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 442  r = [1.38093564 0.35633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 443  r = [1.39061809 0.35883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 444  r = [1.40030055 0.36133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 445  r = [1.40998301 0.36383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 446  r = [1.41966547 0.36633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 447  r = [1.42934793 0.36883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 448  r = [1.43903039 0.37133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 449  r = [1.44871284 0.37383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 450  r = [1.4583953  0.37633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 451  r = [1.46807776 0.37883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 452  r = [1.47776022 0.38133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 453  r = [1.48744268 0.38383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 454  r = [1.49712514 0.38633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 455  r = [1.50680759 0.38883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 456  r = [1.51649005 0.39133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 457  r = [1.52617251 0.39383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 458  r = [1.53585497 0.39633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 459  r = [1.54553743 0.39883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 460  r = [1.55521989 0.40133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 461  r = [1.56490234 0.40383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 462  r = [1.5745848  0.40633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 463  r = [1.58426726 0.40883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 464  r = [1.59394972 0.41133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 465  r = [1.60363218 0.41383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 466  r = [1.61331464 0.41633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 467  r = [1.62299709 0.41883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 468  r = [1.63267955 0.42133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999060445j)
+Deviation:              9.397710387659686e-11
+step 469  r = [1.64236201 0.42383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 470  r = [1.65204447 0.42633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 471  r = [1.66172693 0.42883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 472  r = [1.67140939 0.43133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 473  r = [1.68109184 0.43383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 474  r = [1.6907743  0.43633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 475  r = [1.70045676 0.43883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 476  r = [1.71013922 0.44133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 477  r = [1.71982168 0.44383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 478  r = [1.72950414 0.44633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 479  r = [1.73918659 0.44883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 480  r = [1.74886905 0.45133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 481  r = [1.75855151 0.45383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 482  r = [1.76823397 0.45633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 483  r = [1.77791643 0.45883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 484  r = [1.78759889 0.46133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 485  r = [1.79728134 0.46383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 486  r = [1.8069638  0.46633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 487  r = [1.81664626 0.46883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 488  r = [1.82632872 0.47133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 489  r = [1.83601118 0.47383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 490  r = [1.84569364 0.47633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 491  r = [1.8553761  0.47883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 492  r = [1.86505855 0.48133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 493  r = [1.87474101 0.48383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 494  r = [1.88442347 0.48633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 495  r = [1.89410593 0.48883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 496  r = [1.90378839 0.49133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 497  r = [1.91347085 0.49383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 498  r = [1.9231533  0.49633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 499  r = [1.93283576 0.49883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 500  r = [1.94251822 0.50133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 501  r = [1.95220068 0.50383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 502  r = [1.96188314 0.50633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 503  r = [1.9715656  0.50883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 504  r = [1.98124805 0.51133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 505  r = [1.99093051 0.51383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999998882809j)
+Deviation:              1.1174067227059936e-10
+step 506  r = [2.00061297 0.51633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 507  r = [2.01029543 0.51883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 508  r = [2.01997789 0.52133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 509  r = [2.02966035 0.52383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 510  r = [2.0393428  0.52633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 511  r = [2.04902526 0.52883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 512  r = [2.05870772 0.53133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 513  r = [2.06839018 0.53383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 514  r = [2.07807264 0.53633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 515  r = [2.0877551  0.53883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 516  r = [2.09743755 0.54133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 517  r = [2.10712001 0.54383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 518  r = [2.11680247 0.54633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 519  r = [2.12648493 0.54883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 520  r = [2.13616739 0.55133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 521  r = [2.14584985 0.55383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 522  r = [2.1555323  0.55633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 523  r = [2.16521476 0.55883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 524  r = [2.17489722 0.56133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 525  r = [2.18457968 0.56383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 526  r = [2.19426214 0.56633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 527  r = [2.2039446  0.56883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 528  r = [2.21362705 0.57133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 529  r = [2.22330951 0.57383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 530  r = [2.23299197 0.57633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 531  r = [2.24267443 0.57883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 532  r = [2.25235689 0.58133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 533  r = [2.26203935 0.58383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 534  r = [2.2717218  0.58633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 535  r = [2.28140426 0.58883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 536  r = [2.29108672 0.59133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 537  r = [2.30076918 0.59383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 538  r = [2.31045164 0.59633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 539  r = [2.3201341  0.59883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 540  r = [2.32981655 0.60133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 541  r = [2.33949901 0.60383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 542  r = [2.34918147 0.60633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 543  r = [2.35886393 0.60883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 544  r = [2.36854639 0.61133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 545  r = [2.37822885 0.61383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 546  r = [2.38791131 0.61633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 547  r = [2.39759376 0.61883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 548  r = [2.40727622 0.62133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 549  r = [2.41695868 0.62383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 550  r = [2.42664114 0.62633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 551  r = [2.4363236  0.62883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 552  r = [2.44600606 0.63133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 553  r = [2.45568851 0.63383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 554  r = [2.46537097 0.63633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 555  r = [2.47505343 0.63883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 556  r = [2.48473589 0.64133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 557  r = [2.49441835 0.64383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 558  r = [2.50410081 0.64633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 559  r = [2.51378326 0.64883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 560  r = [2.52346572 0.65133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 561  r = [2.53314818 0.65383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 562  r = [2.54283064 0.65633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 563  r = [2.5525131  0.65883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 564  r = [2.56219556 0.66133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 565  r = [2.57187801 0.66383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 566  r = [2.58156047 0.66633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 567  r = [2.59124293 0.66883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 568  r = [2.60092539 0.67133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 569  r = [2.61060785 0.67383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 570  r = [2.62029031 0.67633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 571  r = [2.62997276 0.67883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 572  r = [2.63965522 0.68133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 573  r = [2.64933768 0.68383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 574  r = [2.65902014 0.68633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 575  r = [2.6687026  0.68883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 576  r = [2.67838506 0.69133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 577  r = [2.68806751 0.69383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 578  r = [2.69774997 0.69633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 579  r = [2.70743243 0.69883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 580  r = [2.71711489 0.70133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 581  r = [2.72679735 0.70383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 582  r = [2.73647981 0.70633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 583  r = [2.74616226 0.70883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 584  r = [2.75584472 0.71133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 585  r = [2.76552718 0.71383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 586  r = [2.77520964 0.71633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 587  r = [2.7848921  0.71883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 588  r = [2.79457456 0.72133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 589  r = [2.80425701 0.72383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 590  r = [2.81393947 0.72633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 591  r = [2.82362193 0.72883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 592  r = [2.83330439 0.73133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.3749999999593352j)
+Deviation:              4.068639869458934e-11
+step 593  r = [2.84298685 0.73383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 594  r = [2.85266931 0.73633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 595  r = [2.86235177 0.73883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 596  r = [2.87203422 0.74133262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 597  r = [2.88171668 0.74383262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 598  r = [2.89139914 0.74633262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
+step 599  r = [2.9010816  0.74883262]
+canonical P = [19.36491673  0.        ]
+mechanical p = [19.36491673+0.j  5.        +0.j]
+classical energy = 0.2200000000000108
+Computed Sdot:          -0.3750000000000216j
+Finite difference Sdot: (-0-0.37499999992380806j)
+Deviation:              7.621353548259435e-11
