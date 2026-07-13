@@ -1,4 +1,4 @@
-# aims-berry
+# SpawningWithBerry (`aims-berry`)
 
 `aims-berry` is a modular, restartable implementation of trajectory-basis nonadiabatic
 dynamics. Electronic structure is supplied through one small protocol, so PySCF,
@@ -43,6 +43,195 @@ and zero-based state/atom indices are the defaults. See
 and [legacy migration map](docs/migration.md).
 The [corroboration report](docs/corroboration.md) records the quantitative comparison
 with the PySpawn paper and separates published-data reproduction from new dynamics.
+
+## Connect an electronic-structure or MLIP engine
+
+The dynamics driver does not import an electronic-structure package directly. It
+sends an `ElectronicStructureRequest` to a provider and validates the returned
+`ElectronicStructureResult`. Consequently, an in-house quantum-chemistry program,
+an ML potential, a subprocess wrapper, or a remote service can drive AIMS without
+changes to spawning, propagation, gauge tracking, storage, or analysis.
+
+Each request supplies:
+
+- `atoms` and `atomic_numbers`;
+- `geometry` with shape `(natom, 3)` in bohr;
+- zero-based `states`, the active state, and the simulation time in atomic units;
+- the requested properties (`energies`, `gradients`, `nacs`, or `state_overlaps`);
+- `previous`, an optional provider-owned wavefunction/model-state handle for guesses
+  and root tracking.
+
+The provider returns atomic-unit arrays with these conventions:
+
+| Property | Shape | Convention |
+| --- | --- | --- |
+| Energies | `(nstate,)` | Real adiabatic state energies |
+| Gradients | `(nstate, natom, 3)` | `dE/dR`, not negative forces |
+| NACs | `(nstate, nstate, natom, 3)` | Complex `d[i,j] = <psi_i|grad psi_j>` |
+| State overlaps | `(nstate, nstate)` | Complex `<psi_i(old)|psi_j(new)>` |
+
+NACs must be anti-Hermitian in their state indices: `d[i,j] =
+-conj(d[j,i])`. All returned values are checked for shape and finiteness before they
+can enter the dynamics.
+
+### Smallest Python adapter
+
+Wrap a Python function with `CallableProvider`. This example represents the call to
+`my_engine`; its API can be replaced by an ASE calculator, an MLIP library, a local
+executable, or an RPC client.
+
+```python
+import numpy as np
+
+from aims_berry import (
+    CallableProvider,
+    ElectronicStructureResult,
+    ProviderCapabilities,
+    load_config,
+    run,
+)
+
+
+def calculate(request):
+    raw = my_engine.evaluate(
+        elements=request.atoms,
+        atomic_numbers=request.atomic_numbers,
+        positions_bohr=request.geometry,
+        states=request.states,
+        active_state=request.active_state,
+        previous=request.previous,
+    )
+
+    # Convert the engine's native units and force convention here.
+    energies = np.asarray(raw.energies_hartree)
+    gradients = -np.asarray(raw.forces_hartree_per_bohr)
+    nacs = np.asarray(raw.nacs_inverse_bohr, dtype=np.complex128)
+    return ElectronicStructureResult(
+        energies=energies,
+        gradients=gradients,
+        nacs=nacs,
+        metadata={"engine": "my_engine", "model": raw.model_version},
+    )
+
+
+provider = CallableProvider(
+    calculate,
+    capabilities=ProviderCapabilities(
+        energies=True,
+        gradients=True,
+        nacs=True,
+        complex_values=True,
+    ),
+)
+config = load_config("aims.in")
+result = run(config, provider=provider)
+print(result.history)
+```
+
+The callable may return the dictionary keys `energies`, `gradients`, `nacs`,
+`state_overlaps`, `dipoles`, `charges`, `wavefunction`, and `metadata` instead of
+constructing `ElectronicStructureResult` itself. See the runnable
+[home-built calculator example](examples/home_baked/calculator.py).
+
+### Load the adapter from the CLI
+
+Put the adapter next to the input file as `engine_adapter.py`:
+
+```python
+from aims_berry import CallableProvider, ProviderCapabilities
+
+
+def calculate(request):
+    # Call the engine and return atomic-unit arrays with the shapes above.
+    return engine_result(request)
+
+
+def make_provider(config):
+    return CallableProvider(
+        calculate,
+        capabilities=ProviderCapabilities(
+            energies=True, gradients=True, nacs=True, complex_values=True
+        ),
+    )
+```
+
+Then select that factory in `aims.in`:
+
+```text
+provider custom
+provider_option factory engine_adapter:make_provider
+
+geometry molecule.xyz
+geometry_units angstrom
+num_states 2
+initial_state 1
+time_step 10 au
+simulation_time 5000 au
+initial_condition file
+
+electronic_method custom
+coupling_mode nac
+spawn_threshold 0.01
+population_to_spawn 0.001
+spawn_cooldown 50
+max_trajectories 32
+run_directory run
+```
+
+Run and restart it using the same commands as a built-in backend:
+
+```bash
+aims-berry validate aims.in
+aims-berry run aims.in
+aims-berry restart run/checkpoint
+```
+
+### Using state overlaps instead of analytic NACs
+
+An engine that produces reliable wavefunction overlaps between consecutive calls can
+use overlap/NPI coupling. Return `state_overlaps`, retain enough information in
+`WavefunctionState` to compare the next call with `request.previous`, and declare:
+
+```python
+ProviderCapabilities(
+    energies=True,
+    gradients=True,
+    state_overlaps=True,
+    npi_tdc=True,
+    complex_values=True,
+)
+```
+
+Set `coupling_mode npi`, or use `coupling_mode auto` to prefer certified overlaps
+and fall back to analytic NACs when the provider supports only NACs. The driver
+performs state assignment, phase alignment, and degenerate-subspace transport.
+
+### Requirements for an MLIP
+
+A conventional single-surface energy/force MLIP can run one-state Gaussian dynamics
+with `num_states 1`, but it cannot produce nonadiabatic spawning by itself. A
+multi-state AIMS run requires, at every requested geometry:
+
+1. energies and gradients for every configured state; and
+2. either pairwise derivative couplings or certified consecutive-state overlaps.
+
+The MLIP must preserve a consistent state definition or provide overlap information
+that lets the driver track roots. Uncertainty estimates, model versions, SCF flags,
+and other diagnostics should be returned in `metadata`. An engine failure should
+raise `ElectronicStructureError(..., retryable=True)` only when retrying the same
+request can reasonably succeed; the driver never substitutes stale electronic data.
+
+### Stateful engines and exact restart
+
+For orbital guesses, neural-network hidden state, external checkpoint files, or a
+remote job identifier, implement the full `ElectronicStructureProvider` protocol.
+Subclassing `BaseProvider` provides no-op restart methods; override
+`dump_state(directory)` and `load_state(directory, metadata)` to make provider state
+part of the atomic simulation checkpoint. Only provider artifacts written inside the
+given directory should be referenced by the returned JSON-serializable manifest.
+
+The complete contract is in [the provider guide](docs/providers.md) and
+[`src/aims_berry/electronic/base.py`](src/aims_berry/electronic/base.py).
 
 ## Scientific scope
 
