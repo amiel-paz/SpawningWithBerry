@@ -1,8 +1,10 @@
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from aims_berry.config import AU_TIME_PER_FS, ConfigError, load_config
+from aims_berry.geometry import masses_and_widths, read_xyz, sample_wigner
 
 
 def _write(tmp_path: Path, extra: str = "") -> Path:
@@ -37,3 +39,30 @@ def test_parser_reports_filename_and_line(tmp_path, extra, match):
     with pytest.raises(ConfigError, match=match) as caught:
         load_config(path)
     assert str(path.resolve()) in str(caught.value)
+
+
+def test_ethylene_production_config_and_wigner_sample_are_reproducible():
+    root = Path(__file__).parents[1]
+    config = load_config(root / "examples/ethylene_pyscf/production.in")
+    atoms, equilibrium = read_xyz(config.geometry, config.geometry_units)
+    masses, _ = masses_and_widths(atoms, config.gaussian_widths)
+    first = sample_wigner(
+        equilibrium,
+        masses,
+        config.hessian,
+        np.random.default_rng(config.random_seed),
+        config.temperature,
+    )
+    second = sample_wigner(
+        equilibrium,
+        masses,
+        config.hessian,
+        np.random.default_rng(config.random_seed),
+        config.temperature,
+    )
+    assert config.nsteps == 500
+    assert config.simulation_time / AU_TIME_PER_FS == pytest.approx(120.944216329285)
+    assert np.array_equal(first[0], second[0])
+    assert np.array_equal(first[1], second[1])
+    assert np.all(np.isfinite(first[0]))
+    assert np.all(np.isfinite(first[1]))

@@ -1,0 +1,44 @@
+# Production-length analogue of the original PySpawn ethylene example.
+provider pyscf
+geometry ethylene_production.xyz
+geometry_units bohr
+
+num_states 2
+initial_state 1
+time_step 10 au
+simulation_time 5000 au
+random_seed 87062
+initial_condition wigner
+hessian ethylene_hessian.txt
+temperature 0
+
+electronic_method sa_casscf
+scf_method rhf
+basis 6-31g
+charge 0
+spin 0
+active_electrons 2
+active_orbitals 2
+state_weights 0.5 0.5
+provider_option density_fit true
+provider_option max_memory 8000
+provider_option scf_conv_tol 1e-9
+provider_option casscf_conv_tol 1e-8
+provider_option casscf_max_cycle 50
+provider_option spin_penalty 0.5
+
+coupling_mode nac
+quantum_integrator cayley
+spawn_strategy nac
+spawn_threshold 0.007853981633974483
+population_to_spawn 0.001
+spawn_overlap_max 0.8
+spawn_cooldown 50
+max_trajectories 32
+regularization_threshold 1e-8
+output_every 1
+run_directory run-production
+
+observable bond cc_distance 0 1
+observable dihedral torsion_1 2 0 1 4
+observable dihedral torsion_2 3 0 1 5
