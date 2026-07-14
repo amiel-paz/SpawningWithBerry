@@ -24,9 +24,9 @@ production trajectory is interpreted.
 Current status: at the inherited PySpawn equilibrium geometry (C-C = 1.320885
 angstrom), PySCF gives 10.3580 eV. Turning density fitting off changes this to only
 10.3592 eV, so density fitting is not the source of the 0.238 eV discrepancy. At the
-separate 1.339 angstrom example geometry, PySCF gives 10.2328 eV. Production is
-paused while the reference Franck-Condon geometry and orbital convention are
-resolved; no energy threshold has been relaxed to force agreement.
+separate 1.339 angstrom example geometry, PySCF gives 10.2328 eV. This geometry is
+accepted for production with an explicitly documented 0.1128 eV deviation from the
+paper; no energy threshold was relaxed to force agreement.
 
 An MP2/6-31G* optimization starting from the 1.339 angstrom geometry converged in
 four geometry steps to C-C = 1.336420 angstrom and C-H = 1.085028 angstrom. The
@@ -37,6 +37,12 @@ MP2 optimization reduces the discrepancy to 0.129 eV but does not by itself reco
 10.12 eV. The diagnostic geometry is stored as
 `examples/ethylene_pyscf/ethylene_mp2_631gstar.xyz`; it has not replaced the
 production equilibrium geometry or its associated Hessian.
+
+Production uses the accepted 1.339/1.086 angstrom, 117.6 degree geometry and a
+numerical MP2/6-31G* Hessian evaluated there. The Hessian is symmetrized in Cartesian
+coordinates and projected in mass-weighted coordinates to remove all three
+translations and three rotations. Its remaining 12 eigenmodes are the vibrational
+modes sampled by the Wigner initializer.
 
 ## Dynamics protocol and numerical targets
 

@@ -17,6 +17,13 @@ All three singlet roots are included with equal state-average weights. The initi
 state remains zero-based state 1 (S1); spawning may create children on S0 or S2.
 The paper's CASSCF benchmark averaged 13 independently sampled initial conditions;
 one production input is therefore one ensemble member, not a lifetime estimate.
+`run_ensemble.py` runs 13 deterministic members sequentially, using seeds 87062
+through 87074 by default and resuming any existing member checkpoint.
+
+The accepted equilibrium geometry is C=C 1.339 angstrom, C-H 1.086 angstrom, and
+H-C-H 117.6 degrees. Its harmonic force field is a central finite-difference
+MP2/6-31G* Hessian with the six external translation/rotation modes projected out;
+the retained mass-weighted spectrum contains exactly 12 vibrational modes.
 
 Production must start from step zero after changes to quantum propagation or spawning.
 Do not reuse checkpoints from runs made before energy-reference-invariant generalized

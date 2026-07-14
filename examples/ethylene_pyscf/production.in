@@ -1,7 +1,7 @@
 # Production-length analogue of the original PySpawn ethylene example.
 provider pyscf
-geometry ethylene_production.xyz
-geometry_units bohr
+geometry ethylene.xyz
+geometry_units angstrom
 
 num_states 3
 initial_state 1
@@ -10,7 +10,7 @@ min_time_step 0.00244140625 au
 simulation_time 10335 au
 random_seed 87062
 initial_condition wigner
-hessian ethylene_hessian.txt
+hessian ethylene_mp2_631gstar_hessian.txt
 temperature 0
 
 electronic_method sa_casscf
@@ -49,5 +49,9 @@ output_every 1
 run_directory run-production
 
 observable bond cc_distance 0 1
+observable bond ch_migration_0_4 0 4
+observable bond ch_migration_0_5 0 5
+observable bond ch_migration_1_2 1 2
+observable bond ch_migration_1_3 1 3
 observable dihedral torsion_1 2 0 1 4
 observable dihedral torsion_2 3 0 1 5

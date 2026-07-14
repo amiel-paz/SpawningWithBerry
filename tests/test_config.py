@@ -63,6 +63,8 @@ def test_ethylene_production_config_and_wigner_sample_are_reproducible():
     assert config.num_states == 3
     assert config.state_weights == pytest.approx((1 / 3, 1 / 3, 1 / 3))
     assert config.basis == "6-31g*"
+    assert config.geometry.name == "ethylene.xyz"
+    assert config.hessian.name == "ethylene_mp2_631gstar_hessian.txt"
     assert config.nsteps == 2067
     assert config.time_step == 5.0
     assert config.min_time_step == 0.00244140625
@@ -71,3 +73,7 @@ def test_ethylene_production_config_and_wigner_sample_are_reproducible():
     assert np.array_equal(first[1], second[1])
     assert np.all(np.isfinite(first[0]))
     assert np.all(np.isfinite(first[1]))
+    hessian = np.loadtxt(config.hessian).reshape(equilibrium.size, equilibrium.size)
+    inv_sqrt_mass = 1.0 / np.sqrt(masses)
+    mass_weighted = hessian * inv_sqrt_mass[:, None] * inv_sqrt_mass[None, :]
+    assert np.count_nonzero(np.linalg.eigvalsh(mass_weighted) > 1.0e-10) == 12
