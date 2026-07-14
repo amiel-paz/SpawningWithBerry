@@ -28,6 +28,16 @@ separate 1.339 angstrom example geometry, PySCF gives 10.2328 eV. Production is
 paused while the reference Franck-Condon geometry and orbital convention are
 resolved; no energy threshold has been relaxed to force agreement.
 
+An MP2/6-31G* optimization starting from the 1.339 angstrom geometry converged in
+four geometry steps to C-C = 1.336420 angstrom and C-H = 1.085028 angstrom. The
+final MP2 energy is -78.2870058554 Eh, gradient RMS is 7.05e-7 Eh/bohr, and maximum
+gradient is 2.00e-6 Eh/bohr. At this geometry the spin-pure SA(3)-CAS(2e,2o)/6-31G*
+gap is 10.2477 eV with density fitting and 10.2489 eV without density fitting. Thus,
+MP2 optimization reduces the discrepancy to 0.129 eV but does not by itself recover
+10.12 eV. The diagnostic geometry is stored as
+`examples/ethylene_pyscf/ethylene_mp2_631gstar.xyz`; it has not replaced the
+production equilibrium geometry or its associated Hessian.
+
 ## Dynamics protocol and numerical targets
 
 - Sample independent initial conditions from the vibrational ground-state Wigner
