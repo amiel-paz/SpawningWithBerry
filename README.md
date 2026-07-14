@@ -236,10 +236,18 @@ The complete contract is in [the provider guide](docs/providers.md) and
 ## Scientific scope
 
 The implementation includes analytic frozen-Gaussian matrix elements, a regularized
-metric-aware Cayley propagator, velocity Verlet, Berry-curvature integration,
+metric-aware Crank--Nicolson propagator, velocity Verlet, Berry-curvature integration,
 state/root tracking, phase and degenerate-subspace alignment, Wilson loops,
 threshold/max-coupling spawning with energy-shell momentum adjustment, deterministic
 task logging, append-only HDF5 history, and two-generation atomic checkpoints.
+
+Quantum propagation uses the full right-acting moving-basis derivative in
+`S c_dot + Sdot c = -i H c` and removes a scalar electronic-energy reference during
+each rational step. Population transfer is therefore invariant to the absolute
+electronic energy zero. When a coupling maximum is found, the driver restores its
+threshold-entry snapshot, inserts the backpropagated child there with zero amplitude,
+and replays the enlarged coupled basis to the previous frontier. It never inserts a
+zero-amplitude child only after the coupling region has passed.
 
 The H3 example is the fast SA-CASSCF benchmark used to generate bond/angle, gap, and
 population datasets analogous to the observable classes in the PySpawn paper. The

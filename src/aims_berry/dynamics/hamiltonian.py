@@ -37,7 +37,10 @@ class SaddlePointHamiltonian:
     def build(
         self,
         trajectories: list[TrajectoryBasisFunction],
-        centroid_evaluator: Callable[[np.ndarray, int], ElectronicStructureResult],
+        centroid_evaluator: Callable[
+            [TrajectoryBasisFunction, TrajectoryBasisFunction, np.ndarray],
+            ElectronicStructureResult,
+        ],
         velocities: list[np.ndarray],
         forces: list[np.ndarray],
         dt: float,
@@ -53,7 +56,10 @@ class SaddlePointHamiltonian:
                 right = trajectories[j]
                 nuclear_overlap = gaussian_overlap(left, right, electronic=False)
                 centroid = pair_centroid(left, right)
-                electronic = centroid_evaluator(centroid, right.state)
+                if i == j and right.electronic is not None:
+                    electronic = right.electronic
+                else:
+                    electronic = centroid_evaluator(left, right, centroid)
                 state_i, state_j = left.state, right.state
                 if state_i == state_j:
                     value = gaussian_kinetic(left, right) + electronic.energies[state_i] * nuclear_overlap
@@ -62,7 +68,9 @@ class SaddlePointHamiltonian:
                 if self.coupling_mode == "nac" and electronic.nacs is not None:
                     momentum = gaussian_momentum(left, right)
                     derivative = electronic.nacs[state_i, state_j]
-                    value += -1j * np.sum(derivative * momentum / right.masses)
+                    # PySpawn Eq. (8)/(16): H_IJ contains 2D_IJ and
+                    # <chi_i|d/dR|chi_j> = i <chi_i|p|chi_j> for p=-i d/dR.
+                    value += 1j * np.sum(derivative * momentum / right.masses)
                 elif self.coupling_mode == "npi" and electronic.state_overlaps is not None:
                     tdc = npi_time_derivative(electronic.state_overlaps, dt)
                     sdot[i, j] += tdc[state_i, state_j] * nuclear_overlap

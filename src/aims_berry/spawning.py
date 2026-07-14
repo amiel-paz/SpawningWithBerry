@@ -23,6 +23,7 @@ class SpawnCandidate:
     entry_time: float | None = None
     entry_positions: np.ndarray | None = None
     entry_momenta: np.ndarray | None = None
+    parent_id: str | None = None
 
 
 def trajectory_populations(state: SimulationState) -> np.ndarray:
@@ -161,8 +162,12 @@ class SpawnMonitor:
         self.pending: dict[tuple[str, int], SpawnCandidate] = {}
         self.entries: dict[tuple[str, int], SpawnCandidate] = {}
 
+    @staticmethod
+    def key(candidate: SpawnCandidate) -> tuple[str, int]:
+        return (candidate.parent_id or str(candidate.parent_index), candidate.target_state)
+
     def observe(self, candidate: SpawnCandidate) -> SpawnCandidate | None:
-        key = (str(candidate.parent_index), candidate.target_state)
+        key = self.key(candidate)
         previous = self.pending.get(key)
         if candidate.coupling >= self.threshold:
             if previous is None:

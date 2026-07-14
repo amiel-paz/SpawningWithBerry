@@ -1,6 +1,9 @@
 import numpy as np
 
 from aims_berry.core import MatrixSet, SimulationState, TrajectoryBasisFunction
+from aims_berry.dynamics.gaussian import gaussian_momentum
+from aims_berry.dynamics.hamiltonian import SaddlePointHamiltonian
+from aims_berry.electronic.base import ElectronicStructureResult
 from aims_berry.spawning import SpawnCandidate, energy_matched_momentum, make_child, prune_by_overlap
 from aims_berry.tasks import TaskKind, TaskQueue
 
@@ -41,3 +44,37 @@ def test_near_linearly_dependent_basis_is_pruned():
     state = SimulationState([first, second], np.array([1.0, 0.0]), matrices=MatrixSet(overlap, np.eye(2), np.zeros((2, 2))))
     removed = prune_by_overlap(state, 1e-8)
     assert len(removed) == 1 and len(state.trajectories) == 1
+
+
+def test_nac_saddle_point_element_has_derivative_operator_sign():
+    left = TrajectoryBasisFunction(
+        np.array([[-0.1, 0.0, 0.0]]), np.array([[0.4, 0.0, 0.0]]),
+        np.ones((1, 3)), np.full((1, 3), 2.0), 0,
+    )
+    right = TrajectoryBasisFunction(
+        np.array([[0.2, 0.0, 0.0]]), np.array([[0.7, 0.0, 0.0]]),
+        np.ones((1, 3)), np.full((1, 3), 2.0), 1,
+    )
+    nac = np.zeros((2, 2, 1, 3), complex)
+    nac[0, 1, 0, 0] = 0.3
+    nac[1, 0] = -nac[0, 1].conj()
+    result = ElectronicStructureResult(
+        energies=np.array([0.0, 0.1]), gradients=np.zeros((2, 1, 3)), nacs=nac
+    )
+    left.electronic = result
+    right.electronic = result
+    calls = []
+
+    def centroid(a, b, geometry):
+        calls.append((a.identifier, b.identifier, geometry.copy()))
+        return result
+
+    matrices = SaddlePointHamiltonian("nac").build(
+        [left, right], centroid,
+        [left.momenta / left.masses, right.momenta / right.masses],
+        [np.zeros((1, 3)), np.zeros((1, 3))], 0.1,
+    )
+    expected = 1j * np.sum(nac[0, 1] * gaussian_momentum(left, right) / right.masses)
+    assert np.allclose(matrices.hamiltonian[0, 1], expected)
+    assert np.allclose(matrices.hamiltonian[1, 0], expected.conjugate())
+    assert len(calls) == 1  # diagonal electronic data are reused from the TBFs

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import dataclasses
 import importlib
 import importlib.util
@@ -48,6 +49,148 @@ class SimulationResult:
     checkpoint: Path
     state: SimulationState
     events: tuple[dict[str, Any], ...]
+
+
+def _array_payload(value: np.ndarray | None) -> dict[str, Any] | None:
+    if value is None:
+        return None
+    array = np.asarray(value)
+    payload: dict[str, Any] = {"real": array.real.tolist(), "shape": list(array.shape)}
+    if np.iscomplexobj(array):
+        payload["imag"] = array.imag.tolist()
+    return payload
+
+
+def _array_from_payload(payload: dict[str, Any] | None) -> np.ndarray | None:
+    if payload is None:
+        return None
+    array = np.asarray(payload["real"])
+    if "imag" in payload:
+        array = array + 1j * np.asarray(payload["imag"])
+    return array.reshape(payload["shape"])
+
+
+def _state_payload(state: SimulationState) -> dict[str, Any]:
+    trajectories = []
+    for trajectory in state.trajectories:
+        electronic = trajectory.electronic
+        trajectories.append({
+            "positions": _array_payload(trajectory.positions),
+            "momenta": _array_payload(trajectory.momenta),
+            "widths": _array_payload(trajectory.widths),
+            "masses": _array_payload(trajectory.masses),
+            "state": trajectory.state,
+            "time": trajectory.time,
+            "label": trajectory.label,
+            "identifier": trajectory.identifier,
+            "parent_id": trajectory.parent_id,
+            "generation": trajectory.generation,
+            "phase": trajectory.phase,
+            "last_spawn_time": trajectory.last_spawn_time,
+            "spawn_count": trajectory.spawn_count,
+            "wavefunction_id": (
+                trajectory.previous_wavefunction.identifier
+                if trajectory.previous_wavefunction is not None else None
+            ),
+            "electronic": None if electronic is None else {
+                "energies": _array_payload(electronic.energies),
+                "gradients": _array_payload(electronic.gradients),
+                "nacs": _array_payload(electronic.nacs),
+                "state_overlaps": _array_payload(electronic.state_overlaps),
+            },
+        })
+    matrices = None if state.matrices is None else {
+        "S": _array_payload(state.matrices.overlap),
+        "H": _array_payload(state.matrices.hamiltonian),
+        "Sdot": _array_payload(state.matrices.sdot),
+    }
+    return {
+        "trajectories": trajectories,
+        "amplitudes": _array_payload(state.amplitudes),
+        "quantum_time": state.quantum_time,
+        "step": state.step,
+        "matrices": matrices,
+        "events": copy.deepcopy(state.events),
+    }
+
+
+def _state_from_payload(payload: dict[str, Any]) -> SimulationState:
+    trajectories = []
+    for item in payload["trajectories"]:
+        electronic_payload = item["electronic"]
+        electronic = None
+        if electronic_payload is not None:
+            electronic = ElectronicStructureResult(
+                energies=_array_from_payload(electronic_payload["energies"]),
+                gradients=_array_from_payload(electronic_payload["gradients"]),
+                nacs=_array_from_payload(electronic_payload["nacs"]),
+                state_overlaps=_array_from_payload(electronic_payload["state_overlaps"]),
+            )
+        wavefunction_id = item["wavefunction_id"]
+        trajectories.append(TrajectoryBasisFunction(
+            positions=_array_from_payload(item["positions"]),
+            momenta=_array_from_payload(item["momenta"]),
+            widths=_array_from_payload(item["widths"]),
+            masses=_array_from_payload(item["masses"]),
+            state=item["state"],
+            time=item["time"],
+            label=item["label"],
+            identifier=item["identifier"],
+            parent_id=item["parent_id"],
+            generation=item["generation"],
+            phase=item["phase"],
+            previous_wavefunction=(
+                WavefunctionState(wavefunction_id) if wavefunction_id is not None else None
+            ),
+            electronic=electronic,
+            last_spawn_time=item["last_spawn_time"],
+            spawn_count=item["spawn_count"],
+        ))
+    matrices_payload = payload["matrices"]
+    matrices = None if matrices_payload is None else MatrixSet(
+        _array_from_payload(matrices_payload["S"]),
+        _array_from_payload(matrices_payload["H"]),
+        _array_from_payload(matrices_payload["Sdot"]),
+    )
+    return SimulationState(
+        trajectories=trajectories,
+        amplitudes=_array_from_payload(payload["amplitudes"]),
+        quantum_time=payload["quantum_time"],
+        step=payload["step"],
+        matrices=matrices,
+        events=copy.deepcopy(payload["events"]),
+    )
+
+
+@dataclasses.dataclass
+class SpawnReplaySnapshot:
+    key: tuple[str, int]
+    state: SimulationState
+    queue: dict[str, Any]
+    rng_state: dict[str, Any]
+    monitor: dict[str, Any]
+    centroid_wavefunctions: dict[str, str]
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "key": [self.key[0], self.key[1]],
+            "state": _state_payload(self.state),
+            "queue": self.queue,
+            "rng_state": self.rng_state,
+            "monitor": self.monitor,
+            "centroid_wavefunctions": self.centroid_wavefunctions,
+        }
+
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any]) -> "SpawnReplaySnapshot":
+        return cls(
+            key=(str(payload["key"][0]), int(payload["key"][1])),
+            state=_state_from_payload(payload["state"]),
+            queue=payload["queue"],
+            rng_state=payload["rng_state"],
+            monitor=payload["monitor"],
+            centroid_wavefunctions=dict(payload.get("centroid_wavefunctions", {})),
+        )
 
 
 def _provider_from_config(config: SimulationConfig) -> ElectronicStructureProvider:
@@ -99,6 +242,9 @@ class SimulationRunner:
         self.monitor = SpawnMonitor(config.spawn_threshold)
         self.gauge_tracker = GaugeTracker()
         self.centroid_cache: dict[bytes, ElectronicStructureResult] = {}
+        self.centroid_previous: dict[str, WavefunctionState] = {}
+        self.active_spawn_snapshot: SpawnReplaySnapshot | None = None
+        self.replay_suppressed: dict[tuple[str, int], float] = {}
         self.run_directory = config.run_directory
         self.run_directory.mkdir(parents=True, exist_ok=True)
         self.checkpoints = CheckpointManager(self.run_directory / "checkpoint", config.checkpoint_keep)
@@ -145,8 +291,18 @@ class SimulationRunner:
             return self.config.coupling_mode
         return "npi" if self.provider.capabilities.npi_tdc else "nac"
 
-    def _request(self, geometry: np.ndarray, active_state: int, time: float, previous=None) -> ElectronicStructureRequest:
-        properties = {ElectronicProperties.ENERGIES, ElectronicProperties.GRADIENTS}
+    def _request(
+        self,
+        geometry: np.ndarray,
+        active_state: int,
+        time: float,
+        previous=None,
+        *,
+        gradients: bool = True,
+    ) -> ElectronicStructureRequest:
+        properties = {ElectronicProperties.ENERGIES}
+        if gradients:
+            properties.add(ElectronicProperties.GRADIENTS)
         if self.config.num_states > 1:
             properties.add(ElectronicProperties.STATE_OVERLAPS if self._coupling_mode() == "npi" else ElectronicProperties.NACS)
         return ElectronicStructureRequest(
@@ -160,8 +316,16 @@ class SimulationRunner:
             previous=previous,
         )
 
-    def _evaluate(self, geometry: np.ndarray, active_state: int, time: float, previous=None) -> ElectronicStructureResult:
-        request = self._request(geometry, active_state, time, previous)
+    def _evaluate(
+        self,
+        geometry: np.ndarray,
+        active_state: int,
+        time: float,
+        previous=None,
+        *,
+        gradients: bool = True,
+    ) -> ElectronicStructureResult:
+        request = self._request(geometry, active_state, time, previous, gradients=gradients)
         last_error: BaseException | None = None
         for _attempt in range(self.config.electronic_retries + 1):
             try:
@@ -195,13 +359,40 @@ class SimulationRunner:
         trajectory.electronic = result
         trajectory.previous_wavefunction = result.wavefunction
 
-    def _centroid_key(self, geometry: np.ndarray, active_state: int) -> bytes:
-        return np.round(geometry, 12).tobytes() + int(active_state).to_bytes(2, "little")
+    @staticmethod
+    def _centroid_pair_key(
+        left: TrajectoryBasisFunction, right: TrajectoryBasisFunction
+    ) -> str:
+        return f"{left.identifier}:{right.identifier}"
 
-    def _evaluate_centroid(self, geometry: np.ndarray, active_state: int) -> ElectronicStructureResult:
-        key = self._centroid_key(geometry, active_state)
+    def _centroid_key(
+        self,
+        left: TrajectoryBasisFunction,
+        right: TrajectoryBasisFunction,
+        geometry: np.ndarray,
+    ) -> bytes:
+        pair = self._centroid_pair_key(left, right).encode()
+        return pair + b"\0" + np.round(geometry, 12).tobytes()
+
+    def _evaluate_centroid(
+        self,
+        left: TrajectoryBasisFunction,
+        right: TrajectoryBasisFunction,
+        geometry: np.ndarray,
+    ) -> ElectronicStructureResult:
+        key = self._centroid_key(left, right, geometry)
         if key not in self.centroid_cache:
-            self.centroid_cache[key] = self._evaluate(geometry, active_state, self.state.quantum_time)
+            pair = self._centroid_pair_key(left, right)
+            result = self._evaluate(
+                geometry,
+                right.state,
+                self.state.quantum_time,
+                self.centroid_previous.get(pair),
+                gradients=False,
+            )
+            self.centroid_cache[key] = result
+            if result.wavefunction is not None:
+                self.centroid_previous[pair] = result.wavefunction
         return self.centroid_cache[key]
 
     def _build_matrices(self) -> MatrixSet:
@@ -224,6 +415,7 @@ class SimulationRunner:
     def _propagate_trajectory(self, index: int, dt: float | None = None) -> None:
         trajectory = self.state.trajectories[index]
         dt = self.config.time_step if dt is None else float(dt)
+        endpoint: ElectronicStructureResult | None = None
         if all(hasattr(self.provider, name) for name in ("connection", "curvature", "scalar_gradient")):
             trajectory.positions, trajectory.momenta = berry_boris_step(
                 trajectory.positions, trajectory.momenta, trajectory.masses, trajectory.state, dt,
@@ -233,14 +425,47 @@ class SimulationRunner:
             gradient0 = trajectory.electronic.gradients[trajectory.state]
 
             def gradient_at(positions: np.ndarray) -> np.ndarray:
-                result = self._evaluate(positions, trajectory.state, trajectory.time + dt, trajectory.previous_wavefunction)
-                return result.gradients[trajectory.state]
+                nonlocal endpoint
+                endpoint = self._evaluate(
+                    positions,
+                    trajectory.state,
+                    trajectory.time + dt,
+                    trajectory.previous_wavefunction,
+                )
+                return endpoint.gradients[trajectory.state]
 
             trajectory.positions, trajectory.momenta, _ = velocity_verlet(
                 trajectory.positions, trajectory.momenta, trajectory.masses, dt, gradient0, gradient_at
             )
         trajectory.time += dt
-        trajectory.electronic = None
+        trajectory.electronic = endpoint
+        if endpoint is not None:
+            trajectory.previous_wavefunction = endpoint.wavefunction
+        self.state.matrices = None
+
+    def _capture_spawn_snapshot(self, key: tuple[str, int]) -> None:
+        self.active_spawn_snapshot = SpawnReplaySnapshot(
+            key=key,
+            state=_state_from_payload(_state_payload(self.state)),
+            queue=copy.deepcopy(self.queue.to_dict()),
+            rng_state=copy.deepcopy(self.rng.bit_generator.state),
+            monitor=copy.deepcopy(self.monitor.to_dict()),
+            centroid_wavefunctions={
+                name: wavefunction.identifier
+                for name, wavefunction in self.centroid_previous.items()
+            },
+        )
+
+    def _restore_spawn_snapshot(self, snapshot: SpawnReplaySnapshot) -> None:
+        self.state = _state_from_payload(_state_payload(snapshot.state))
+        self.queue = TaskQueue.from_dict(copy.deepcopy(snapshot.queue))
+        self.rng.bit_generator.state = copy.deepcopy(snapshot.rng_state)
+        self.monitor = SpawnMonitor.from_dict(copy.deepcopy(snapshot.monitor))
+        self.centroid_previous = {
+            key: WavefunctionState(identifier)
+            for key, identifier in snapshot.centroid_wavefunctions.items()
+        }
+        self.centroid_cache.clear()
 
     def _observe_spawning(self) -> list[SpawnCandidate]:
         if self.config.num_states < 2 or len(self.state.trajectories) >= self.config.max_trajectories:
@@ -250,13 +475,23 @@ class SimulationRunner:
         for index, trajectory in enumerate(self.state.trajectories):
             if trajectory.electronic is None or trajectory.electronic.nacs is None:
                 continue
-            if contributions[index] < self.config.population_to_spawn:
-                continue
-            if trajectory.time - trajectory.last_spawn_time < self.config.spawn_cooldown:
-                continue
             for target in range(self.config.num_states):
                 if target == trajectory.state:
                     continue
+                key = (trajectory.identifier, target)
+                frontier = self.replay_suppressed.get(key)
+                if frontier is not None:
+                    if trajectory.time <= frontier + 1.0e-12:
+                        continue
+                    del self.replay_suppressed[key]
+                if self.active_spawn_snapshot is not None:
+                    if key != self.active_spawn_snapshot.key:
+                        continue
+                else:
+                    if contributions[index] < self.config.population_to_spawn:
+                        continue
+                    if trajectory.time - trajectory.last_spawn_time < self.config.spawn_cooldown:
+                        continue
                 gap = abs(trajectory.electronic.energies[target] - trajectory.electronic.energies[trajectory.state])
                 if gap > self.config.max_energy_gap:
                     continue
@@ -265,7 +500,14 @@ class SimulationRunner:
                     index, target, projected_coupling(trajectory, nac), trajectory.time,
                     trajectory.positions.copy(), trajectory.momenta.copy(), nac.copy(),
                     trajectory.electronic.energies.copy(),
+                    parent_id=trajectory.identifier,
                 )
+                if (
+                    self.active_spawn_snapshot is None
+                    and candidate.coupling >= self.config.spawn_threshold
+                    and SpawnMonitor.key(candidate) not in self.monitor.pending
+                ):
+                    self._capture_spawn_snapshot(key)
                 completed = self.monitor.observe(candidate)
                 if completed is not None:
                     emitted.append(completed)
@@ -274,7 +516,14 @@ class SimulationRunner:
     def _spawn(self, candidate: SpawnCandidate) -> None:
         if len(self.state.trajectories) >= self.config.max_trajectories:
             return
-        parent = self.state.trajectories[candidate.parent_index]
+        parent_index = next(
+            (
+                index for index, trajectory in enumerate(self.state.trajectories)
+                if trajectory.identifier == candidate.parent_id
+            ),
+            candidate.parent_index,
+        )
+        parent = self.state.trajectories[parent_index]
         child = (
             make_coupling_optimized_child(candidate, parent, self.config.random_seed + parent.spawn_count)
             if self.config.spawn_strategy == "coupling_optimized"
@@ -282,11 +531,13 @@ class SimulationRunner:
         )
         if child is None:
             self.state.events.append({"kind": "failed_spawn", "time": candidate.time, "reason": "energy_shell"})
+            self.active_spawn_snapshot = None
             return
         if overlaps_existing(child, self.state.trajectories, self.config.spawn_overlap_max):
             self.state.events.append({"kind": "failed_spawn", "time": candidate.time, "reason": "overlap"})
+            self.active_spawn_snapshot = None
             return
-        # Extend the child backward to the threshold-entry geometry before replaying it.
+        # Build the child's missing history back to the threshold-entry time.
         entry_time = candidate.entry_time if candidate.entry_time is not None else candidate.time
         while child.time - 1.0e-12 > entry_time:
             step = -min(self.config.time_step, child.time - entry_time)
@@ -297,30 +548,71 @@ class SimulationRunner:
                 self._propagate_trajectory(len(self.state.trajectories) - 1, step)
             finally:
                 self.state.trajectories.pop()
-        # Candidate maxima are normally detected one step later; replay the child to the current time.
-        while child.time + 1.0e-12 < self.state.quantum_time:
-            child.electronic = self._evaluate(child.positions, child.state, child.time, child.previous_wavefunction)
-            child.previous_wavefunction = child.electronic.wavefunction
-            step = min(self.config.time_step, self.state.quantum_time - child.time)
-            self.state.trajectories.append(child)
-            try:
-                self._propagate_trajectory(len(self.state.trajectories) - 1, step)
-            finally:
-                self.state.trajectories.pop()
-        index = self.state.add_trajectory(child)
-        self._evaluate_trajectory(index)
+
+        snapshot = self.active_spawn_snapshot
+        if snapshot is None:
+            raise RuntimeError("spawn replay snapshot is missing")
+        frontier_time = self.state.quantum_time
+        frontier_step = self.state.step
+        replay_key = snapshot.key
+        self._restore_spawn_snapshot(snapshot)
+        self.active_spawn_snapshot = None
+        restored_parent = next(
+            trajectory for trajectory in self.state.trajectories
+            if trajectory.identifier == replay_key[0]
+        )
+        restored_parent.spawn_count += 1
+        restored_parent.last_spawn_time = candidate.time
+        index = self.state.add_trajectory(child, amplitude=0j)
+        if child.electronic is None:
+            self._evaluate_trajectory(index)
+        self.replay_suppressed[replay_key] = frontier_time
         self.state.events.append({
             "kind": "spawn", "time": candidate.time, "parent": parent.label,
             "child": child.label, "target_state": child.state, "coupling": candidate.coupling,
             "index": index,
             "threshold_entry_time": entry_time,
+            "replay_frontier_time": frontier_time,
         })
         self.state.matrices = None
+        self._build_matrices()
+        self.writer.write_step(self.state, self.config.num_states)
+        self._checkpoint()
+        self.propagate(stop_after_step=frontier_step)
 
     def _checkpoint(self) -> None:
+        references = {
+            trajectory.previous_wavefunction.identifier
+            for trajectory in self.state.trajectories
+            if trajectory.previous_wavefunction is not None
+        }
+        references.update(value.identifier for value in self.centroid_previous.values())
+        if self.active_spawn_snapshot is not None:
+            references.update(
+                trajectory.previous_wavefunction.identifier
+                for trajectory in self.active_spawn_snapshot.state.trajectories
+                if trajectory.previous_wavefunction is not None
+            )
+            references.update(self.active_spawn_snapshot.centroid_wavefunctions.values())
+        set_references = getattr(self.provider, "set_checkpoint_references", None)
+        if callable(set_references):
+            set_references(frozenset(references))
         self.checkpoints.save(
             self.state, self.queue, self.rng, self.config, self.provider,
-            runtime={"spawn_monitor": self.monitor.to_dict()},
+            runtime={
+                "spawn_monitor": self.monitor.to_dict(),
+                "centroid_wavefunctions": {
+                    key: value.identifier for key, value in self.centroid_previous.items()
+                },
+                "active_spawn_snapshot": (
+                    self.active_spawn_snapshot.to_dict()
+                    if self.active_spawn_snapshot is not None else None
+                ),
+                "replay_suppressed": [
+                    [key[0], key[1], frontier]
+                    for key, frontier in self.replay_suppressed.items()
+                ],
+            },
         )
 
     def _execute(self, task: Task, action) -> None:
@@ -343,6 +635,22 @@ class SimulationRunner:
         self.rng.bit_generator.state = metadata["rng_state"]
         if metadata.get("runtime", {}).get("spawn_monitor"):
             self.monitor = SpawnMonitor.from_dict(metadata["runtime"]["spawn_monitor"])
+        self.centroid_previous = {
+            key: WavefunctionState(identifier)
+            for key, identifier in metadata.get("runtime", {})
+            .get("centroid_wavefunctions", {})
+            .items()
+        }
+        active_spawn = metadata.get("runtime", {}).get("active_spawn_snapshot")
+        self.active_spawn_snapshot = (
+            SpawnReplaySnapshot.from_dict(active_spawn) if active_spawn is not None else None
+        )
+        self.replay_suppressed = {
+            (str(parent), int(target)): float(frontier)
+            for parent, target, frontier in metadata.get("runtime", {}).get(
+                "replay_suppressed", []
+            )
+        }
         trajectories = []
         for index, item in enumerate(metadata["trajectories"]):
             trajectory = TrajectoryBasisFunction(
@@ -380,54 +688,73 @@ class SimulationRunner:
             target_step = min(target_step, max(self.state.step, int(stop_after_step)))
         while self.state.step < target_step:
             self.centroid_cache.clear()
-            evaluation_tasks: list[Task] = []
             for index, trajectory in enumerate(self.state.trajectories):
-                task = self.queue.add(TaskKind.TRAJECTORY, trajectory.time, f"eval:{self.state.step}:{trajectory.identifier}", payload={"index": index})
-                evaluation_tasks.append(task)
-                self._execute(task, lambda current, idx=index: self._evaluate_trajectory(idx))
+                if trajectory.electronic is None:
+                    self._evaluate_trajectory(index)
+
+            start_matrices = self.state.matrices or self._build_matrices()
+            removed = prune_by_overlap(self.state, self.config.overlap_threshold)
+            if removed:
+                self.state.events.append({
+                    "kind": "prune", "time": self.state.quantum_time, "indices": removed,
+                })
+                start_matrices = self._build_matrices()
 
             for candidate in self._observe_spawning():
                 task = self.queue.add(TaskKind.SPAWN, candidate.time, f"spawn:{candidate.parent_index}:{candidate.target_state}:{candidate.time}")
                 self._execute(task, lambda current, item=candidate: self._spawn(item))
+                start_matrices = self._build_matrices()
 
-            quantum = self.queue.add(
-                TaskKind.QUANTUM, self.state.quantum_time,
-                f"quantum:{self.state.step}", dependencies=[task.identifier for task in evaluation_tasks],
-            )
-
-            def quantum_action(_task: Task) -> None:
-                matrices = self._build_matrices()
-                removed = prune_by_overlap(self.state, self.config.overlap_threshold)
-                if removed:
-                    self.state.events.append({
-                        "kind": "prune", "time": self.state.quantum_time, "indices": removed,
-                    })
-                    matrices = self._build_matrices()
-                before = metric_norm(self.state.amplitudes, matrices.overlap)
-                integrator = cayley_step if self.config.quantum_integrator == "cayley" else rk45_step
-                self.state.amplitudes = integrator(
-                    self.state.amplitudes, matrices, self.config.time_step,
-                    self.config.regularization_threshold,
-                )
-                self.state.amplitudes = normalize(self.state.amplitudes, matrices.overlap)
-                after = metric_norm(self.state.amplitudes, matrices.overlap)
-                if abs(after - 1.0) > self.config.norm_tolerance:
-                    raise RuntimeError(f"quantum norm violation: before={before}, after={after}")
-
-            self._execute(quantum, quantum_action)
             propagation_tasks = []
             for index, trajectory in enumerate(list(self.state.trajectories)):
-                task = self.queue.add(TaskKind.TRAJECTORY, trajectory.time, f"prop:{self.state.step}:{trajectory.identifier}", dependencies=[quantum.identifier])
+                task = self.queue.add(
+                    TaskKind.TRAJECTORY,
+                    trajectory.time,
+                    f"prop:{self.state.step}:{trajectory.identifier}",
+                )
                 propagation_tasks.append(task)
                 self._execute(task, lambda current, idx=index: self._propagate_trajectory(idx))
             self.state.quantum_time += self.config.time_step
             self.state.step += 1
-            if self.state.step % self.config.output_every == 0 or self.state.step == self.config.nsteps:
-                # Refresh electronic data at output geometries so analysis is self-contained.
-                for index in range(len(self.state.trajectories)):
+            self.centroid_cache.clear()
+            for index, trajectory in enumerate(self.state.trajectories):
+                if trajectory.electronic is None:
                     self._evaluate_trajectory(index)
-                self._build_matrices()
-                output = self.queue.add(TaskKind.OUTPUT, self.state.quantum_time, f"output:{self.state.step}", dependencies=[t.identifier for t in propagation_tasks])
+            end_matrices = self._build_matrices()
+
+            quantum = self.queue.add(
+                TaskKind.QUANTUM,
+                self.state.quantum_time,
+                f"quantum:{self.state.step - 1}",
+                dependencies=[task.identifier for task in propagation_tasks],
+            )
+
+            def quantum_action(_task: Task) -> None:
+                before = metric_norm(self.state.amplitudes, start_matrices.overlap)
+                integrator = cayley_step if self.config.quantum_integrator == "cayley" else rk45_step
+                propagated = integrator(
+                    self.state.amplitudes,
+                    start_matrices,
+                    self.config.time_step,
+                    self.config.regularization_threshold,
+                    end_matrices,
+                )
+                after = metric_norm(propagated, end_matrices.overlap)
+                if abs(after - before) > self.config.norm_tolerance:
+                    raise RuntimeError(
+                        f"quantum norm violation: before={before}, after={after}"
+                    )
+                self.state.amplitudes = normalize(propagated, end_matrices.overlap)
+                self.state.matrices = end_matrices
+
+            self._execute(quantum, quantum_action)
+            if self.state.step % self.config.output_every == 0 or self.state.step == self.config.nsteps:
+                output = self.queue.add(
+                    TaskKind.OUTPUT,
+                    self.state.quantum_time,
+                    f"output:{self.state.step}",
+                    dependencies=[quantum.identifier],
+                )
                 self._execute(output, lambda current: self.writer.write_step(self.state, self.config.num_states))
         if self.state.step < self.config.nsteps:
             self._checkpoint()

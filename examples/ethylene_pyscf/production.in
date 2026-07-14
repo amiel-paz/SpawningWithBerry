@@ -36,6 +36,7 @@ spawn_overlap_max 0.8
 spawn_cooldown 50
 max_trajectories 32
 regularization_threshold 1e-8
+norm_tolerance 1e-6
 output_every 1
 run_directory run-production
 

@@ -46,6 +46,16 @@ class PySCFProvider(BaseProvider):
         self.state_weights = state_weights
         self.options = options or {}
         self._states: dict[str, dict[str, Any]] = {}
+        self._checkpoint_references: frozenset[str] | None = None
+
+    def set_checkpoint_references(self, identifiers: frozenset[str]) -> None:
+        """Retain only wavefunctions needed by live TBFs, centroids, or spawn replay."""
+        self._checkpoint_references = frozenset(identifiers)
+        self._states = {
+            identifier: state
+            for identifier, state in self._states.items()
+            if identifier in self._checkpoint_references
+        }
 
     def _imports(self):
         try:
@@ -230,7 +240,13 @@ class PySCFProvider(BaseProvider):
 
     def dump_state(self, directory: Path) -> dict[str, Any]:
         manifest: dict[str, Any] = {}
-        for identifier, state in self._states.items():
+        states = self._states
+        if self._checkpoint_references is not None:
+            states = {
+                identifier: state for identifier, state in states.items()
+                if identifier in self._checkpoint_references
+            }
+        for identifier, state in states.items():
             filename = f"{identifier}.npz"
             ci = np.asarray(state["ci"])
             molecule_dump = state["molecule"].dumps() if state.get("molecule") is not None else ""

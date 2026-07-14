@@ -57,7 +57,7 @@ class SimulationConfig:
     regularization_threshold: float = 1.0e-8
     min_time_step: float | None = None
     energy_tolerance: float = 5.0e-3
-    norm_tolerance: float = 0.25
+    norm_tolerance: float = 1.0e-6
     output_every: int = 1
     checkpoint_keep: int = 2
     electronic_retries: int = 2
