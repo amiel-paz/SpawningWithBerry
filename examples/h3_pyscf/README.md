@@ -2,7 +2,8 @@
 
 `aims.in` is a fast SA(2)-CASSCF(3e,3o)/STO-3G doublet calculation with analytic
 PySCF gradients and NACs. It deliberately starts near the H3 conical-intersection
-seam so a short run exercises spawning, HDF5 history, and exact restart.
+seam, displaced by 0.03 bohr to avoid the singular analytic NAC exactly at the
+degeneracy, so a short run exercises spawning, HDF5 history, and exact restart.
 
 Run `python run_ensemble.py` from this directory to execute seeds 1234, 2718, 3141,
 and 5772 and export individual/mean population data. Each seed also creates bond,

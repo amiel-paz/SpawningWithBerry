@@ -5,14 +5,17 @@ backend, the C-C and H-C-C-H observables, state gap/population output, and resta
 It is intentionally a slower integration workload rather than part of the fast test
 suite.
 
-`production.in` is the 5000 au (120.94 fs), 500-step production analogue of the
+`production.in` is the 5000 au (120.94 fs), 1000-step production analogue of the
 original PySpawn ethylene example. It uses that example's equilibrium geometry,
-Hessian, random seed, timestep, final time, active space, basis, and spawning
-threshold, with spin-pure density-fitted PySCF replacing TeraChem. Its restartable
+Hessian, random seed, final time, active space, basis, and spawning threshold, with
+spin-pure density-fitted PySCF replacing TeraChem. A staged 10/5 au comparison chose
+the 5 au outer step; adaptive quantum substeps may refine to 0.00244140625 au without
+new PySCF evaluations. Its restartable
 output is written to the ignored `run-production/` directory.
 
 Production must start from step zero after changes to quantum propagation or spawning.
 Do not reuse checkpoints from runs made before energy-reference-invariant generalized
-Crank--Nicolson and threshold-entry quantum replay were introduced. Invalidated runs
+Crank--Nicolson, adaptive metric compatibility, and transactional threshold-entry
+quantum replay were introduced. Invalidated runs
 are retained only as diagnostic archives under `run-production-invalid-*` and their
 amplitudes/populations must not be analyzed as physical AIMS results.

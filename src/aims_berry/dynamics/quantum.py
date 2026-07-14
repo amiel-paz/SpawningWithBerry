@@ -2,10 +2,33 @@
 
 from __future__ import annotations
 
+import dataclasses
+
 import numpy as np
 from scipy.integrate import solve_ivp
 
 from ..core import MatrixSet
+
+
+@dataclasses.dataclass(frozen=True)
+class QuantumStepResult:
+    """Accepted coefficients and diagnostics for one outer nuclear interval."""
+
+    amplitudes: np.ndarray
+    substeps: int
+    norm_before: float
+    norm_after_raw: float
+    convergence_error: float
+    metric_residual: float
+    retained_overlap_eigenvalues: np.ndarray
+
+
+class QuantumPropagationError(RuntimeError):
+    """Raised when adaptive coefficient propagation cannot satisfy its gates."""
+
+    def __init__(self, message: str, result: QuantumStepResult) -> None:
+        super().__init__(message)
+        self.result = result
 
 
 def regularized_metric(overlap: np.ndarray, threshold: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -77,6 +100,121 @@ def cayley_step(
     right = projected_s - 0.5j * dt * projected_k
     propagated = np.linalg.solve(left, right @ projected_c)
     return np.exp(-1j * energy_reference * dt) * (vectors @ propagated)
+
+
+def _interpolated_metric_matrices(
+    start: MatrixSet,
+    end: MatrixSet,
+    dt: float,
+    fraction: float,
+) -> MatrixSet:
+    """Interpolate endpoints while enforcing ``tau + tau**H == dS/dt``."""
+
+    overlap = (1.0 - fraction) * start.overlap + fraction * end.overlap
+    hamiltonian = (1.0 - fraction) * start.hamiltonian + fraction * end.hamiltonian
+    raw_tau = (1.0 - fraction) * start.sdot + fraction * end.sdot
+    metric_derivative = (end.overlap - start.overlap) / dt
+    tau = 0.5 * (raw_tau - raw_tau.conj().T) + 0.5 * metric_derivative
+    return MatrixSet(overlap, hamiltonian, tau)
+
+
+def _phase_aligned_metric_error(
+    coarse: np.ndarray,
+    fine: np.ndarray,
+    overlap: np.ndarray,
+) -> float:
+    inner = np.vdot(coarse, overlap @ fine)
+    if abs(inner) < 1.0e-15:
+        return float("inf")
+    aligned_coarse = coarse * (inner / abs(inner))
+    difference = fine - aligned_coarse
+    return float(np.sqrt(max(metric_norm(difference, overlap), 0.0)))
+
+
+def adaptive_cayley_step(
+    amplitudes: np.ndarray,
+    start: MatrixSet,
+    end: MatrixSet,
+    dt: float,
+    *,
+    threshold: float = 1.0e-8,
+    convergence_tolerance: float = 1.0e-6,
+    norm_tolerance: float = 1.0e-10,
+    min_time_step: float | None = None,
+) -> QuantumStepResult:
+    """Adaptively converge generalized Cayley propagation between endpoints.
+
+    Refinement changes only the coefficient solve and requests no midpoint
+    electronic evaluations.  Material norm drift is rejected, never hidden by
+    unconditional normalization.
+    """
+
+    if dt <= 0:
+        raise ValueError("dt must be positive")
+    if convergence_tolerance <= 0 or norm_tolerance <= 0:
+        raise ValueError("adaptive tolerances must be positive")
+    floor = dt / 4096.0 if min_time_step is None else float(min_time_step)
+    if floor <= 0 or floor > dt:
+        raise ValueError("min_time_step must be in (0, dt]")
+    maximum = max(1, int(np.floor(dt / floor + 1.0e-12)))
+    maximum_power = 1 << int(np.floor(np.log2(maximum)))
+
+    coefficients = np.asarray(amplitudes, dtype=np.complex128)
+    norm_before = metric_norm(coefficients, start.overlap)
+    if norm_before <= 0:
+        raise ValueError("cannot propagate a non-positive metric norm")
+    raw_mid_tau = 0.5 * (start.sdot + end.sdot)
+    metric_derivative = (end.overlap - start.overlap) / dt
+    metric_residual = float(
+        np.max(np.abs(metric_derivative - raw_mid_tau - raw_mid_tau.conj().T))
+    )
+    retained = _retained_subspace(end.overlap, threshold)[1]
+
+    previous: np.ndarray | None = None
+    last: QuantumStepResult | None = None
+    substeps = 1
+    while substeps <= maximum_power:
+        propagated = coefficients.copy()
+        sub_dt = dt / substeps
+        for index in range(substeps):
+            left = _interpolated_metric_matrices(start, end, dt, index / substeps)
+            right = _interpolated_metric_matrices(
+                start, end, dt, (index + 1) / substeps
+            )
+            propagated = cayley_step(propagated, left, sub_dt, threshold, right)
+        norm_after = metric_norm(propagated, end.overlap)
+        convergence_error = (
+            float("inf")
+            if previous is None
+            else _phase_aligned_metric_error(previous, propagated, end.overlap)
+        )
+        last = QuantumStepResult(
+            amplitudes=propagated,
+            substeps=substeps,
+            norm_before=norm_before,
+            norm_after_raw=norm_after,
+            convergence_error=convergence_error,
+            metric_residual=metric_residual,
+            retained_overlap_eigenvalues=retained.copy(),
+        )
+        if (
+            previous is not None
+            and convergence_error <= convergence_tolerance
+            and abs(norm_after - norm_before) <= norm_tolerance
+        ):
+            accepted = propagated * np.sqrt(norm_before / norm_after)
+            return dataclasses.replace(last, amplitudes=accepted)
+        previous = propagated
+        substeps *= 2
+
+    assert last is not None
+    raise QuantumPropagationError(
+        "adaptive quantum propagation failed: "
+        f"substeps={last.substeps}, convergence_error={last.convergence_error}, "
+        f"norm_before={last.norm_before}, norm_after={last.norm_after_raw}, "
+        f"metric_residual={last.metric_residual}",
+        last,
+    )
 
 
 def rk45_step(

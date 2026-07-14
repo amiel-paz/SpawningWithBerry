@@ -36,15 +36,34 @@ class RunDataset:
 
     def steps(self):
         with h5py.File(self.path, "r") as handle:
+            committed = int(handle["steps"].attrs.get("committed_through", 2**63 - 1))
             for name in sorted(handle["steps"]):
+                if int(name) > committed:
+                    continue
                 group = handle["steps"][name]
-                yield {
+                frame = {
                     "step": int(name), "time": float(group.attrs["time"]),
                     "positions": group["positions"][...], "states": group["states"][...],
                     "momenta": group["momenta"][...], "amplitudes": group["amplitudes"][...],
                     "labels": [x.decode() if isinstance(x, bytes) else str(x) for x in group["labels"][...]],
                     "energies": group["energies"][...], "populations": group["populations"][...],
                 }
+                for key in (
+                    "classical_kinetic_energy", "classical_potential_energy",
+                    "classical_total_energy", "projected_couplings",
+                    "retained_overlap_eigenvalues",
+                ):
+                    if key in group:
+                        frame[key] = group[key][...]
+                for key in (
+                    "metric_norm", "quantum_energy", "quantum_substeps",
+                    "raw_norm_before", "raw_norm_after",
+                    "quantum_convergence_error", "metric_compatibility_residual",
+                    "hamiltonian_hermiticity_residual", "state_population_sum",
+                ):
+                    if key in group.attrs:
+                        frame[key] = group.attrs[key]
+                yield frame
 
     def select(self, *, states: tuple[int, ...] | None = None, labels: tuple[str, ...] | None = None):
         """Yield history frames restricted to selected TBF states and/or labels."""
@@ -93,6 +112,43 @@ class RunDataset:
     def populations(self) -> np.ndarray:
         return np.asarray([(step["time"], *step["populations"]) for step in self.steps()])
 
+    def diagnostics(self) -> np.ndarray:
+        """Time, norm, substeps, errors, gap, coupling, TBF count, and energy."""
+        rows = []
+        for step in self.steps():
+            gap = (
+                float(np.nanmin(np.abs(step["energies"][:, 1] - step["energies"][:, 0])))
+                if step["energies"].shape[1] > 1 else np.nan
+            )
+            couplings = step.get("projected_couplings")
+            maximum_coupling = (
+                float(np.nanmax(np.abs(couplings)))
+                if couplings is not None and np.any(np.isfinite(couplings)) else np.nan
+            )
+            rows.append((
+                step["time"], step.get("metric_norm", np.nan),
+                step.get("raw_norm_before", np.nan), step.get("raw_norm_after", np.nan),
+                step.get("quantum_substeps", np.nan),
+                step.get("quantum_convergence_error", np.nan),
+                step.get("metric_compatibility_residual", np.nan), gap,
+                maximum_coupling, len(step["states"]),
+                step.get("quantum_energy", np.nan),
+            ))
+        return np.asarray(rows)
+
+    def classical_energies(self) -> dict[str, np.ndarray]:
+        series: dict[str, list[tuple[float, float, float, float]]] = defaultdict(list)
+        for step in self.steps():
+            if "classical_total_energy" not in step:
+                continue
+            for index, label in enumerate(step["labels"]):
+                series[label].append((
+                    step["time"], step["classical_kinetic_energy"][index],
+                    step["classical_potential_energy"][index],
+                    step["classical_total_energy"][index],
+                ))
+        return {label: np.asarray(values) for label, values in series.items()}
+
     @staticmethod
     def ensemble_populations(paths: list[str | Path], state: int = 1) -> tuple[np.ndarray, np.ndarray]:
         runs = [RunDataset(path).populations() for path in paths]
@@ -137,6 +193,12 @@ def analyze_run(path: str | Path, output_directory: str | Path, observables=()) 
         figure.savefig(target, dpi=160, bbox_inches="tight")
         plt.close(figure)
         products.append(target)
+        for label, values in series.items():
+            csv_target = output / f"{observable.name}-{label}.csv"
+            dataset.export_csv(
+                csv_target, values, ("time_au", observable.kind)
+            )
+            products.append(csv_target)
     first = next(dataset.steps())
     if first["energies"].shape[1] >= 2:
         gap = dataset.energy_gap()
@@ -159,4 +221,35 @@ def analyze_run(path: str | Path, output_directory: str | Path, observables=()) 
     plt.close(figure)
     products.append(target)
     dataset.export_csv(output / "populations.csv", populations, tuple(["time_au"] + [f"state_{i}" for i in range(populations.shape[1] - 1)]))
+    diagnostics = dataset.diagnostics()
+    diagnostic_headers = (
+        "time_au", "metric_norm", "raw_norm_before", "raw_norm_after",
+        "quantum_substeps", "coefficient_error", "metric_residual",
+        "minimum_gap_hartree", "maximum_projected_coupling", "tbf_count",
+        "quantum_energy_hartree",
+    )
+    diagnostic_csv = dataset.export_csv(
+        output / "propagation_diagnostics.csv", diagnostics, diagnostic_headers
+    )
+    products.append(diagnostic_csv)
+    if diagnostics.size:
+        panels = (
+            (1, "Metric norm"), (4, "Quantum substeps"),
+            (8, "Projected coupling"), (9, "TBF count"),
+        )
+        figure, axes = plt.subplots(len(panels), 1, sharex=True, figsize=(7, 8))
+        for axis, (column, label) in zip(axes, panels):
+            axis.plot(diagnostics[:, 0], diagnostics[:, column])
+            axis.set_ylabel(label)
+        axes[-1].set_xlabel("Time (a.u.)")
+        target = output / "propagation_diagnostics.png"
+        figure.savefig(target, dpi=160, bbox_inches="tight")
+        plt.close(figure)
+        products.append(target)
+    for label, values in dataset.classical_energies().items():
+        products.append(dataset.export_csv(
+            output / f"classical_energy-{label}.csv",
+            values,
+            ("time_au", "kinetic_hartree", "potential_hartree", "total_hartree"),
+        ))
     return products

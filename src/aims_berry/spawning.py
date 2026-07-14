@@ -73,8 +73,6 @@ def make_child(candidate: SpawnCandidate, parent: TrajectoryBasisFunction) -> Tr
     if momentum is None:
         return None
     child = parent.copy_child(candidate.target_state, momentum)
-    parent.spawn_count += 1
-    parent.last_spawn_time = candidate.time
     child.positions = candidate.positions.copy()
     child.time = candidate.time
     return child
@@ -122,8 +120,6 @@ def make_coupling_optimized_child(
     if kinetic > 0:
         momentum *= np.sqrt(target_kinetic / kinetic)
     child = parent.copy_child(candidate.target_state, momentum)
-    parent.spawn_count += 1
-    parent.last_spawn_time = candidate.time
     child.positions = candidate.positions.copy()
     child.time = candidate.time
     return child

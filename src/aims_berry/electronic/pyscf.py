@@ -57,6 +57,12 @@ class PySCFProvider(BaseProvider):
             if identifier in self._checkpoint_references
         }
 
+    def adopt_wavefunction(self, wavefunction: WavefunctionState | None) -> None:
+        """Register a result evaluated by an isolated electronic worker."""
+
+        if wavefunction is not None and isinstance(wavefunction.payload, dict):
+            self._states[wavefunction.identifier] = wavefunction.payload
+
     def _imports(self):
         try:
             from pyscf import fci, gto, mcscf, scf
@@ -133,39 +139,107 @@ class PySCFProvider(BaseProvider):
         mean_field.kernel()
         if not mean_field.converged:
             raise ElectronicStructureError("PySCF SCF did not converge", retryable=True)
-        casscf = mcscf.CASSCF(mean_field, self.active_orbitals, self.active_electrons)
-        casscf.conv_tol = float(self.options.get("casscf_conv_tol", 1.0e-8))
-        casscf.max_cycle_macro = int(self.options.get("casscf_max_cycle", 50))
         target_spin = 0.5 * molecule.spin
         target_spin_square = float(
             self.options.get("spin_square", target_spin * (target_spin + 1.0))
         )
-        if bool(self.options.get("fix_spin", True)):
-            casscf.fix_spin_(
-                shift=float(self.options.get("spin_penalty", 0.5)),
-                ss=target_spin_square,
-            )
         weights = self.state_weights or tuple([1.0 / len(request.states)] * len(request.states))
-        casscf = casscf.state_average(weights)
+
+        def configured_casscf():
+            solver = mcscf.CASSCF(
+                mean_field, self.active_orbitals, self.active_electrons
+            )
+            solver.conv_tol = float(self.options.get("casscf_conv_tol", 1.0e-8))
+            solver.max_cycle_macro = int(self.options.get("casscf_max_cycle", 50))
+            solver.max_stepsize = float(
+                self.options.get("casscf_max_stepsize", solver.max_stepsize)
+            )
+            if bool(self.options.get("fix_spin", True)):
+                solver.fix_spin_(
+                    shift=float(self.options.get("spin_penalty", 0.5)),
+                    ss=target_spin_square,
+                )
+            return solver.state_average(weights)
+
         previous = self._previous_payload(request.previous)
-        kwargs: dict[str, Any] = {}
+        template = configured_casscf()
+        initial_mos = np.asarray(mean_field.mo_coeff)
+        initial_ci = None
         if previous is not None and previous.get("mo_coeff") is not None:
             try:
-                kwargs["mo_coeff"] = mcscf.addons.project_init_guess(
-                    casscf, previous["mo_coeff"], prev_mol=previous.get("molecule")
+                initial_mos = mcscf.addons.project_init_guess(
+                    template, previous["mo_coeff"], prev_mol=previous.get("molecule")
                 )
-                kwargs["ci0"] = previous.get("ci")
+                initial_ci = previous.get("ci")
             except Exception:
-                kwargs = {}
-        casscf.kernel(**kwargs)
-        if not casscf.converged:
-            # A second-order fallback is intentionally finite and explicit.
+                initial_mos = np.asarray(mean_field.mo_coeff)
+                initial_ci = None
+        guesses: list[tuple[np.ndarray, Any]] = [(initial_mos, initial_ci)]
+        external_starts = max(
+            0, int(self.options.get("multistart_external_orbitals", 0))
+        )
+        active_last = template.ncore + template.ncas - 1
+        for offset in range(external_starts):
+            external = active_last + 1 + offset
+            if external >= initial_mos.shape[1]:
+                break
+            swapped = initial_mos.copy()
+            swapped[:, [active_last, external]] = swapped[:, [external, active_last]]
+            guesses.append((swapped, None))
+
+        candidates = []
+        candidate_energies = []
+        candidate_active_overlaps: list[np.ndarray | None] = []
+        for mo_guess, ci_guess in guesses:
+            solver = configured_casscf()
             try:
-                casscf = casscf.newton().run(casscf.mo_coeff, casscf.ci)
-            except Exception as exc:
-                raise ElectronicStructureError("PySCF SA-CASSCF did not converge", retryable=True) from exc
-        if not casscf.converged:
+                solver.kernel(mo_coeff=mo_guess, ci0=ci_guess)
+                if not solver.converged:
+                    solver = solver.newton().run(solver.mo_coeff, solver.ci)
+            except Exception:
+                continue
+            if solver.converged:
+                average_energy = float(np.dot(weights, np.asarray(solver.e_states)))
+                candidates.append(solver)
+                candidate_energies.append(average_energy)
+                if (
+                    previous is not None
+                    and previous.get("mo_coeff") is not None
+                    and previous.get("molecule") is not None
+                ):
+                    cross = gto.intor_cross(
+                        "int1e_ovlp", previous["molecule"], molecule
+                    )
+                    old_active = np.asarray(previous["mo_coeff"])[
+                        :, solver.ncore:solver.ncore + solver.ncas
+                    ]
+                    new_active = np.asarray(solver.mo_coeff)[
+                        :, solver.ncore:solver.ncore + solver.ncas
+                    ]
+                    candidate_active_overlaps.append(np.linalg.svd(
+                        old_active.conj().T @ cross @ new_active,
+                        compute_uv=False,
+                    ))
+                else:
+                    candidate_active_overlaps.append(None)
+        if not candidates:
             raise ElectronicStructureError("PySCF SA-CASSCF did not converge", retryable=True)
+        selection = str(self.options.get("orbital_selection", "energy")).lower()
+        if selection == "overlap" and any(
+            values is not None for values in candidate_active_overlaps
+        ):
+            scores = [
+                -np.inf if values is None else float(np.min(values))
+                for values in candidate_active_overlaps
+            ]
+            selected_candidate = int(np.argmax(scores))
+        elif selection == "energy":
+            selected_candidate = int(np.argmin(candidate_energies))
+        else:
+            raise ElectronicStructureError(
+                f"unsupported orbital_selection {selection!r}", retryable=False
+            )
+        casscf = candidates[selected_candidate]
 
         raw_energies = np.asarray(casscf.e_states, dtype=float)
         raw_ci = list(casscf.ci)
@@ -179,6 +253,7 @@ class PySCFProvider(BaseProvider):
         permutation = np.arange(len(request.states))
         phases = np.ones(len(request.states), dtype=np.complex128)
         tracking_overlap = None
+        active_space_singular_values = None
         if previous is not None and previous.get("ci") is not None and len(previous["ci"]) == len(raw_ci):
             tracking_overlap = np.asarray([
                 [np.vdot(np.asarray(old).reshape(-1), np.asarray(new).reshape(-1)) for new in raw_ci]
@@ -188,6 +263,33 @@ class PySCFProvider(BaseProvider):
             permutation = col[np.argsort(row)]
             diagonal = tracking_overlap[np.arange(len(permutation)), permutation]
             phases = np.exp(-1j * np.angle(np.where(abs(diagonal) > 1.0e-14, diagonal, 1.0)))
+        if previous is not None and previous.get("mo_coeff") is not None:
+            previous_molecule = previous.get("molecule")
+            if previous_molecule is not None:
+                cross_overlap = gto.intor_cross("int1e_ovlp", previous_molecule, molecule)
+                old_active = np.asarray(previous["mo_coeff"])[
+                    :, casscf.ncore:casscf.ncore + casscf.ncas
+                ]
+                new_active = np.asarray(casscf.mo_coeff)[
+                    :, casscf.ncore:casscf.ncore + casscf.ncas
+                ]
+                active_overlap = old_active.conj().T @ cross_overlap @ new_active
+                active_space_singular_values = np.linalg.svd(
+                    active_overlap, compute_uv=False
+                )
+                minimum_overlap = float(
+                    self.options.get("active_space_overlap_min", 0.0)
+                )
+                if (
+                    active_space_singular_values.size
+                    and active_space_singular_values.min() < minimum_overlap
+                ):
+                    raise ElectronicStructureError(
+                        "PySCF active-space continuity failure: "
+                        f"singular_values={active_space_singular_values.tolist()}, "
+                        f"minimum={minimum_overlap}",
+                        retryable=False,
+                    )
 
         gradients = None
         if ElectronicProperties.GRADIENTS in request.properties:
@@ -211,6 +313,34 @@ class PySCFProvider(BaseProvider):
             nacs = raw_nacs[permutation][:, permutation]
             nacs = phases.conj()[:, None, None, None] * nacs * phases[None, :, None, None]
 
+        ordered_energies = raw_energies[permutation]
+        energy_gradient_residuals = None
+        if (
+            gradients is not None
+            and previous is not None
+            and previous.get("energies") is not None
+            and previous.get("gradients") is not None
+            and previous.get("geometry") is not None
+        ):
+            displacement = request.geometry - np.asarray(previous["geometry"])
+            predicted_change = 0.5 * np.sum(
+                (np.asarray(previous["gradients"]) + gradients)
+                * displacement[None, :, :],
+                axis=(1, 2),
+            )
+            actual_change = ordered_energies - np.asarray(previous["energies"])
+            energy_gradient_residuals = actual_change - predicted_change
+            tolerance = float(
+                self.options.get("energy_gradient_consistency_tolerance", np.inf)
+            )
+            if np.max(np.abs(energy_gradient_residuals)) > tolerance:
+                raise ElectronicStructureError(
+                    "PySCF energy/gradient continuity failure: "
+                    f"residuals={energy_gradient_residuals.tolist()}, "
+                    f"tolerance={tolerance}",
+                    retryable=False,
+                )
+
         identifier = uuid.uuid4().hex
         ordered_ci = [
             np.real_if_close(np.asarray(raw_ci[index]) * phases[position])
@@ -221,10 +351,12 @@ class PySCFProvider(BaseProvider):
             "ci": ordered_ci,
             "molecule": molecule,
             "geometry": request.geometry.copy(),
+            "energies": ordered_energies.copy(),
+            "gradients": None if gradients is None else gradients.copy(),
         }
         self._states[identifier] = payload
         result = ElectronicStructureResult(
-            energies=raw_energies[permutation],
+            energies=ordered_energies,
             gradients=gradients,
             nacs=nacs,
             wavefunction=WavefunctionState(identifier, payload),
@@ -232,6 +364,11 @@ class PySCFProvider(BaseProvider):
                 "provider": "pyscf", "pyscf_converged": True,
                 "state_permutation": permutation.tolist(),
                 "tracking_overlap": tracking_overlap,
+                "active_space_singular_values": active_space_singular_values,
+                "energy_gradient_residuals": energy_gradient_residuals,
+                "casscf_candidate_energies": candidate_energies,
+                "casscf_candidate_active_overlaps": candidate_active_overlaps,
+                "casscf_selected_candidate": selected_candidate,
                 "spin_squares": spin_squares[permutation].tolist(),
                 "target_spin_square": target_spin_square,
             },
@@ -256,6 +393,11 @@ class PySCFProvider(BaseProvider):
                 ci=ci,
                 geometry=state["geometry"],
                 molecule_dump=np.asarray(molecule_dump),
+                energies=state.get("energies", np.asarray([])),
+                gradients=(
+                    state["gradients"]
+                    if state.get("gradients") is not None else np.asarray([])
+                ),
             )
             manifest[identifier] = filename
         (directory / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True))
@@ -279,6 +421,8 @@ class PySCFProvider(BaseProvider):
                 "ci": [value for value in archive["ci"]],
                 "geometry": archive["geometry"],
                 "molecule": gto.loads(molecule_dump) if gto is not None and molecule_dump else None,
+                "energies": archive["energies"] if "energies" in archive and archive["energies"].size else None,
+                "gradients": archive["gradients"] if "gradients" in archive and archive["gradients"].size else None,
             }
 
 

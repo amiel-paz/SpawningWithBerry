@@ -24,16 +24,76 @@ class HDF5Writer:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         mode = "a" if restart else "w"
+        self.replay_window: str | None = None
         with h5py.File(self.path, mode, libver="latest") as handle:
-            handle.attrs["schema_version"] = 1
+            handle.attrs["schema_version"] = 2
             handle.attrs["aims_berry_version"] = __version__
             handle.attrs["units"] = "atomic"
             handle.attrs["config_json"] = json.dumps(config.to_dict(), sort_keys=True)
-            handle.require_group("steps")
+            steps = handle.require_group("steps")
+            handle.require_group("replay")
+            if "committed_through" not in steps.attrs:
+                steps.attrs["committed_through"] = max(
+                    (int(name) for name in steps), default=-1
+                )
 
-    def write_step(self, state: SimulationState, num_states: int) -> None:
+    def begin_replay(
+        self, window: str, *, entry_step: int, frontier_step: int
+    ) -> None:
+        """Start or resume an isolated replay-history transaction."""
+
+        self.replay_window = str(window)
         with h5py.File(self.path, "a", libver="latest") as handle:
-            steps = handle["steps"]
+            root = handle["replay"].require_group(self.replay_window)
+            root.attrs["entry_step"] = int(entry_step)
+            root.attrs["frontier_step"] = int(frontier_step)
+            root.require_group("steps")
+            handle["steps"].attrs["committed_through"] = int(entry_step)
+            handle.attrs["active_replay"] = self.replay_window
+            handle.flush()
+
+    def reset_replay(self, window: str) -> None:
+        """Discard provisional frames but retain the replay transaction metadata."""
+
+        self.replay_window = str(window)
+        with h5py.File(self.path, "a", libver="latest") as handle:
+            root = handle["replay"].require_group(self.replay_window)
+            if "steps" in root:
+                del root["steps"]
+            root.create_group("steps")
+            handle.attrs["active_replay"] = self.replay_window
+            handle.flush()
+
+    def commit_replay(self, window: str, frontier_step: int) -> None:
+        """Atomically expose a completed replay window to analysis readers."""
+
+        window = str(window)
+        with h5py.File(self.path, "a", libver="latest") as handle:
+            staged = handle[f"replay/{window}/steps"]
+            canonical = handle["steps"]
+            for name in sorted(staged):
+                if name in canonical:
+                    del canonical[name]
+                handle.move(f"replay/{window}/steps/{name}", f"steps/{name}")
+            canonical.attrs["committed_through"] = int(frontier_step)
+            del handle[f"replay/{window}"]
+            if "active_replay" in handle.attrs:
+                del handle.attrs["active_replay"]
+            handle.flush()
+        self.replay_window = None
+
+    def write_step(
+        self,
+        state: SimulationState,
+        num_states: int,
+        diagnostics: dict[str, Any] | None = None,
+    ) -> None:
+        with h5py.File(self.path, "a", libver="latest") as handle:
+            steps = (
+                handle[f"replay/{self.replay_window}/steps"]
+                if self.replay_window is not None
+                else handle["steps"]
+            )
             name = f"{state.step:08d}"
             if name in steps:
                 del steps[name]
@@ -51,6 +111,10 @@ class HDF5Writer:
             group.create_dataset("parents", data=np.asarray([t.parent_id or "" for t in trajectories], dtype=strings))
             group.create_dataset("amplitudes", data=state.amplitudes)
             group.create_dataset("populations", data=state.populations(num_states=num_states))
+            group.attrs["metric_norm"] = (
+                float(np.real(np.vdot(state.amplitudes, state.matrices.overlap @ state.amplitudes)))
+                if state.matrices is not None else float(np.vdot(state.amplitudes, state.amplitudes).real)
+            )
             energies = np.full((len(trajectories), num_states), np.nan)
             gradients = np.full((len(trajectories), num_states, trajectories[0].positions.shape[0], 3), np.nan)
             nacs = np.full(
@@ -73,12 +137,60 @@ class HDF5Writer:
             group.create_dataset("gradients", data=gradients, compression="gzip")
             group.create_dataset("nacs", data=nacs, compression="gzip")
             group.create_dataset("state_overlaps", data=state_overlaps)
+            velocities = np.asarray([t.momenta / t.masses for t in trajectories])
+            kinetic = np.asarray([
+                np.sum(t.momenta * t.momenta / (2.0 * t.masses)) for t in trajectories
+            ])
+            potential = np.asarray([
+                energies[index, trajectory.state]
+                for index, trajectory in enumerate(trajectories)
+            ])
+            group.create_dataset("classical_kinetic_energy", data=kinetic)
+            group.create_dataset("classical_potential_energy", data=potential)
+            group.create_dataset("classical_total_energy", data=kinetic + potential)
+            projected = np.full((len(trajectories), num_states), np.nan + 0j)
+            for index, trajectory in enumerate(trajectories):
+                if trajectory.electronic is None or trajectory.electronic.nacs is None:
+                    continue
+                for target in range(num_states):
+                    projected[index, target] = np.sum(
+                        trajectory.electronic.nacs[trajectory.state, target] * velocities[index]
+                    )
+            group.create_dataset("projected_couplings", data=projected)
+            group.create_dataset("phases", data=np.asarray([t.phase for t in trajectories]))
+            group.attrs["electronic_metadata_json"] = json.dumps(
+                [t.electronic.metadata if t.electronic is not None else {} for t in trajectories],
+                default=_json_default,
+            )
             if state.matrices is not None:
                 group.create_dataset("H", data=state.matrices.hamiltonian)
                 group.create_dataset("S", data=state.matrices.overlap)
                 group.create_dataset("Sdot", data=state.matrices.sdot)
+                denominator = np.vdot(state.amplitudes, state.matrices.overlap @ state.amplitudes)
+                group.attrs["quantum_energy"] = float(np.real(
+                    np.vdot(state.amplitudes, state.matrices.hamiltonian @ state.amplitudes)
+                    / denominator
+                ))
+                group.attrs["hamiltonian_hermiticity_residual"] = float(
+                    np.max(np.abs(
+                        state.matrices.hamiltonian - state.matrices.hamiltonian.conj().T
+                    ))
+                )
+            if diagnostics:
+                for key, value in diagnostics.items():
+                    if value is None:
+                        continue
+                    array = np.asarray(value)
+                    if array.ndim:
+                        group.create_dataset(key, data=array)
+                    else:
+                        group.attrs[key] = array.item()
             if state.events:
                 group.attrs["events_json"] = json.dumps(state.events, default=_json_default)
+            if self.replay_window is None:
+                steps.attrs["committed_through"] = max(
+                    int(steps.attrs.get("committed_through", -1)), state.step
+                )
             handle.flush()
 
 
@@ -119,7 +231,7 @@ class CheckpointManager:
         provider_directory.mkdir()
         provider_metadata = provider.dump_state(provider_directory)
         metadata = {
-            "schema_version": 1,
+            "schema_version": 2,
             "version": __version__,
             "quantum_time": state.quantum_time,
             "step": state.step,

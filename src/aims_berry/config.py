@@ -74,6 +74,8 @@ class SimulationConfig:
             raise ConfigError("initial_state must be in [0, num_states)")
         if self.time_step <= 0 or self.simulation_time < 0:
             raise ConfigError("time_step must be positive and simulation_time non-negative")
+        if self.min_time_step is not None and not 0 < self.min_time_step <= self.time_step:
+            raise ConfigError("min_time_step must be in (0, time_step]")
         if len(self.state_weights) not in (0, self.num_states):
             raise ConfigError("state_weights must contain num_states entries")
         if self.state_weights and not abs(sum(self.state_weights) - 1.0) < 1.0e-10:

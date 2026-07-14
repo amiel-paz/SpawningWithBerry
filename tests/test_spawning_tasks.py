@@ -25,6 +25,8 @@ def test_child_creation_is_same_position_and_deterministically_labeled():
     child = make_child(candidate, parent)
     assert child is not None and np.array_equal(child.positions, parent.positions)
     assert child.label == "00b1" and child.parent_id == parent.identifier
+    assert parent.spawn_count == 0
+    assert parent.last_spawn_time == -np.inf
 
 
 def test_task_queue_restart_preserves_dependencies_and_order():

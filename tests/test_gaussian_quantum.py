@@ -1,9 +1,16 @@
+from pathlib import Path
+
 import numpy as np
 from scipy.linalg import expm
 
 from aims_berry.core import MatrixSet, TrajectoryBasisFunction
-from aims_berry.dynamics.gaussian import gaussian_kinetic, overlap_matrix
-from aims_berry.dynamics.quantum import cayley_step, metric_norm, regularized_metric
+from aims_berry.dynamics.gaussian import gaussian_kinetic, gaussian_sdot, overlap_matrix
+from aims_berry.dynamics.quantum import (
+    adaptive_cayley_step,
+    cayley_step,
+    metric_norm,
+    regularized_metric,
+)
 
 
 def trajectory(x, p):
@@ -72,3 +79,94 @@ def test_cayley_uses_full_right_acting_derivative():
     assert not np.allclose(with_tau, without_tau)
     assert np.allclose(np.abs(with_tau), np.abs(exact), atol=1e-10)
     assert abs(metric_norm(with_tau, overlap) - 1.0) < 1e-12
+
+
+def test_adaptive_cayley_repairs_three_tbf_ethylene_failure():
+    fixture = np.load(Path(__file__).parent / "data" / "ethylene_second_spawn_step.npz")
+    start = MatrixSet(fixture["start_S"], fixture["start_H"], fixture["start_tau"])
+    end = MatrixSet(fixture["end_S"], fixture["end_H"], fixture["end_tau"])
+    coefficients = fixture["amplitudes"]
+
+    old = cayley_step(coefficients, start, 10.0, end_matrices=end)
+    assert abs(metric_norm(old, end.overlap) - 1.000063744080636) < 2.0e-12
+
+    repaired = adaptive_cayley_step(
+        coefficients,
+        start,
+        end,
+        10.0,
+        convergence_tolerance=1.0e-6,
+        norm_tolerance=1.0e-10,
+        min_time_step=10.0 / 4096.0,
+    )
+    assert repaired.substeps <= 4096
+    assert abs(repaired.norm_after_raw - repaired.norm_before) < 1.0e-10
+    assert abs(metric_norm(repaired.amplitudes, end.overlap) - repaired.norm_before) < 2.0e-14
+
+    reference = adaptive_cayley_step(
+        coefficients,
+        start,
+        end,
+        10.0,
+        convergence_tolerance=2.5e-7,
+        norm_tolerance=1.0e-11,
+        min_time_step=10.0 / 4096.0,
+    )
+    assert np.allclose(
+        np.abs(repaired.amplitudes) ** 2,
+        np.abs(reference.amplitudes) ** 2,
+        atol=1.0e-6,
+    )
+
+    shifted_start = MatrixSet(
+        start.overlap,
+        start.hamiltonian + 1000.0 * start.overlap,
+        start.sdot,
+    )
+    shifted_end = MatrixSet(
+        end.overlap,
+        end.hamiltonian + 1000.0 * end.overlap,
+        end.sdot,
+    )
+    shifted = adaptive_cayley_step(
+        coefficients,
+        shifted_start,
+        shifted_end,
+        10.0,
+        convergence_tolerance=1.0e-6,
+        norm_tolerance=1.0e-10,
+        min_time_step=10.0 / 4096.0,
+    )
+    assert np.allclose(
+        np.abs(shifted.amplitudes) ** 2,
+        np.abs(repaired.amplitudes) ** 2,
+        atol=1.0e-12,
+    )
+
+
+def test_gaussian_tau_matches_finite_difference_metric_derivative():
+    basis = [trajectory(-0.12, 0.3), trajectory(0.17, -0.2)]
+    velocities = [np.array([[0.04, 0.0, 0.0]]), np.array([[-0.03, 0.0, 0.0]])]
+    momentum_derivatives = [
+        np.array([[0.02, 0.0, 0.0]]), np.array([[-0.01, 0.0, 0.0]])
+    ]
+    tau = np.asarray([
+        [
+            gaussian_sdot(left, right, velocities[j], momentum_derivatives[j])
+            for j, right in enumerate(basis)
+        ]
+        for left in basis
+    ])
+    epsilon = 1.0e-6
+    displaced = []
+    for sign in (-1.0, 1.0):
+        current = []
+        for item, velocity, pdot in zip(basis, velocities, momentum_derivatives):
+            moved = trajectory(
+                item.positions[0, 0] + sign * epsilon * velocity[0, 0],
+                item.momenta[0, 0] + sign * epsilon * pdot[0, 0],
+            )
+            current.append(moved)
+        displaced.append(overlap_matrix(current))
+    finite_difference = (displaced[1] - displaced[0]) / (2.0 * epsilon)
+    assert np.max(np.abs(finite_difference - tau - tau.conj().T)) < 1.0e-9

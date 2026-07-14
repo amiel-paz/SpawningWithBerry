@@ -29,3 +29,16 @@ def test_h3_sa_casscf_energies_gradients_and_nacs():
     assert result.nacs.shape == (2, 2, 3, 3)
     assert np.linalg.norm(result.nacs + result.nacs.swapaxes(0, 1).conj()) < 1e-8
     assert np.allclose(result.metadata["spin_squares"], [0.75, 0.75], atol=1e-8)
+
+    tracked_request = ElectronicStructureRequest(
+        atoms=atoms, atomic_numbers=atomic_numbers(atoms),
+        geometry=geometry + np.asarray([[0.0, 1.0e-4, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]),
+        states=(0, 1), active_state=1, time=0.1,
+        properties=request.properties, previous=result.wavefunction,
+    )
+    tracked = from_config(config)
+    tracked.adopt_wavefunction(result.wavefunction)
+    continued = tracked.evaluate(tracked_request)
+    singular_values = continued.metadata["active_space_singular_values"]
+    assert singular_values is not None and np.min(singular_values) > 0.99
+    assert continued.metadata["energy_gradient_residuals"] is not None

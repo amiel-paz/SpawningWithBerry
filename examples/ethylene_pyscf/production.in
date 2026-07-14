@@ -5,7 +5,8 @@ geometry_units bohr
 
 num_states 2
 initial_state 1
-time_step 10 au
+time_step 5 au
+min_time_step 0.00244140625 au
 simulation_time 5000 au
 random_seed 87062
 initial_condition wigner
@@ -26,6 +27,11 @@ provider_option scf_conv_tol 1e-9
 provider_option casscf_conv_tol 1e-8
 provider_option casscf_max_cycle 50
 provider_option spin_penalty 0.5
+provider_option multistart_external_orbitals 1
+provider_option orbital_selection overlap
+provider_option active_space_overlap_min 0.7
+provider_option energy_gradient_consistency_tolerance 0.005
+provider_option electronic_workers 3
 
 coupling_mode nac
 quantum_integrator cayley
@@ -35,7 +41,9 @@ population_to_spawn 0.001
 spawn_overlap_max 0.8
 spawn_cooldown 50
 max_trajectories 32
+max_energy_gap 0.05
 regularization_threshold 1e-8
+energy_tolerance 0.005
 norm_tolerance 1e-6
 output_every 1
 run_directory run-production

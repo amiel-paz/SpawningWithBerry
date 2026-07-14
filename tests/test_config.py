@@ -60,7 +60,9 @@ def test_ethylene_production_config_and_wigner_sample_are_reproducible():
         np.random.default_rng(config.random_seed),
         config.temperature,
     )
-    assert config.nsteps == 500
+    assert config.nsteps == 1000
+    assert config.time_step == 5.0
+    assert config.min_time_step == 0.00244140625
     assert config.simulation_time / AU_TIME_PER_FS == pytest.approx(120.944216329285)
     assert np.array_equal(first[0], second[0])
     assert np.array_equal(first[1], second[1])
