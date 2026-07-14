@@ -1,4 +1,8 @@
-# Ethylene production validation
+# Superseded SA(2) ethylene diagnostic
+
+> This report describes the earlier SA(2)-CASSCF(2e,2o) diagnostic. It is not the
+> requested production model. Production now uses equal-weight
+> SA(3)-CASSCF(2e,2o), starts on S1, and must begin again from time zero.
 
 The production trajectory uses seed 87062, SA(2)-CASSCF(2e,2o)/6-31G, a 5 au
 outer nuclear step, and adaptive metric-aware coefficient propagation down to

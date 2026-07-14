@@ -225,14 +225,18 @@ class PySCFProvider(BaseProvider):
         if not candidates:
             raise ElectronicStructureError("PySCF SA-CASSCF did not converge", retryable=True)
         selection = str(self.options.get("orbital_selection", "energy")).lower()
-        if selection == "overlap" and any(
-            values is not None for values in candidate_active_overlaps
-        ):
-            scores = [
-                -np.inf if values is None else float(np.min(values))
-                for values in candidate_active_overlaps
-            ]
-            selected_candidate = int(np.argmax(scores))
+        if selection == "overlap":
+            if any(values is not None for values in candidate_active_overlaps):
+                scores = [
+                    -np.inf if values is None else float(np.min(values))
+                    for values in candidate_active_overlaps
+                ]
+                selected_candidate = int(np.argmax(scores))
+            else:
+                # There is no transported subspace on the first electronic call.
+                # Initialize from the lowest stationary state-averaged solution;
+                # subsequent calls select by active-subspace overlap.
+                selected_candidate = int(np.argmin(candidate_energies))
         elif selection == "energy":
             selected_candidate = int(np.argmin(candidate_energies))
         else:

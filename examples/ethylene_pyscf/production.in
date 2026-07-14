@@ -3,7 +3,7 @@ provider pyscf
 geometry ethylene_production.xyz
 geometry_units bohr
 
-num_states 2
+num_states 3
 initial_state 1
 time_step 5 au
 min_time_step 0.00244140625 au
@@ -20,7 +20,7 @@ charge 0
 spin 0
 active_electrons 2
 active_orbitals 2
-state_weights 0.5 0.5
+state_weights 0.3333333333333333 0.3333333333333333 0.3333333333333334
 provider_option density_fit true
 provider_option max_memory 8000
 provider_option scf_conv_tol 1e-9

@@ -1,3 +1,4 @@
+import dataclasses
 import importlib.util
 from pathlib import Path
 
@@ -17,6 +18,10 @@ pytestmark = pytest.mark.pyscf
 def test_h3_sa_casscf_energies_gradients_and_nacs():
     root = Path(__file__).parents[1]
     config = load_config(root / "examples/h3_pyscf/aims.in")
+    config = dataclasses.replace(
+        config,
+        provider_options=config.provider_options + (("orbital_selection", "overlap"),),
+    )
     atoms, geometry = read_xyz(config.geometry, config.geometry_units)
     request = ElectronicStructureRequest(
         atoms=atoms, atomic_numbers=atomic_numbers(atoms), geometry=geometry,
