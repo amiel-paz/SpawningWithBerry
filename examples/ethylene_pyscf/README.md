@@ -92,8 +92,25 @@ The rolling status, call counts, memory use, and makespan estimate are written t
   5-au velocity-Verlet nuclear step. This deliberately departs from the canonical
   20-au normal step to preserve a single symplectic map. The production hard bound
   is 0.2 mEh, while the local interval-consistency trigger remains 0.1 mEh. A
-  separate 1e-8-Eh comparison margin reflects the CASSCF
-  convergence floor; raw energies are stored unchanged and are never recentered.
+  separate 1e-8-Eh comparison margin reflects the CASSCF convergence floor; raw
+  energies are stored unchanged and are never recentered.
+- Spawn-child backpropagation uses the same local refinement
+  ladder: seed 87063 demonstrated that a provisional child can cross the sharp
+  995-au near-degeneracy even when its parent completed the forward interval.
+  Rejected child trials are now discarded transactionally, leaving the threshold-
+  entry replay snapshot and zero-amplitude insertion semantics unchanged.
+- Quantum-energy excursions are stored rather than corrected. The exact seed-87063
+  replay gives the same 5.83-mEh SPA0 Hamiltonian excursion at 0.625, 0.3125, and
+  0.15625 au, while its metric norm remains converged. Production therefore uses
+  `quantum_energy_policy record`: it never rescales coefficients, and all raw
+  values remain available for analysis. Classical energy, norm, population sum,
+  electronic continuity, and replay consistency retain hard failure gates.
+- Centroid NAC phases are parallel-transported independently for every active TBF
+  pair and included in exact replay checkpoints. This removes a scheduler-dependent
+  sign reversal observed at 992.5 au: one- and six-worker replays now agree within
+  `5.81e-4` in state population instead of differing by 0.222. The final from-zero
+  six-worker 1100-au gate completed with S0 population 0.755661 at the old frontier,
+  norm error `2.18e-13`, and maximum classical drift 0.0715 mEh.
 - Final from-zero gates at fixed 5 au passed. Seed 87062's largest per-TBF
   classical drift through 700 au is 0.0673 mEh and it reproduces the 515-au spawn;
   seed 87063's drift is 0.0189 mEh. The `10^-3` and `10^-4` pair thresholds give

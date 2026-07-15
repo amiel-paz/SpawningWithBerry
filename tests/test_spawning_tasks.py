@@ -76,7 +76,10 @@ def test_nac_saddle_point_element_has_derivative_operator_sign():
         [left.momenta / left.masses, right.momenta / right.masses],
         [np.zeros((1, 3)), np.zeros((1, 3))], 0.1,
     )
-    expected = 1j * np.sum(nac[0, 1] * gaussian_momentum(left, right) / right.masses)
+    # PySpawn Eq. (8)/(11) contributes 2D, where
+    # D=(1/2M)d.<d/dR>. For p=-i*d/dR, <d/dR>=i<p>.
+    derivative_matrix = 1j * gaussian_momentum(left, right)
+    expected = np.sum(nac[0, 1] * derivative_matrix / right.masses)
     assert np.allclose(matrices.hamiltonian[0, 1], expected)
     assert np.allclose(matrices.hamiltonian[1, 0], expected.conjugate())
     assert len(calls) == 1  # diagonal electronic data are reused from the TBFs

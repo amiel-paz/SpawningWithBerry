@@ -53,6 +53,7 @@ pair_overlap_threshold 0.001
 overlap_threshold 0.0001
 regularization_threshold 0.0001
 energy_tolerance 0.005
+quantum_energy_policy record
 classical_energy_tolerance 0.0002
 classical_energy_numerical_margin 0.00000001
 norm_tolerance 1e-6

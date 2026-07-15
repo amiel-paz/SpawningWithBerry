@@ -29,7 +29,8 @@ Spawning controls are `spawn_strategy`, `spawn_threshold`, `population_to_spawn`
 the corresponding units. `nac_gap_threshold` suppresses requested NAC pairs above
 the configured energy gap.
 Numerical/storage controls include `regularization_threshold`, `overlap_threshold`,
-`pair_overlap_threshold`, `energy_tolerance`, `classical_energy_tolerance`,
+`pair_overlap_threshold`, `energy_tolerance`, `quantum_energy_policy`,
+`classical_energy_tolerance`,
 `output_every`, `electronic_retries`, `checkpoint_keep`, and `run_directory`.
 `classical_energy_tolerance` optionally imposes a stricter per-TBF energy-drift
 gate that transactionally refines rejected nuclear intervals; when omitted it
@@ -38,6 +39,12 @@ comparison-only allowance for electronic convergence noise; it never changes or
 recenters the recorded raw energy. TBF pairs whose analytic nuclear overlap is below
 `pair_overlap_threshold` receive exactly zero off-diagonal matrix elements and do
 not issue a centroid electronic-structure request.
+
+`energy_tolerance` marks quantum-energy excursions for diagnostics.
+`quantum_energy_policy record` (the default) preserves the raw TDSE solution and
+records threshold crossings; `error` makes the same threshold a hard stop.  This
+policy never rescales amplitudes. Metric norm and population-sum errors remain hard
+failures regardless of the energy policy.
 
 Providers may honor selective derivative requests. `gradient_states` and
 `nac_pairs` are carried by the Python `ElectronicStructureRequest`, not by input

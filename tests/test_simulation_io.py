@@ -14,6 +14,7 @@ from aims_berry import (
     run,
 )
 from aims_berry.analysis import RunDataset
+from aims_berry.core import MatrixSet
 from aims_berry.electronic.base import (
     ElectronicProperties,
     ElectronicStructureError,
@@ -63,6 +64,46 @@ def test_classical_energy_tolerance_can_be_stricter_than_quantum_gate(tmp_path):
     )
     runner._check_classical_energies()
     runner.close()
+
+
+def test_quantum_energy_policy_records_or_rejects_without_changing_amplitudes(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nquantum energy policy\nH 0 0 0\n")
+    base = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=1.0, simulation_time=0.0,
+        electronic_method="custom", energy_tolerance=1.0e-3,
+        run_directory=tmp_path / "quantum-record",
+    )
+    runner = SimulationRunner(base, CallableProvider(flat_provider))
+    runner.state.matrices = MatrixSet(np.eye(1), np.zeros((1, 1)), np.zeros((1, 1)))
+    runner._check_quantum_energy()
+    before = runner.state.amplitudes.copy()
+    runner.state.matrices = MatrixSet(
+        np.eye(1), np.asarray([[2.0e-3]]), np.zeros((1, 1))
+    )
+    runner._check_quantum_energy()
+    assert np.array_equal(runner.state.amplitudes, before)
+    assert runner.state.events[-1]["kind"] == "quantum_energy_threshold"
+    assert runner.state.events[-1]["policy"] == "record"
+    runner.close()
+
+    strict = SimulationRunner(
+        replace(
+            base,
+            quantum_energy_policy="error",
+            run_directory=tmp_path / "quantum-error",
+        ),
+        CallableProvider(flat_provider),
+    )
+    strict.state.matrices = MatrixSet(np.eye(1), np.zeros((1, 1)), np.zeros((1, 1)))
+    strict._check_quantum_energy()
+    strict.state.matrices = MatrixSet(
+        np.eye(1), np.asarray([[2.0e-3]]), np.zeros((1, 1))
+    )
+    with pytest.raises(RuntimeError, match="quantum energy violation"):
+        strict._check_quantum_energy()
+    strict.close()
 
 
 def test_short_run_writes_history_and_exact_checkpoint(tmp_path):
@@ -432,6 +473,26 @@ def test_canonical_nuclear_step_selection_and_refinement(tmp_path):
     assert canonical_runner._regularization_ladder() == (
         1.0e-4, 1.0e-5, 1.0e-6, 1.0e-8,
     )
+    runner.forced_nuclear_time_steps = {"5.000000000000": 1.25}
+    runner.replay_suppressed = {(runner.state.trajectories[0].identifier, 0): 7.5}
+    runner.quantum_energy_gate_active = True
+    runner.centroid_nac_previous = {"pair": np.asarray([[1.0, 2.0j]])}
+    snapshot = runner._current_snapshot((runner.state.trajectories[0].identifier, 0))
+    runner.forced_nuclear_time_steps["5.000000000000"] = 0.625
+    runner.replay_suppressed.clear()
+    runner.quantum_energy_gate_active = False
+    runner.centroid_nac_previous.clear()
+    runner._restore_spawn_snapshot(snapshot)
+    assert runner.forced_nuclear_time_steps == {"5.000000000000": 1.25}
+    assert runner.replay_suppressed == {
+        (runner.state.trajectories[0].identifier, 0): 7.5
+    }
+    assert runner.quantum_energy_gate_active
+    assert np.array_equal(
+        runner.centroid_nac_previous["pair"], np.asarray([[1.0, 2.0j]])
+    )
+    runner.close()
+    canonical_runner.close()
 
 
 def test_endpoint_energy_gradient_rejection_refines_complete_nuclear_interval(tmp_path):
@@ -485,6 +546,184 @@ def test_endpoint_energy_gradient_rejection_refines_complete_nuclear_interval(tm
     assert refinements[0]["to_dt"] == 5.0
     assert "energy/gradient continuity failure" in refinements[0]["reason"]
     assert any(displacement > 0.05 for _time, displacement in calls)
+
+
+def test_spawn_child_backprop_refines_rejected_interval_transactionally(tmp_path):
+    fixture = json.loads(
+        (Path(__file__).parent / "data" / "ethylene_seed87063_spawn_backprop_failure.json")
+        .read_text()
+    )
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nspawn backprop refinement\nH 0 0 0\n")
+    calls = []
+    wavefunction_times = {}
+
+    def continuity_provider(request):
+        previous_time = (
+            None
+            if request.previous is None
+            else wavefunction_times[request.previous.identifier]
+        )
+        interval = 0.0 if previous_time is None else abs(request.time - previous_time)
+        calls.append((request.time, interval))
+        if interval > 1.0 + 1.0e-12:
+            raise ElectronicStructureError(
+                "energy/gradient continuity failure: "
+                f"residuals=[{fixture['reported_energy_gradient_residual_hartree']}], "
+                f"tolerance={fixture['configured_tolerance_hartree']}"
+            )
+        identifier = f"wf-{len(calls)}"
+        wavefunction_times[identifier] = request.time
+        return ElectronicStructureResult(
+            energies=np.asarray([0.0]),
+            gradients=np.zeros((1, 1, 3)),
+            wavefunction=WavefunctionState(identifier),
+        )
+
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=2.0, coupling_time_step=2.0,
+        minimum_nuclear_time_step=1.0, simulation_time=4.0,
+        electronic_method="custom", spawn_threshold=1e9,
+        run_directory=tmp_path / "spawn-backprop-refinement",
+    )
+    runner = SimulationRunner(config, CallableProvider(continuity_provider))
+    child = runner.state.trajectories[0].copy_child(0, np.zeros((1, 3)))
+    child.time = 4.0
+    propagated = runner._backpropagate_spawn_child(child, 0.0)
+
+    refinements = [
+        event for event in runner.state.events
+        if event.get("kind") == "spawn_backprop_refinement"
+    ]
+    assert propagated.time == pytest.approx(0.0)
+    assert all(event["from_dt"] == 2.0 for event in refinements)
+    assert all(event["to_dt"] == 1.0 for event in refinements)
+    assert len(refinements) == 3
+    assert sum(time == 4.0 for time, _interval in calls) == 1
+    assert any(interval == 2.0 for _time, interval in calls)
+    assert len(runner.state.trajectories) == 1
+    runner.close()
+
+
+def test_endpoint_centroid_continuity_rejection_refines_complete_interval(
+    tmp_path, monkeypatch
+):
+    fixture = json.loads(
+        (Path(__file__).parent / "data" / "ethylene_seed87063_spawn_backprop_failure.json")
+        .read_text()
+    )
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\ncentroid refinement\nH 0 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=2.0, coupling_time_step=2.0,
+        minimum_nuclear_time_step=1.0, simulation_time=2.0,
+        electronic_method="custom", spawn_threshold=1e9,
+        run_directory=tmp_path / "centroid-refinement",
+    )
+    runner = SimulationRunner(config, CallableProvider(flat_provider))
+    original_build = runner._build_matrices
+    calls = 0
+
+    def reject_first_endpoint(dt=None):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            overlaps = fixture["centroid_root_diagonal_overlaps"]
+            raise ElectronicStructureError(
+                "PySCF CI-root continuity failure: "
+                f"diagonal_overlaps={overlaps}, assignment_suggestion=[1, 0, 2], "
+                f"minimum={fixture['centroid_root_overlap_minimum']}"
+            )
+        return original_build(dt)
+
+    monkeypatch.setattr(runner, "_build_matrices", reject_first_endpoint)
+    result = runner.propagate()
+    refinements = [
+        event for event in result.events
+        if event.get("kind") == "nuclear_step_refinement"
+    ]
+    assert result.state.quantum_time == 2.0
+    assert refinements[0]["from_dt"] == 2.0
+    assert refinements[0]["to_dt"] == 1.0
+    assert "CI-root continuity failure" in refinements[0]["reason"]
+    runner.close()
+
+
+def test_centroid_nac_parallel_transport_removes_provider_phase_flips(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\ncentroid NAC phase\nH 0 0 0\n")
+    calls = 0
+
+    def phase_flipping_provider(request):
+        nonlocal calls
+        calls += 1
+        sign = 1.0 if calls % 2 else -1.0
+        nacs = np.zeros((2, 2, 1, 3), complex)
+        nacs[0, 1, 0, 0] = sign
+        nacs[1, 0] = -nacs[0, 1].conj()
+        return ElectronicStructureResult(
+            energies=np.asarray([0.0, 0.01]),
+            nacs=nacs,
+        )
+
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
+        initial_state=0, time_step=1.0, simulation_time=0.0,
+        electronic_method="custom", coupling_mode="nac", spawn_threshold=1e9,
+        run_directory=tmp_path / "centroid-nac-phase",
+    )
+    runner = SimulationRunner(
+        config,
+        CallableProvider(
+            phase_flipping_provider,
+            capabilities=ProviderCapabilities(nacs=True),
+        ),
+    )
+    left = runner.state.trajectories[0]
+    right = left.copy_child(1, left.momenta)
+    first = runner._evaluate_centroid(left, right, np.zeros((1, 3)))
+    second = runner._evaluate_centroid(
+        left, right, np.asarray([[0.1, 0.0, 0.0]])
+    )
+    assert np.allclose(first.nac_between(0, 1), second.nac_between(0, 1))
+    assert np.allclose(
+        second.metadata["centroid_nac_parallel_transport_phase"], -1.0
+    )
+    runner.close()
+
+
+def test_centroid_nac_phase_tracking_skips_gap_screened_pair(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nscreened centroid NAC\nH 0 0 0\n")
+
+    def screened_provider(request):
+        return ElectronicStructureResult(
+            energies=np.asarray([0.0, 0.1]),
+            nacs=np.zeros((2, 2, 1, 3), complex),
+            nac_mask=np.zeros((2, 2), bool),
+        )
+
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
+        initial_state=0, time_step=1.0, simulation_time=0.0,
+        electronic_method="custom", coupling_mode="nac", spawn_threshold=1e9,
+        nac_gap_threshold=0.01,
+        run_directory=tmp_path / "screened-centroid-nac",
+    )
+    runner = SimulationRunner(
+        config,
+        CallableProvider(
+            screened_provider, capabilities=ProviderCapabilities(nacs=True)
+        ),
+    )
+    left = runner.state.trajectories[0]
+    right = left.copy_child(1, left.momenta)
+    result = runner._evaluate_centroid(left, right, np.zeros((1, 3)))
+    assert not result.nac_mask[0, 1]
+    assert runner.centroid_nac_previous == {}
+    runner.close()
 
 
 def test_replay_history_is_hidden_until_transaction_commit(tmp_path):

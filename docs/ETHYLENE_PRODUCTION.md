@@ -119,6 +119,16 @@ corresponding determinant representation before root phase alignment. Genuine
 energy/gradient or orbital-aware root-continuity rejections restore the complete
 Verlet interval and follow the 5/2.5/1.25/0.625-au refinement ladder.
 
+The next ensemble launch exposed the same missing safeguard on a different code
+path: seed 87063's provisional S0 child was being propagated backward through its
+near-degenerate region around 995 au in an indivisible 5-au interval.  Its
+`-1.12995e-4 Eh` energy/gradient residual correctly failed the `1e-4 Eh` provider
+gate, but spawn backpropagation did not yet apply the ordinary trajectory's
+refinement ladder.  Spawn-child steps are now transactional and locally retry at
+2.5, 1.25, and 0.625 au without mutating the accepted child history or replay
+snapshot.  The current endpoint electronic result is also reused rather than
+recomputed at the start of every backward step.
+
 The corrected persistent gauge passed 43 tests and fresh from-zero launch gates.
 The `10^-3` and `10^-4` 700-au pair-screening histories are identical: seed 87062
 spawns at 515 au and reaches S0/S1 populations 0.667896/0.332104, while seed 87063
@@ -136,8 +146,7 @@ the next frame, so it was bounded finite-step error rather than secular loss, bu
 millihartree-scale excursions are not accepted as production quality. The former
 `0.005 Eh` local provider threshold was too loose to activate refinement. Production
 now uses a separate `0.0001 Eh` local consistency gate; the existing transactional
-rollback retries rejected 20-au intervals at 5 au while the 0.005-Eh global energy
-limit remains a hard diagnostic stop.
+rollback retries rejected intervals below the ordinary 5-au step.
 
 Using an absolute-energy boundary to select among 20/5/2.5/1.25-au Verlet maps was
 then found to be internally counterproductive: each timestep has a different shadow
@@ -162,3 +171,39 @@ S0/S1 populations 0.673448/0.326552. Seed 87063 has drift `1.893e-5 Eh` and rema
 on S1. The `10^-3` and `10^-4` pair-screening runs are identical frame by frame;
 the worst metric-norm error is `1.90e-13`, root overlap is 0.97569, and the measured
 13-member makespan projection is 6.35 hours.
+
+The next seed-87063 spawn exposed two additional, separable effects. First, the
+provisional S0 child's 5-au backward interval across the 995-au near-degeneracy
+failed the local energy/gradient check by `1.12995e-4 Eh`; child backpropagation now
+uses the same transactional refinement ladder as forward propagation. Second, the
+subsequent coupled replay produced an instantaneous SPA0 Hamiltonian expectation
+`5.83e-3 Eh` above its initial value at 994.375 au. Repeating that endpoint at
+0.625, 0.3125, and 0.15625 au leaves the same excursion, demonstrating that it is
+not coefficient or nuclear timestep error. It is the coherent Hamiltonian
+expectation of the standard approximate AIMS basis near the singular NAC region;
+PySpawn explicitly neglects the second-derivative `G` term and identifies matrix-
+element approximation as a source of uncertainty. In accordance with the user's
+instruction to preserve rather than renormalize the TDSE solution, 0.005 Eh is now
+a recorded quantum-energy threshold. Norm, population sum, classical per-TBF
+energy, root/gauge continuity, and electronic convergence remain hard stops. Set
+`quantum_energy_policy error` to recover fail-fast research runs.
+
+Finally, the same replay under one and six electronic workers exposed an arbitrary
+centroid-NAC sign at 992.5 au. Without pair-local transport, the coupling changed
+from approximately `-0.038i` to `+0.038i` under a different worker schedule and
+changed the frontier S0 population by 0.222. Every active interstate centroid pair
+now retains its own prior NAC and parallel-transports the next vector by the global
+complex phase that maximizes their overlap. That gauge state is part of outer-step,
+spawn, replay, and exact-restart checkpoints; gap-screened pairs are left
+unavailable and contribute zero as before. Replaying the identical window with one
+and six workers now gives frontier S0 populations 0.754295 and 0.754647 (maximum
+frame difference `5.81e-4`) with the same coupling sign.
+
+The final six-worker seed-87063 gate then completed from step zero through 1100 au.
+It spawned S1->S0 at 995 au, refined the child's rejected 5-au backpropagation to
+2.5 au, committed the two-TBF replay with no staging residue, and rejected the
+redundant S0->S1 back-spawn by entry overlap. At 1038.75 au the S0 population is
+0.755661; at 1100 au it is 0.716415. The maximum metric-norm error is
+`2.18e-13`, maximum per-TBF classical drift is `7.15e-5 Eh`, peak RSS is below
+0.48 GB with no swap, and the conservative 13-member makespan projection is
+11.77 hours.

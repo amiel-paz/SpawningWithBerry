@@ -36,11 +36,12 @@
     "hessian": "numerical MP2/6-31G* Hessian at the accepted geometry",
     "initial_conditions": "same distribution and count, but not the paper's original random samples",
     "density_fitting": "enabled after an equilibrium no-density-fitting comparison",
-    "root_tracking": "adiabatic roots remain energy ordered; orbital-aware many-electron overlaps include the old/new active-orbital transformation, and a same-root overlap below 0.7 triggers nuclear-step refinement",
+    "root_tracking": "adiabatic roots remain energy ordered; orbital-aware many-electron overlaps include the old/new active-orbital transformation, a same-root overlap below 0.7 triggers whole-interval refinement, and each active centroid-pair NAC is parallel-transported and checkpointed by pair identity",
     "local_energy_gradient_consistency_hartree": 0.0001,
     "classical_energy_tolerance_hartree": 0.0002,
     "classical_energy_numerical_margin_hartree": 1e-08,
     "energy_tolerance_hartree": 0.005,
+    "quantum_energy_policy": "record; SPA0 coherent-energy excursions are retained without coefficient rescaling",
     "max_trajectories": 32,
     "minimum_nuclear_time_step_au": 0.625,
     "production_fixed_nuclear_time_step_au": 5.0

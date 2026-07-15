@@ -80,8 +80,9 @@ class SaddlePointHamiltonian:
                 ):
                     momentum = gaussian_momentum(left, right)
                     derivative = electronic.nacs[state_i, state_j]
-                    # PySpawn Eq. (8)/(16): H_IJ contains 2D_IJ and
-                    # <chi_i|d/dR|chi_j> = i <chi_i|p|chi_j> for p=-i d/dR.
+                    # PySpawn Eq. (8)/(11)/(16): H_IJ contains 2D_IJ with
+                    # D_IJ=(1/2M)d_IJ.<d/dR>. Since <d/dR>=i<p> for
+                    # p=-i d/dR, the complete first-derivative term is +i d.p/M.
                     value += 1j * np.sum(derivative * momentum / right.masses)
                 elif self.coupling_mode == "npi" and electronic.state_overlaps is not None:
                     tdc = npi_time_derivative(electronic.state_overlaps, dt)

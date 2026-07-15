@@ -62,6 +62,7 @@ class SimulationConfig:
     min_time_step: float | None = None
     minimum_nuclear_time_step: float | None = None
     energy_tolerance: float = 5.0e-3
+    quantum_energy_policy: Literal["record", "error"] = "record"
     classical_energy_tolerance: float | None = None
     classical_energy_numerical_margin: float = 0.0
     norm_tolerance: float = 1.0e-6
@@ -105,6 +106,8 @@ class SimulationConfig:
             raise ConfigError("coupling_mode must be auto, npi, or nac")
         if self.quantum_integrator not in {"cayley", "rk45"}:
             raise ConfigError("quantum_integrator must be cayley or rk45")
+        if self.quantum_energy_policy not in {"record", "error"}:
+            raise ConfigError("quantum_energy_policy must be record or error")
         if self.spawn_strategy not in {"nac", "coupling_optimized"}:
             raise ConfigError("spawn_strategy must be nac or coupling_optimized")
         if self.spawn_metric not in {"projected", "nac_norm"}:
@@ -169,6 +172,7 @@ _SCALAR_TYPES: dict[str, type] = {
     "overlap_threshold": float,
     "regularization_threshold": float,
     "energy_tolerance": float,
+    "quantum_energy_policy": str,
     "classical_energy_tolerance": float,
     "classical_energy_numerical_margin": float,
     "norm_tolerance": float,

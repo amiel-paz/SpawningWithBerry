@@ -49,3 +49,10 @@ overlap. Metadata contains `tracking_overlap` (physical orbital-aware overlap),
 `ci_coefficient_overlap` and post-alignment `aligned_ci_coefficient_overlap`.
 The Hungarian `root_assignment_suggestion` is diagnostic and never permutes
 nondegenerate adiabatic energies.
+
+The driver additionally maintains a pair-local gauge for every active interstate
+centroid. Successive complex NAC vectors are parallel-transported by their global
+phase before Hamiltonian assembly, so arbitrary provider signs or worker scheduling
+cannot change population transfer. These aligned NAC references are checkpointed
+with the corresponding centroid wavefunction histories. A gap-screened NAC remains
+unavailable and is not added to the phase history.

@@ -204,6 +204,10 @@ class SpawnReplaySnapshot:
     centroid_wavefunctions: dict[str, str]
     classical_energy_references: dict[str, float]
     quantum_energy_reference: float | None
+    forced_nuclear_time_steps: dict[str, float] = dataclasses.field(default_factory=dict)
+    replay_suppressed: dict[tuple[str, int], float] = dataclasses.field(default_factory=dict)
+    quantum_energy_gate_active: bool = False
+    centroid_nacs: dict[str, np.ndarray] = dataclasses.field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -215,6 +219,16 @@ class SpawnReplaySnapshot:
             "centroid_wavefunctions": self.centroid_wavefunctions,
             "classical_energy_references": self.classical_energy_references,
             "quantum_energy_reference": self.quantum_energy_reference,
+            "forced_nuclear_time_steps": self.forced_nuclear_time_steps,
+            "replay_suppressed": {
+                f"{key[0]}:{key[1]}": value
+                for key, value in self.replay_suppressed.items()
+            },
+            "quantum_energy_gate_active": self.quantum_energy_gate_active,
+            "centroid_nacs": {
+                key: _array_payload(value)
+                for key, value in self.centroid_nacs.items()
+            },
         }
 
     @classmethod
@@ -235,6 +249,21 @@ class SpawnReplaySnapshot:
                 if payload.get("quantum_energy_reference") is None
                 else float(payload["quantum_energy_reference"])
             ),
+            forced_nuclear_time_steps={
+                str(key): float(value)
+                for key, value in payload.get("forced_nuclear_time_steps", {}).items()
+            },
+            replay_suppressed={
+                (key.rsplit(":", 1)[0], int(key.rsplit(":", 1)[1])): float(value)
+                for key, value in payload.get("replay_suppressed", {}).items()
+            },
+            quantum_energy_gate_active=bool(
+                payload.get("quantum_energy_gate_active", False)
+            ),
+            centroid_nacs={
+                str(key): _array_from_payload(value)
+                for key, value in payload.get("centroid_nacs", {}).items()
+            },
         )
 
 
@@ -316,6 +345,7 @@ class SimulationRunner:
         self.gauge_tracker = GaugeTracker()
         self.centroid_cache: dict[bytes, ElectronicStructureResult] = {}
         self.centroid_previous: dict[str, WavefunctionState] = {}
+        self.centroid_nac_previous: dict[str, np.ndarray] = {}
         self.active_spawn_snapshot: SpawnReplaySnapshot | None = None
         self.active_replay: ReplayWindow | None = None
         self.active_step_snapshot: SpawnReplaySnapshot | None = None
@@ -345,6 +375,7 @@ class SimulationRunner:
         }
         self.classical_energy_references: dict[str, float] = {}
         self.quantum_energy_reference: float | None = None
+        self.quantum_energy_gate_active = False
         requested_workers = max(
             1, int(config.provider_option_dict().get("electronic_workers", 1))
         )
@@ -586,6 +617,25 @@ class SimulationRunner:
             self.centroid_cache[key] = result
             if result.wavefunction is not None:
                 self.centroid_previous[pair] = result.wavefunction
+            if (
+                left.state != right.state
+                and result.nacs is not None
+                and result.nac_mask is not None
+                and result.nac_mask[left.state, right.state]
+            ):
+                state_i, state_j = left.state, right.state
+                current_nac = result.nac_between(state_i, state_j).copy()
+                previous_nac = self.centroid_nac_previous.get(pair)
+                phase = 1.0 + 0.0j
+                if previous_nac is not None:
+                    overlap = np.vdot(previous_nac.reshape(-1), current_nac.reshape(-1))
+                    if abs(overlap) > 1.0e-14:
+                        phase = np.exp(-1j * np.angle(overlap))
+                        current_nac *= phase
+                        result.nacs[state_i, state_j] = current_nac
+                        result.nacs[state_j, state_i] = -current_nac.conj()
+                self.centroid_nac_previous[pair] = current_nac
+                result.metadata["centroid_nac_parallel_transport_phase"] = phase
         else:
             with self.metrics_lock:
                 self.runtime_metrics["centroid_cache_hits"] += 1
@@ -688,6 +738,16 @@ class SimulationRunner:
         candidate = coupling_dt if current > coupling_dt else max(0.5 * current, floor)
         return None if candidate >= current - 1.0e-15 else candidate
 
+    @staticmethod
+    def _is_refinable_electronic_failure(exc: BaseException) -> bool:
+        return any(
+            marker in str(exc)
+            for marker in (
+                "energy/gradient continuity failure",
+                "CI-root continuity failure",
+            )
+        )
+
     def _regularization_ladder(self) -> tuple[float, ...]:
         """Return deterministic overlap cutoffs, starting with the configured value."""
         configured = float(self.config.regularization_threshold)
@@ -765,12 +825,26 @@ class SimulationRunner:
         ))
         if self.quantum_energy_reference is None:
             self.quantum_energy_reference = energy
-        elif abs(energy - self.quantum_energy_reference) > self.config.energy_tolerance:
-            raise RuntimeError(
-                "quantum energy violation: "
-                f"reference={self.quantum_energy_reference}, current={energy}, "
-                f"drift={energy - self.quantum_energy_reference}"
-            )
+        else:
+            drift = energy - self.quantum_energy_reference
+            exceeded = abs(drift) > self.config.energy_tolerance
+            if exceeded and self.config.quantum_energy_policy == "error":
+                raise RuntimeError(
+                    "quantum energy violation: "
+                    f"reference={self.quantum_energy_reference}, current={energy}, "
+                    f"drift={drift}"
+                )
+            if exceeded and not self.quantum_energy_gate_active:
+                self.state.events.append({
+                    "kind": "quantum_energy_threshold",
+                    "time": self.state.quantum_time,
+                    "reference": self.quantum_energy_reference,
+                    "current": energy,
+                    "drift": drift,
+                    "tolerance": self.config.energy_tolerance,
+                    "policy": self.config.quantum_energy_policy,
+                })
+            self.quantum_energy_gate_active = exceeded
         return energy
 
     def _propagate_trajectory(self, index: int, dt: float | None = None) -> None:
@@ -821,6 +895,13 @@ class SimulationRunner:
                 self.classical_energy_references
             ),
             quantum_energy_reference=self.quantum_energy_reference,
+            forced_nuclear_time_steps=copy.deepcopy(self.forced_nuclear_time_steps),
+            replay_suppressed=copy.deepcopy(self.replay_suppressed),
+            quantum_energy_gate_active=self.quantum_energy_gate_active,
+            centroid_nacs={
+                key: value.copy()
+                for key, value in self.centroid_nac_previous.items()
+            },
         )
 
     def _capture_spawn_snapshot(self, key: tuple[str, int]) -> None:
@@ -840,6 +921,14 @@ class SimulationRunner:
             snapshot.classical_energy_references
         )
         self.quantum_energy_reference = snapshot.quantum_energy_reference
+        self.forced_nuclear_time_steps = copy.deepcopy(
+            snapshot.forced_nuclear_time_steps
+        )
+        self.replay_suppressed = copy.deepcopy(snapshot.replay_suppressed)
+        self.quantum_energy_gate_active = snapshot.quantum_energy_gate_active
+        self.centroid_nac_previous = {
+            key: value.copy() for key, value in snapshot.centroid_nacs.items()
+        }
 
     def _observe_spawning(self) -> list[SpawnCandidate]:
         if self.config.num_states < 2 or len(self.state.trajectories) >= self.config.max_trajectories:
@@ -897,6 +986,66 @@ class SimulationRunner:
                     emitted.append(completed)
         return emitted
 
+    def _backpropagate_spawn_child(
+        self,
+        child: TrajectoryBasisFunction,
+        entry_time: float,
+    ) -> TrajectoryBasisFunction:
+        """Backpropagate a provisional child with local transactional refinement.
+
+        Spawn maxima and threshold entries can straddle the same sharp electronic
+        regions that require refined ordinary nuclear steps.  A rejected trial
+        must not mutate the accepted child history, so every substep is attempted
+        on a private copy and committed only after its endpoint passes the
+        provider's continuity checks.
+        """
+        if child.electronic is None:
+            child.electronic = self._evaluate(
+                child.positions,
+                child.state,
+                child.time,
+                child.previous_wavefunction,
+                gradient_states=(child.state,),
+                nac_pairs=self._trajectory_nac_pairs(child.state),
+            )
+            child.previous_wavefunction = child.electronic.wavefunction
+
+        coupling_dt = self.config.coupling_time_step or self.config.time_step
+        while child.time - 1.0e-12 > entry_time:
+            trial_dt = min(coupling_dt, child.time - entry_time)
+            while True:
+                trial_child = copy.deepcopy(child)
+                self.state.trajectories.append(trial_child)
+                try:
+                    self._propagate_trajectory(
+                        len(self.state.trajectories) - 1, -trial_dt
+                    )
+                except ElectronicStructureError as exc:
+                    refinable = self._is_refinable_electronic_failure(exc)
+                    refined = (
+                        self._refined_nuclear_time_step(trial_dt)
+                        if refinable
+                        else None
+                    )
+                    if refined is None:
+                        raise
+                    self.state.events.append({
+                        "kind": "spawn_backprop_refinement",
+                        "time": child.time,
+                        "from_dt": trial_dt,
+                        "to_dt": refined,
+                        "threshold_entry_time": entry_time,
+                        "child": child.label,
+                        "reason": str(exc),
+                    })
+                    trial_dt = refined
+                    continue
+                finally:
+                    self.state.trajectories.pop()
+                child = trial_child
+                break
+        return child
+
     def _spawn(self, candidate: SpawnCandidate) -> None:
         if len(self.state.trajectories) >= self.config.max_trajectories:
             return
@@ -939,18 +1088,9 @@ class SimulationRunner:
             )
         # Build the child's missing history back to the threshold-entry time.
         entry_time = candidate.entry_time if candidate.entry_time is not None else candidate.time
-        while child.time - 1.0e-12 > entry_time:
-            step = -min(
-                self.config.coupling_time_step or self.config.time_step,
-                child.time - entry_time,
-            )
-            child.electronic = self._evaluate(child.positions, child.state, child.time, child.previous_wavefunction)
-            child.previous_wavefunction = child.electronic.wavefunction
-            self.state.trajectories.append(child)
-            try:
-                self._propagate_trajectory(len(self.state.trajectories) - 1, step)
-            finally:
-                self.state.trajectories.pop()
+        backprop_event_start = len(self.state.events)
+        child = self._backpropagate_spawn_child(child, entry_time)
+        backprop_events = copy.deepcopy(self.state.events[backprop_event_start:])
 
         snapshot = self.active_spawn_snapshot
         if snapshot is None:
@@ -968,6 +1108,7 @@ class SimulationRunner:
         replay_key = snapshot.key
         self._restore_spawn_snapshot(snapshot)
         self.active_spawn_snapshot = None
+        self.state.events.extend(backprop_events)
         restored_parent = next(
             trajectory for trajectory in self.state.trajectories
             if trajectory.identifier == replay_key[0]
@@ -1103,6 +1244,10 @@ class SimulationRunner:
                 "centroid_wavefunctions": {
                     key: value.identifier for key, value in self.centroid_previous.items()
                 },
+                "centroid_nacs": {
+                    key: _array_payload(value)
+                    for key, value in self.centroid_nac_previous.items()
+                },
                 "active_spawn_snapshot": (
                     self.active_spawn_snapshot.to_dict()
                     if self.active_spawn_snapshot is not None else None
@@ -1120,6 +1265,7 @@ class SimulationRunner:
                 ),
                 "classical_energy_references": self.classical_energy_references,
                 "quantum_energy_reference": self.quantum_energy_reference,
+                "quantum_energy_gate_active": self.quantum_energy_gate_active,
                 "replay_suppressed": [
                     [key[0], key[1], frontier]
                     for key, frontier in self.replay_suppressed.items()
@@ -1214,6 +1360,12 @@ class SimulationRunner:
             .get("centroid_wavefunctions", {})
             .items()
         }
+        self.centroid_nac_previous = {
+            str(key): _array_from_payload(value)
+            for key, value in metadata.get("runtime", {}).get(
+                "centroid_nacs", {}
+            ).items()
+        }
         active_spawn = metadata.get("runtime", {}).get("active_spawn_snapshot")
         self.active_spawn_snapshot = (
             SpawnReplaySnapshot.from_dict(active_spawn) if active_spawn is not None else None
@@ -1238,6 +1390,9 @@ class SimulationRunner:
         quantum_reference = metadata.get("runtime", {}).get("quantum_energy_reference")
         self.quantum_energy_reference = (
             None if quantum_reference is None else float(quantum_reference)
+        )
+        self.quantum_energy_gate_active = bool(
+            metadata.get("runtime", {}).get("quantum_energy_gate_active", False)
         )
         self.replay_suppressed = {
             (str(parent), int(target)): float(frontier)
@@ -1357,10 +1512,7 @@ class SimulationRunner:
                 # Active-space and other electronic continuity failures remain
                 # hard stops.
                 if (
-                    any(marker in str(exc) for marker in (
-                        "energy/gradient continuity failure",
-                        "CI-root continuity failure",
-                    ))
+                    self._is_refinable_electronic_failure(exc)
                     and self._retry_nuclear_step(
                         self.active_step_snapshot, dt, str(exc)
                     )
@@ -1383,7 +1535,20 @@ class SimulationRunner:
                     self.active_step_snapshot, dt, "coupling_region_entry"
                 ):
                     continue
-            end_matrices = self._build_matrices(dt)
+            try:
+                end_matrices = self._build_matrices(dt)
+            except ElectronicStructureError as exc:
+                # Interstate centroid histories are independent electronic
+                # paths.  A root-continuity rejection there must refine the
+                # same complete nuclear interval as a rejected TBF endpoint.
+                if (
+                    self._is_refinable_electronic_failure(exc)
+                    and self._retry_nuclear_step(
+                        self.active_step_snapshot, dt, str(exc)
+                    )
+                ):
+                    continue
+                raise
             try:
                 self._check_classical_energies()
             except RuntimeError as exc:

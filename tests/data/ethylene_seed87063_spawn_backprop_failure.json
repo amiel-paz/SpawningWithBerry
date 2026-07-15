@@ -1,0 +1,17 @@
+{
+  "seed": 87063,
+  "frontier_time_au": 1038.75,
+  "near_degeneracy_time_au": 995.0,
+  "spawn_child_state": 0,
+  "failed_backprop_step_au": 5.0,
+  "reported_energy_gradient_residual_hartree": -0.00011299528052742514,
+  "configured_tolerance_hartree": 0.0001,
+  "root_overlap_near_crossing": 0.784,
+  "energy_gap_hartree": 0.000400,
+  "centroid_root_diagonal_overlaps": [
+    0.5685860189404751,
+    0.5685034727342724,
+    0.9998955359019236
+  ],
+  "centroid_root_overlap_minimum": 0.7
+}
