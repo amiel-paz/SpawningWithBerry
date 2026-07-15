@@ -204,6 +204,7 @@ class SpawnReplaySnapshot:
     centroid_wavefunctions: dict[str, str]
     classical_energy_references: dict[str, float]
     quantum_energy_reference: float | None
+    quantum_norm_reference: float | None = None
     forced_nuclear_time_steps: dict[str, float] = dataclasses.field(default_factory=dict)
     replay_suppressed: dict[tuple[str, int], float] = dataclasses.field(default_factory=dict)
     quantum_energy_gate_active: bool = False
@@ -219,6 +220,7 @@ class SpawnReplaySnapshot:
             "centroid_wavefunctions": self.centroid_wavefunctions,
             "classical_energy_references": self.classical_energy_references,
             "quantum_energy_reference": self.quantum_energy_reference,
+            "quantum_norm_reference": self.quantum_norm_reference,
             "forced_nuclear_time_steps": self.forced_nuclear_time_steps,
             "replay_suppressed": {
                 f"{key[0]}:{key[1]}": value
@@ -248,6 +250,11 @@ class SpawnReplaySnapshot:
                 None
                 if payload.get("quantum_energy_reference") is None
                 else float(payload["quantum_energy_reference"])
+            ),
+            quantum_norm_reference=(
+                None
+                if payload.get("quantum_norm_reference") is None
+                else float(payload["quantum_norm_reference"])
             ),
             forced_nuclear_time_steps={
                 str(key): float(value)
@@ -375,6 +382,7 @@ class SimulationRunner:
         }
         self.classical_energy_references: dict[str, float] = {}
         self.quantum_energy_reference: float | None = None
+        self.quantum_norm_reference: float | None = None
         self.quantum_energy_gate_active = False
         requested_workers = max(
             1, int(config.provider_option_dict().get("electronic_workers", 1))
@@ -735,7 +743,7 @@ class SimulationRunner:
     def _refined_nuclear_time_step(self, current: float) -> float | None:
         coupling_dt = self.config.coupling_time_step or self.config.time_step
         floor = self.config.minimum_nuclear_time_step or coupling_dt
-        candidate = coupling_dt if current > coupling_dt else max(0.5 * current, floor)
+        candidate = max(0.5 * current, floor)
         return None if candidate >= current - 1.0e-15 else candidate
 
     @staticmethod
@@ -895,6 +903,7 @@ class SimulationRunner:
                 self.classical_energy_references
             ),
             quantum_energy_reference=self.quantum_energy_reference,
+            quantum_norm_reference=self.quantum_norm_reference,
             forced_nuclear_time_steps=copy.deepcopy(self.forced_nuclear_time_steps),
             replay_suppressed=copy.deepcopy(self.replay_suppressed),
             quantum_energy_gate_active=self.quantum_energy_gate_active,
@@ -921,6 +930,7 @@ class SimulationRunner:
             snapshot.classical_energy_references
         )
         self.quantum_energy_reference = snapshot.quantum_energy_reference
+        self.quantum_norm_reference = snapshot.quantum_norm_reference
         self.forced_nuclear_time_steps = copy.deepcopy(
             snapshot.forced_nuclear_time_steps
         )
@@ -1265,6 +1275,7 @@ class SimulationRunner:
                 ),
                 "classical_energy_references": self.classical_energy_references,
                 "quantum_energy_reference": self.quantum_energy_reference,
+                "quantum_norm_reference": self.quantum_norm_reference,
                 "quantum_energy_gate_active": self.quantum_energy_gate_active,
                 "replay_suppressed": [
                     [key[0], key[1], frontier]
@@ -1390,6 +1401,10 @@ class SimulationRunner:
         quantum_reference = metadata.get("runtime", {}).get("quantum_energy_reference")
         self.quantum_energy_reference = (
             None if quantum_reference is None else float(quantum_reference)
+        )
+        norm_reference = metadata.get("runtime", {}).get("quantum_norm_reference")
+        self.quantum_norm_reference = (
+            None if norm_reference is None else float(norm_reference)
         )
         self.quantum_energy_gate_active = bool(
             metadata.get("runtime", {}).get("quantum_energy_gate_active", False)
@@ -1549,14 +1564,11 @@ class SimulationRunner:
                 ):
                     continue
                 raise
-            try:
-                self._check_classical_energies()
-            except RuntimeError as exc:
-                if "energy violation" in str(exc) and self._retry_nuclear_step(
-                    self.active_step_snapshot, dt, str(exc)
-                ):
-                    continue
-                raise
+            # Local force-quadrature and electronic-continuity failures drive
+            # transactional step refinement.  The global classical-energy gate
+            # remains a hard failsafe; using it to switch Verlet maps causes
+            # shadow-Hamiltonian boundary hugging.
+            self._check_classical_energies()
 
             quantum = self.queue.add(
                 TaskKind.QUANTUM,
@@ -1567,6 +1579,8 @@ class SimulationRunner:
 
             def quantum_action(_task: Task) -> None:
                 before = metric_norm(self.state.amplitudes, start_matrices.overlap)
+                if self.quantum_norm_reference is None:
+                    self.quantum_norm_reference = before
                 if self.config.quantum_integrator == "cayley":
                     rejected_thresholds = []
                     failure: QuantumPropagationError | None = None
@@ -1642,6 +1656,13 @@ class SimulationRunner:
                 endpoint_norm = metric_norm(
                     self.state.amplitudes, end_matrices.overlap
                 )
+                absolute_norm_tolerance = min(self.config.norm_tolerance, 1.0e-10)
+                if abs(endpoint_norm - self.quantum_norm_reference) > absolute_norm_tolerance:
+                    raise RuntimeError(
+                        "cumulative quantum norm violation: "
+                        f"reference={self.quantum_norm_reference}, "
+                        f"current={endpoint_norm}, tolerance={absolute_norm_tolerance}"
+                    )
                 if abs(population_sum - endpoint_norm) > 1.0e-10:
                     raise RuntimeError(
                         "state population sum is inconsistent with metric norm: "

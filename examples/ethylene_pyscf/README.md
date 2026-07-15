@@ -117,6 +117,12 @@ The rolling status, call counts, memory use, and makespan estimate are written t
   identical frames, populations, parentage, and spawn decisions. Worst norm error
   is `1.90e-13`, worst root overlap is 0.97569, and the projected 13-member
   makespan is 6.35 hours.
+- The next production policy restores the canonical 20-au normal / 5-au coupling
+  schedule. Local work/force or root-continuity rejections halve intervals through
+  10, 5, 2.5, 1.25, and 0.625 au; the global 5-mEh classical bound is a hard stop,
+  not a timestep selector. The moving-basis Cayley map is endpoint-metric-unitary
+  by construction and retains a separate cumulative `1e-10` raw norm gate without
+  amplitude rescaling.
 
 The accepted equilibrium geometry is C=C 1.339 angstrom, C-H 1.086 angstrom, and
 H-C-H 117.6 degrees. Its harmonic force field is a central finite-difference

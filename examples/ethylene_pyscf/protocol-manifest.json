@@ -38,12 +38,14 @@
     "density_fitting": "enabled after an equilibrium no-density-fitting comparison",
     "root_tracking": "adiabatic roots remain energy ordered; orbital-aware many-electron overlaps include the old/new active-orbital transformation, a same-root overlap below 0.7 triggers whole-interval refinement, and each active centroid-pair NAC is parallel-transported and checkpointed by pair identity",
     "local_energy_gradient_consistency_hartree": 0.0001,
-    "classical_energy_tolerance_hartree": 0.0002,
+    "classical_energy_tolerance_hartree": 0.005,
     "classical_energy_numerical_margin_hartree": 1e-08,
     "energy_tolerance_hartree": 0.005,
     "quantum_energy_policy": "record; SPA0 coherent-energy excursions are retained without coefficient rescaling",
     "max_trajectories": 32,
     "minimum_nuclear_time_step_au": 0.625,
-    "production_fixed_nuclear_time_step_au": 5.0
+    "nuclear_time_step_policy": "20 au normally; 5 au in coupling regions; rejected local force-quadrature or root-continuity intervals halve transactionally through 10, 5, 2.5, 1.25, and 0.625 au",
+    "classical_energy_gate_policy": "global hard failsafe and diagnostic only; it does not select among Verlet timesteps",
+    "quantum_norm_policy": "endpoint-metric-unitary polar Cayley map with raw coefficients retained and a cumulative 1e-10 norm gate"
   }
 }

@@ -207,3 +207,13 @@ redundant S0->S1 back-spawn by entry overlap. At 1038.75 au the S0 population is
 `2.18e-13`, maximum per-TBF classical drift is `7.15e-5 Eh`, peak RSS is below
 0.48 GB with no swap, and the conservative 13-member makespan projection is
 11.77 hours.
+
+Production subsequently returned to the canonical 20-au normal / 5-au coupling
+schedule after the electronic-continuity defects had been isolated. Local rejected
+intervals now halve as `20 -> 10 -> 5 -> 2.5 -> 1.25 -> 0.625 au`; the local
+energy/gradient work residual and root continuity select refinement, while the
+global 0.005-Eh classical-energy bound is only a hard failsafe. This avoids using
+absolute energy to switch among shadow Hamiltonians. The coefficient propagator
+also uses the endpoint-metric polar factor of the linear Cayley map. It therefore
+preserves metric unitarity structurally without scalar amplitude renormalization,
+and a separate cumulative `1e-10` norm gate remains active.

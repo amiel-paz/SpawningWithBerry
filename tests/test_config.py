@@ -66,13 +66,13 @@ def test_ethylene_production_config_and_wigner_sample_are_reproducible():
     assert config.basis == "6-31g*"
     assert config.geometry.name == "ethylene.xyz"
     assert config.hessian.name == "ethylene_mp2_631gstar_hessian.txt"
-    assert config.nsteps == 2067
-    assert config.time_step == 5.0
+    assert config.nsteps == 517
+    assert config.time_step == 20.0
     assert config.coupling_time_step == 5.0
     assert config.minimum_nuclear_time_step == 0.625
-    assert config.classical_energy_tolerance == 2.0e-4
+    assert config.classical_energy_tolerance == 5.0e-3
     assert config.classical_energy_numerical_margin == 1.0e-8
-    assert config.min_time_step == 0.00244140625
+    assert config.min_time_step == 0.001220703125
     assert config.spawn_metric == "nac_norm"
     assert config.spawn_threshold == 3.0
     assert config.pair_overlap_threshold == 1.0e-3
@@ -102,9 +102,10 @@ def test_ethylene_protocol_manifest_matches_production_controls():
     canonical = manifest["canonical_aims_controls"]
     assert canonical["normal_time_step_au"] == 20
     assert canonical["coupling_time_step_au"] == config.coupling_time_step
+    assert canonical["normal_time_step_au"] == config.time_step
     assert manifest["deliberate_deviations"][
-        "production_fixed_nuclear_time_step_au"
-    ] == config.time_step
+        "minimum_nuclear_time_step_au"
+    ] == config.minimum_nuclear_time_step
     assert canonical["spawn_threshold_bohr_inverse"] == config.spawn_threshold
     assert canonical["pair_overlap_threshold"] == config.pair_overlap_threshold
     assert manifest["reported_controls"]["electronic_method"].startswith(

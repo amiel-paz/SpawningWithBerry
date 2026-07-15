@@ -48,6 +48,35 @@ def test_metric_cayley_conserves_norm_to_acceptance_threshold():
     assert abs(metric_norm(coefficients, overlap) - initial) < 1e-10
 
 
+def test_adaptive_metric_unitary_map_does_not_accumulate_norm_drift():
+    coefficients = np.array([1.0, 0.2j], complex)
+    initial_overlap = np.array([[1.0, 0.08], [0.08, 1.0]], complex)
+    coefficients /= np.sqrt(metric_norm(coefficients, initial_overlap))
+    initial_norm = metric_norm(coefficients, initial_overlap)
+    overlap = initial_overlap
+    for index in range(200):
+        next_coupling = 0.08 + 0.03 * np.sin(0.07 * (index + 1))
+        next_overlap = np.array(
+            [[1.0, next_coupling], [next_coupling, 1.0]], complex
+        )
+        metric_derivative = next_overlap - overlap
+        hamiltonian = np.array([[0.1, 0.02j], [-0.02j, 0.14]], complex)
+        start = MatrixSet(overlap, hamiltonian, 0.5 * metric_derivative)
+        end = MatrixSet(next_overlap, hamiltonian, 0.5 * metric_derivative)
+        result = adaptive_cayley_step(
+            coefficients,
+            start,
+            end,
+            1.0,
+            convergence_tolerance=1.0e-8,
+            norm_tolerance=1.0e-12,
+            min_time_step=1.0 / 256.0,
+        )
+        coefficients = result.amplitudes
+        overlap = next_overlap
+    assert metric_norm(coefficients, overlap) == pytest.approx(initial_norm, abs=2e-12)
+
+
 def test_cayley_reproduces_archived_ethylene_transfer_and_ignores_energy_offset():
     # Step 500 of the invalidated run: the former unshifted Cayley step produced
     # |c_child|=4.7e-7 even though the stored interstate element is 2.36e-3 Eh.

@@ -20,8 +20,10 @@ overlap/NPI transport when available, otherwise analytic NACs.
 `quantum_integrator cayley` is the regularized metric-aware default;
 `quantum_integrator rk45` retains the research ODE path.
 The Cayley integrator gates the raw endpoint metric norm and stores it unchanged.
-Accepted coefficients are never renormalized; a material norm drift is a diagnostic
-failure rather than something hidden by rescaling.
+Accepted coefficients are never rescaled. The adaptive map takes the endpoint-metric
+polar factor of the linear Cayley propagator, enforcing the TDSE's metric-unitary
+structure for every coefficient vector rather than normalizing a particular state.
+A material cumulative norm drift remains a hard failure.
 
 Spawning controls are `spawn_strategy`, `spawn_threshold`, `population_to_spawn`,
 `spawn_metric`, `spawn_overlap_max`, `spawn_cooldown`, `max_trajectories`, and
@@ -32,9 +34,11 @@ Numerical/storage controls include `regularization_threshold`, `overlap_threshol
 `pair_overlap_threshold`, `energy_tolerance`, `quantum_energy_policy`,
 `classical_energy_tolerance`,
 `output_every`, `electronic_retries`, `checkpoint_keep`, and `run_directory`.
-`classical_energy_tolerance` optionally imposes a stricter per-TBF energy-drift
-gate that transactionally refines rejected nuclear intervals; when omitted it
-inherits `energy_tolerance`. `classical_energy_numerical_margin` is an explicit
+`classical_energy_tolerance` optionally imposes a per-TBF energy-drift hard stop;
+when omitted it inherits `energy_tolerance`. Local energy/gradient work consistency,
+electronic continuity, and coupling-region entry drive transactional nuclear-step
+refinement. The global energy gate deliberately does not switch between Verlet
+maps. `classical_energy_numerical_margin` is an explicit
 comparison-only allowance for electronic convergence noise; it never changes or
 recenters the recorded raw energy. TBF pairs whose analytic nuclear overlap is below
 `pair_overlap_threshold` receive exactly zero off-diagonal matrix elements and do

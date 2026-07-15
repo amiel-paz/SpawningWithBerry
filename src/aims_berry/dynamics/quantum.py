@@ -102,6 +102,93 @@ def cayley_step(
     return np.exp(-1j * energy_reference * dt) * (vectors @ propagated)
 
 
+def _metric_unitary_cayley_step(
+    amplitudes: np.ndarray,
+    start: MatrixSet,
+    end: MatrixSet,
+    dt: float,
+    threshold: float,
+) -> np.ndarray:
+    """Apply the endpoint-metric polar factor of a generalized Cayley map.
+
+    For ``tau + tau**H = dS/dt`` the exact coefficient propagator is an
+    isometry from the start metric to the end metric.  Finite midpoint steps
+    only satisfy that identity approximately.  Taking the polar factor of the
+    *linear propagator* enforces the equation's metric-unitary structure for
+    every coefficient vector; this is not amplitude-dependent renormalization.
+
+    If regularization removes a direction, the rectangular/rank-deficient map
+    cannot be made unitary.  In that case retain the raw projected result so the
+    norm gate can reject it and try the next regularization threshold.
+    """
+
+    midpoint = _midpoint(start, end)
+    coefficients = np.asarray(amplitudes, dtype=np.complex128)
+    metric_norm0 = np.vdot(coefficients, midpoint.overlap @ coefficients)
+    if abs(metric_norm0) < 1.0e-14:
+        raise ValueError("cannot propagate a zero-metric-norm coefficient vector")
+    energy_reference = float(
+        np.real(
+            np.vdot(coefficients, midpoint.hamiltonian @ coefficients)
+            / metric_norm0
+        )
+    )
+    effective = (
+        midpoint.hamiltonian
+        - energy_reference * midpoint.overlap
+        - 1j * midpoint.sdot
+    )
+    vectors, values = _retained_subspace(midpoint.overlap, threshold)
+    projected_s = np.diag(values.astype(np.complex128))
+    projected_k = vectors.conj().T @ effective @ vectors
+    left = projected_s + 0.5j * dt * projected_k
+    right = projected_s - 0.5j * dt * projected_k
+    transfer = np.linalg.solve(left, right)
+    raw_map = (
+        np.exp(-1j * energy_reference * dt)
+        * vectors
+        @ transfer
+        @ vectors.conj().T
+    )
+
+    dimension = start.overlap.shape[0]
+    _start_half, _start_minus_half, start_values = regularized_metric(
+        start.overlap, threshold
+    )
+    _end_half, _end_minus_half, end_values = regularized_metric(
+        end.overlap, threshold
+    )
+    if (
+        len(values) != dimension
+        or len(start_values) != dimension
+        or len(end_values) != dimension
+    ):
+        return raw_map @ coefficients
+
+    # Cholesky coordinates avoid the extra eigendecomposition reconstruction
+    # error of symmetric square roots: S=L L**H and y=L**H c.
+    start_cholesky = np.linalg.cholesky(
+        0.5 * (start.overlap + start.overlap.conj().T)
+    )
+    end_cholesky = np.linalg.cholesky(
+        0.5 * (end.overlap + end.overlap.conj().T)
+    )
+    identity = np.eye(dimension, dtype=np.complex128)
+    start_inverse_adjoint = np.linalg.solve(
+        start_cholesky.conj().T, identity
+    )
+    end_inverse_adjoint = np.linalg.solve(end_cholesky.conj().T, identity)
+    whitened = (
+        end_cholesky.conj().T @ raw_map @ start_inverse_adjoint
+    )
+    left_vectors, _singular_values, right_vectors = np.linalg.svd(whitened)
+    unitary = left_vectors @ right_vectors
+    corrected_map = (
+        end_inverse_adjoint @ unitary @ start_cholesky.conj().T
+    )
+    return corrected_map @ coefficients
+
+
 def _interpolated_metric_matrices(
     start: MatrixSet,
     end: MatrixSet,
@@ -181,7 +268,9 @@ def adaptive_cayley_step(
             right = _interpolated_metric_matrices(
                 start, end, dt, (index + 1) / substeps
             )
-            propagated = cayley_step(propagated, left, sub_dt, threshold, right)
+            propagated = _metric_unitary_cayley_step(
+                propagated, left, right, sub_dt, threshold
+            )
         norm_after = metric_norm(propagated, end.overlap)
         convergence_error = (
             float("inf")

@@ -460,7 +460,8 @@ def test_canonical_nuclear_step_selection_and_refinement(tmp_path):
         energies=np.array([0.0, 0.01]), gradients=np.zeros((2, 1, 3)), nacs=nacs,
     ).validate(runner._request(np.zeros((1, 3)), 1, 0.0))
     assert runner._nuclear_time_step(40.0) == 5.0
-    assert runner._refined_nuclear_time_step(20.0) == 5.0
+    assert runner._refined_nuclear_time_step(20.0) == 10.0
+    assert runner._refined_nuclear_time_step(10.0) == 5.0
     assert runner._refined_nuclear_time_step(5.0) == 2.5
     assert runner._refined_nuclear_time_step(1.25) == 0.625
     assert runner._refined_nuclear_time_step(0.625) is None
@@ -543,7 +544,7 @@ def test_endpoint_energy_gradient_rejection_refines_complete_nuclear_interval(tm
     ]
     assert result.state.quantum_time == 20.0
     assert refinements[0]["from_dt"] == 20.0
-    assert refinements[0]["to_dt"] == 5.0
+    assert refinements[0]["to_dt"] == 10.0
     assert "energy/gradient continuity failure" in refinements[0]["reason"]
     assert any(displacement > 0.05 for _time, displacement in calls)
 

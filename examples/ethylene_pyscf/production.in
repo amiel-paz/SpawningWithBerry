@@ -5,9 +5,9 @@ geometry_units angstrom
 
 num_states 3
 initial_state 1
-time_step 5 au
+time_step 20 au
 coupling_time_step 5 au
-min_time_step 0.00244140625 au
+min_time_step 0.001220703125 au
 minimum_nuclear_time_step 0.625 au
 simulation_time 10335 au
 random_seed 87062
@@ -54,7 +54,7 @@ overlap_threshold 0.0001
 regularization_threshold 0.0001
 energy_tolerance 0.005
 quantum_energy_policy record
-classical_energy_tolerance 0.0002
+classical_energy_tolerance 0.005
 classical_energy_numerical_margin 0.00000001
 norm_tolerance 1e-6
 output_every 1
