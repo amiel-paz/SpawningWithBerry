@@ -26,7 +26,7 @@ class HDF5Writer:
         mode = "a" if restart else "w"
         self.replay_window: str | None = None
         with h5py.File(self.path, mode, libver="latest") as handle:
-            handle.attrs["schema_version"] = 2
+            handle.attrs["schema_version"] = 3
             handle.attrs["aims_berry_version"] = __version__
             handle.attrs["units"] = "atomic"
             handle.attrs["config_json"] = json.dumps(config.to_dict(), sort_keys=True)
@@ -48,6 +48,14 @@ class HDF5Writer:
             root.attrs["entry_step"] = int(entry_step)
             root.attrs["frontier_step"] = int(frontier_step)
             root.require_group("steps")
+            superseded = root.require_group("superseded_steps")
+            canonical = handle["steps"]
+            for name in sorted(list(canonical)):
+                if int(name) <= int(entry_step):
+                    continue
+                if name in superseded:
+                    del superseded[name]
+                handle.move(f"steps/{name}", f"replay/{self.replay_window}/superseded_steps/{name}")
             handle["steps"].attrs["committed_through"] = int(entry_step)
             handle.attrs["active_replay"] = self.replay_window
             handle.flush()
@@ -121,6 +129,8 @@ class HDF5Writer:
                 (len(trajectories), num_states, num_states, trajectories[0].positions.shape[0], 3),
                 np.nan + 0j,
             )
+            gradient_masks = np.zeros((len(trajectories), num_states), dtype=bool)
+            nac_masks = np.zeros((len(trajectories), num_states, num_states), dtype=bool)
             state_overlaps = np.full(
                 (len(trajectories), num_states, num_states), np.nan + 0j
             )
@@ -129,13 +139,17 @@ class HDF5Writer:
                     energies[index] = trajectory.electronic.energies
                     if trajectory.electronic.gradients is not None:
                         gradients[index] = trajectory.electronic.gradients
+                        gradient_masks[index] = trajectory.electronic.gradient_mask
                     if trajectory.electronic.nacs is not None:
                         nacs[index] = trajectory.electronic.nacs
+                        nac_masks[index] = trajectory.electronic.nac_mask
                     if trajectory.electronic.state_overlaps is not None:
                         state_overlaps[index] = trajectory.electronic.state_overlaps
             group.create_dataset("energies", data=energies)
             group.create_dataset("gradients", data=gradients, compression="gzip")
             group.create_dataset("nacs", data=nacs, compression="gzip")
+            group.create_dataset("gradient_mask", data=gradient_masks)
+            group.create_dataset("nac_mask", data=nac_masks)
             group.create_dataset("state_overlaps", data=state_overlaps)
             velocities = np.asarray([t.momenta / t.masses for t in trajectories])
             kinetic = np.asarray([
@@ -153,8 +167,14 @@ class HDF5Writer:
                 if trajectory.electronic is None or trajectory.electronic.nacs is None:
                     continue
                 for target in range(num_states):
+                    if (
+                        trajectory.electronic.nac_mask is None
+                        or not trajectory.electronic.nac_mask[trajectory.state, target]
+                    ):
+                        continue
                     projected[index, target] = np.sum(
-                        trajectory.electronic.nacs[trajectory.state, target] * velocities[index]
+                        trajectory.electronic.nac_between(trajectory.state, target)
+                        * velocities[index]
                     )
             group.create_dataset("projected_couplings", data=projected)
             group.create_dataset("phases", data=np.asarray([t.phase for t in trajectories]))
@@ -231,7 +251,7 @@ class CheckpointManager:
         provider_directory.mkdir()
         provider_metadata = provider.dump_state(provider_directory)
         metadata = {
-            "schema_version": 2,
+            "schema_version": 3,
             "version": __version__,
             "quantum_time": state.quantum_time,
             "step": state.step,
@@ -261,8 +281,10 @@ class CheckpointManager:
                 arrays[f"t{index}_energies"] = trajectory.electronic.energies
                 if trajectory.electronic.gradients is not None:
                     arrays[f"t{index}_gradients"] = trajectory.electronic.gradients
+                    arrays[f"t{index}_gradient_mask"] = trajectory.electronic.gradient_mask
                 if trajectory.electronic.nacs is not None:
                     arrays[f"t{index}_nacs"] = trajectory.electronic.nacs
+                    arrays[f"t{index}_nac_mask"] = trajectory.electronic.nac_mask
                 if trajectory.electronic.state_overlaps is not None:
                     arrays[f"t{index}_state_overlaps"] = trajectory.electronic.state_overlaps
         if state.matrices is not None:

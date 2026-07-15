@@ -202,8 +202,10 @@ def adaptive_cayley_step(
             and convergence_error <= convergence_tolerance
             and abs(norm_after - norm_before) <= norm_tolerance
         ):
-            accepted = propagated * np.sqrt(norm_before / norm_after)
-            return dataclasses.replace(last, amplitudes=accepted)
+            # Preserve the raw accepted solution.  A material norm error is a
+            # propagation failure; rescaling would conceal its accumulation and
+            # make the recorded populations look better than the actual solve.
+            return last
         previous = propagated
         substeps *= 2
 

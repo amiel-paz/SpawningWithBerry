@@ -30,6 +30,7 @@ class SimulationConfig:
     num_states: int = 1
     initial_state: int = 0
     time_step: float = 1.0
+    coupling_time_step: float | None = None
     simulation_time: float = 100.0
     random_seed: int = 0
     initial_condition: Literal["direct", "file", "wigner"] = "file"
@@ -47,15 +48,19 @@ class SimulationConfig:
     coupling_mode: Literal["auto", "npi", "nac"] = "auto"
     quantum_integrator: Literal["cayley", "rk45"] = "cayley"
     spawn_strategy: Literal["nac", "coupling_optimized"] = "nac"
+    spawn_metric: Literal["projected", "nac_norm"] = "projected"
     spawn_threshold: float = 0.01
     population_to_spawn: float = 1.0e-3
     spawn_overlap_max: float = 0.8
     spawn_cooldown: float = 0.0
     max_trajectories: int = 100
     max_energy_gap: float = float("inf")
+    nac_gap_threshold: float = float("inf")
+    pair_overlap_threshold: float = 0.0
     overlap_threshold: float = 1.0e-3
     regularization_threshold: float = 1.0e-8
     min_time_step: float | None = None
+    minimum_nuclear_time_step: float | None = None
     energy_tolerance: float = 5.0e-3
     norm_tolerance: float = 1.0e-6
     output_every: int = 1
@@ -74,8 +79,14 @@ class SimulationConfig:
             raise ConfigError("initial_state must be in [0, num_states)")
         if self.time_step <= 0 or self.simulation_time < 0:
             raise ConfigError("time_step must be positive and simulation_time non-negative")
+        if self.coupling_time_step is not None and not 0 < self.coupling_time_step <= self.time_step:
+            raise ConfigError("coupling_time_step must be in (0, time_step]")
         if self.min_time_step is not None and not 0 < self.min_time_step <= self.time_step:
             raise ConfigError("min_time_step must be in (0, time_step]")
+        if self.minimum_nuclear_time_step is not None:
+            upper = self.coupling_time_step or self.time_step
+            if not 0 < self.minimum_nuclear_time_step <= upper:
+                raise ConfigError("minimum_nuclear_time_step must be in (0, coupling_time_step]")
         if len(self.state_weights) not in (0, self.num_states):
             raise ConfigError("state_weights must contain num_states entries")
         if self.state_weights and not abs(sum(self.state_weights) - 1.0) < 1.0e-10:
@@ -94,6 +105,12 @@ class SimulationConfig:
             raise ConfigError("quantum_integrator must be cayley or rk45")
         if self.spawn_strategy not in {"nac", "coupling_optimized"}:
             raise ConfigError("spawn_strategy must be nac or coupling_optimized")
+        if self.spawn_metric not in {"projected", "nac_norm"}:
+            raise ConfigError("spawn_metric must be projected or nac_norm")
+        if self.nac_gap_threshold <= 0:
+            raise ConfigError("nac_gap_threshold must be positive")
+        if self.pair_overlap_threshold < 0 or self.pair_overlap_threshold >= 1:
+            raise ConfigError("pair_overlap_threshold must be in [0, 1)")
 
     @property
     def nsteps(self) -> int:
@@ -131,12 +148,15 @@ _SCALAR_TYPES: dict[str, type] = {
     "coupling_mode": str,
     "quantum_integrator": str,
     "spawn_strategy": str,
+    "spawn_metric": str,
     "spawn_threshold": float,
     "population_to_spawn": float,
     "spawn_overlap_max": float,
     "spawn_cooldown": float,
     "max_trajectories": int,
     "max_energy_gap": float,
+    "nac_gap_threshold": float,
+    "pair_overlap_threshold": float,
     "overlap_threshold": float,
     "regularization_threshold": float,
     "energy_tolerance": float,
@@ -146,7 +166,10 @@ _SCALAR_TYPES: dict[str, type] = {
     "electronic_retries": int,
     "run_directory": Path,
 }
-_TIME_KEYS = {"time_step", "simulation_time", "min_time_step"}
+_TIME_KEYS = {
+    "time_step", "coupling_time_step", "simulation_time", "min_time_step",
+    "minimum_nuclear_time_step",
+}
 _LIST_KEYS = {"state_weights", "gaussian_widths"}
 _REQUIRED = {"provider", "geometry", "num_states", "initial_state", "time_step", "simulation_time"}
 

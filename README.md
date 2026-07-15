@@ -60,6 +60,8 @@ Each request supplies:
 - `geometry` with shape `(natom, 3)` in bohr;
 - zero-based `states`, the active state, and the simulation time in atomic units;
 - the requested properties (`energies`, `gradients`, `nacs`, or `state_overlaps`);
+- optional `gradient_states` and `nac_pairs` selections, plus an optional NAC gap
+  cutoff, so an engine need not calculate unused derivatives;
 - `previous`, an optional provider-owned wavefunction/model-state handle for guesses
   and root tracking.
 
@@ -214,8 +216,15 @@ A conventional single-surface energy/force MLIP can run one-state Gaussian dynam
 with `num_states 1`, but it cannot produce nonadiabatic spawning by itself. A
 multi-state AIMS run requires, at every requested geometry:
 
-1. energies and gradients for every configured state; and
-2. either pairwise derivative couplings or certified consecutive-state overlaps.
+1. energies for every configured state and gradients for the states selected by
+   `request.gradient_states` (normally only the active state); and
+2. derivative couplings for `request.nac_pairs`, or certified consecutive-state
+   overlaps when overlap/NPI coupling is selected.
+
+Returning full gradient and NAC arrays remains backward compatible. Selective
+providers return the standard full-sized arrays together with `gradient_mask` and
+`nac_mask`; unavailable entries may be non-finite for gradients and zero for NACs,
+and the core never indexes an unavailable derivative.
 
 The MLIP must preserve a consistent state definition or provide overlap information
 that lets the driver track roots. Uncertainty estimates, model versions, SCF flags,

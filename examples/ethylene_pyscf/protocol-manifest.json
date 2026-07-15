@@ -1,0 +1,44 @@
+{
+  "reference": {
+    "citation": "H. Tao, B. G. Levine, and T. J. Martinez, J. Phys. Chem. A 113, 13656-13662 (2009)",
+    "doi": "https://doi.org/10.1021/jp9063565",
+    "comparison_level": "CASSCF control"
+  },
+  "reported_controls": {
+    "electronic_method": "equal-weight SA(3)-CAS(2e,2o)/6-31G*",
+    "initial_state": "S1 bright pi-pi* state",
+    "initial_conditions": "13 independent v=0 harmonic Wigner samples",
+    "simulation_time_fs": 250,
+    "vertical_excitation_ev": 10.12,
+    "casscf_s1_lifetime_fs": "110 +/- 6",
+    "final_s0_population": ">97%"
+  },
+  "canonical_aims_controls": {
+    "source": "https://doi.org/10.1007/s00214-023-03004-w",
+    "normal_time_step_au": 20,
+    "coupling_time_step_au": 5,
+    "spawn_metric": "NAC Euclidean norm",
+    "spawn_threshold_bohr_inverse": 3.0,
+    "population_to_spawn": 0.01,
+    "spawn_overlap_max": 0.6,
+    "pair_overlap_threshold": 0.001,
+    "regularization_threshold": 0.0001
+  },
+  "paper_specific_screening": {
+    "source": "https://doi.org/10.1021/jp9063565",
+    "nac_gap_cutoff_ev": 0.6,
+    "nac_gap_cutoff_hartree": 0.0220495934,
+    "off_diagonal_pairs_below_overlap_are_neglected": true
+  },
+  "deliberate_deviations": {
+    "electronic_provider": "PySCF 2.13 analytic SA-CASSCF gradients and NACs",
+    "geometry": "accepted reconstructed 1.339/1.086 angstrom, 117.6 degree structure",
+    "hessian": "numerical MP2/6-31G* Hessian at the accepted geometry",
+    "initial_conditions": "same distribution and count, but not the paper's original random samples",
+    "density_fitting": "enabled after an equilibrium no-density-fitting comparison",
+    "root_tracking": "adiabatic roots remain energy ordered; orbital-aware many-electron overlaps include the old/new active-orbital transformation, and a same-root overlap below 0.7 triggers nuclear-step refinement",
+    "energy_tolerance_hartree": 0.005,
+    "max_trajectories": 32,
+    "minimum_nuclear_time_step_au": 0.625
+  }
+}

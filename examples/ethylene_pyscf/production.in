@@ -5,8 +5,10 @@ geometry_units angstrom
 
 num_states 3
 initial_state 1
-time_step 5 au
+time_step 20 au
+coupling_time_step 5 au
 min_time_step 0.00244140625 au
+minimum_nuclear_time_step 0.625 au
 simulation_time 10335 au
 random_seed 87062
 initial_condition wigner
@@ -22,7 +24,7 @@ active_electrons 2
 active_orbitals 2
 state_weights 0.3333333333333333 0.3333333333333333 0.3333333333333334
 provider_option density_fit true
-provider_option max_memory 8000
+provider_option max_memory 2500
 provider_option scf_conv_tol 1e-9
 provider_option casscf_conv_tol 1e-8
 provider_option casscf_max_cycle 50
@@ -30,19 +32,24 @@ provider_option spin_penalty 0.5
 provider_option multistart_external_orbitals 1
 provider_option orbital_selection overlap
 provider_option active_space_overlap_min 0.7
+provider_option ci_root_overlap_min 0.7
 provider_option energy_gradient_consistency_tolerance 0.005
-provider_option electronic_workers 3
+provider_option electronic_workers 1
 
 coupling_mode nac
 quantum_integrator cayley
 spawn_strategy nac
-spawn_threshold 0.007853981633974483
-population_to_spawn 0.001
-spawn_overlap_max 0.8
-spawn_cooldown 50
+spawn_metric nac_norm
+spawn_threshold 3.0
+population_to_spawn 0.01
+spawn_overlap_max 0.6
+spawn_cooldown 0
 max_trajectories 32
-max_energy_gap 0.05
-regularization_threshold 1e-8
+max_energy_gap 0.0220495934
+nac_gap_threshold 0.0220495934
+pair_overlap_threshold 0.001
+overlap_threshold 0.0001
+regularization_threshold 0.0001
 energy_tolerance 0.005
 norm_tolerance 1e-6
 output_every 1

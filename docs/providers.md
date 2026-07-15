@@ -34,3 +34,18 @@ SA-CASSCF roots are spin-purified by default to the multiplicity implied by `spi
 The result metadata records every root's measured `spin_squares`. Advanced workflows
 may set `provider_option spin_square VALUE`, `spin_penalty VALUE`, or disable the
 constraint with `provider_option fix_spin false`.
+
+PySCF adiabatic roots always remain in energy order. Phase/root continuity is
+measured with the many-electron determinant overlap transformed by the old/new
+active-orbital overlap; raw CI coefficient dot products are not valid across
+active-active orbital rotations. Before checkpointing, the provider applies the
+unitary polar/Procrustes rotation that maximally aligns the new active orbitals to
+the previous active orbitals and contragrediently transforms every CAS CI vector.
+It then phase-aligns each energy-ordered many-electron root. This persistent gauge
+transport changes only the wavefunction representation, not the physical CASSCF
+state. `provider_option ci_root_overlap_min VALUE` sets the minimum same-root
+overlap. Metadata contains `tracking_overlap` (physical orbital-aware overlap),
+`active_orbital_rotation`, `aligned_active_overlap`, and both the pre-alignment
+`ci_coefficient_overlap` and post-alignment `aligned_ci_coefficient_overlap`.
+The Hungarian `root_assignment_suggestion` is diagnostic and never permutes
+nondegenerate adiabatic energies.

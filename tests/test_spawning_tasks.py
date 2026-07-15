@@ -80,3 +80,28 @@ def test_nac_saddle_point_element_has_derivative_operator_sign():
     assert np.allclose(matrices.hamiltonian[0, 1], expected)
     assert np.allclose(matrices.hamiltonian[1, 0], expected.conjugate())
     assert len(calls) == 1  # diagonal electronic data are reused from the TBFs
+
+
+def test_pair_overlap_screening_issues_no_centroid_call():
+    left = TrajectoryBasisFunction(
+        np.zeros((1, 3)), np.zeros((1, 3)), np.ones((1, 3)), np.ones((1, 3)), 0,
+    )
+    right = TrajectoryBasisFunction(
+        np.full((1, 3), 10.0), np.zeros((1, 3)), np.ones((1, 3)), np.ones((1, 3)), 1,
+    )
+    electronic = ElectronicStructureResult(
+        energies=np.array([0.0, 0.1]), gradients=np.zeros((2, 1, 3)),
+    )
+    left.electronic = right.electronic = electronic
+
+    def forbidden_centroid(*_args):
+        raise AssertionError("screened TBF pair requested a centroid")
+
+    matrices = SaddlePointHamiltonian("nac", pair_overlap_threshold=1.0e-3).build(
+        [left, right], forbidden_centroid,
+        [np.zeros((1, 3)), np.zeros((1, 3))],
+        [np.zeros((1, 3)), np.zeros((1, 3))], 1.0,
+    )
+    assert matrices.overlap[0, 1] == 0
+    assert matrices.hamiltonian[0, 1] == 0
+    assert matrices.sdot[0, 1] == 0

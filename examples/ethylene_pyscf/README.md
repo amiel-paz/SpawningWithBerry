@@ -8,17 +8,77 @@ suite.
 `production.in` follows one initial condition for 10335 au (250 fs), matching the
 trajectory duration used by Tao, Levine, and Martinez for their CASSCF/MS-CASPT2
 ethylene comparison. It uses a ground-state harmonic Wigner sample and spin-pure,
-density-fitted PySCF. A staged 10/5 au comparison chose
-the 5 au outer step; adaptive quantum substeps may refine to 0.00244140625 au without
-new PySCF evaluations. Its restartable
-output is written to the ignored `run-production/` directory.
+density-fitted PySCF. The sourced production protocol is recorded in
+`protocol-manifest.json`: ordinary/coupling nuclear steps are 20/5 au, with
+transactional energy-gate refinement down to 0.625 au. Adaptive coefficient
+substeps may refine to 0.00244140625 au without new PySCF calls.
 
 All three singlet roots are included with equal state-average weights. The initial
 state remains zero-based state 1 (S1); spawning may create children on S0 or S2.
 The paper's CASSCF benchmark averaged 13 independently sampled initial conditions;
 one production input is therefore one ensemble member, not a lifetime estimate.
-`run_ensemble.py` runs 13 deterministic members sequentially, using seeds 87062
-through 87074 by default and resuming any existing member checkpoint.
+`run_ensemble.py` runs the first 12 deterministic members in two concurrent waves
+of six, using seeds 87062 through 87074 by default and resuming valid member
+checkpoints. Each member uses one in-process PySCF evaluator and two numerical
+threads. The final member receives the otherwise idle electronic slots. The runner
+stops on a 32 GB aggregate RSS limit, sustained swap growth, a member failure, or a
+projected makespan above 72 hours.
+
+The production launch is deliberately gated:
+
+```bash
+# Six-member throughput and memory stress gate.
+caffeinate -i .venv/bin/python examples/ethylene_pyscf/run_ensemble.py \
+  --count 6 --parallel-members 6 --simulation-time 100 \
+  --ensemble-name run-gate-100
+
+# Two independent members through the known spawning region.
+caffeinate -i .venv/bin/python examples/ethylene_pyscf/run_ensemble.py \
+  --count 2 --parallel-members 2 --simulation-time 700 \
+  --ensemble-name run-gate-700
+
+# Only after the scientific and <72-hour projection gates pass.
+caffeinate -i .venv/bin/python examples/ethylene_pyscf/run_ensemble.py
+```
+
+The rolling status, call counts, memory use, and makespan estimate are written to
+`ensemble-status.json` in the selected ensemble directory.
+
+### Recovery gates completed 2026-07-14
+
+- The six-member 100-au no-renormalization stress gate completed in 12.38 s,
+  peaked at 0.97 GB aggregate RSS, used no swap, and projected 0.77 h for 13
+  members in the pre-spawn regime.
+- A seed-87062 Verlet check gave maximum classical-energy drifts of
+  `7.9849e-4`, `1.9219e-4`, and `4.8249e-5 Eh` at 20, 10, and 5 au. The factor
+  of approximately four per halving confirms the expected second-order error.
+- Two no-renormalization members completed 700 au. Seed 87062 spawned once at
+  515 au and reached S0/S1 populations 0.667864/0.332136; seed 87063 did not
+  enter a spawning region. The worst accumulated metric-norm and population-sum
+  errors were `1.35e-13` and `9.13e-14`, and peak RSS was 0.56 GB.
+- Repeating both members with `pair_overlap_threshold=1e-4` produced identical
+  parentage, spawn time, and populations to stored precision. The production
+  threshold therefore remains `1e-3`.
+- The spawning gate projected a 13-member local makespan of 4.5--4.6 h from the
+  observed workload. This is an early-trajectory estimate and is updated while
+  production creates additional TBFs.
+- A later seed-87063 800--820 au rejection exposed the apparent jump near 20 fs.
+  The active pair rotated internally by about 47 degrees while its subspace stayed
+  continuous (singular values 0.99894/0.99700). Comparing bare CI arrays therefore
+  falsely suggested an S0/S1 swap; the old tracker then attached the S1 trajectory
+  to the S0 energy and manufactured a 0.07626-Eh discontinuity. Root tracking now
+  evaluates the many-electron overlap in the transformed old/new active-orbital
+  bases. The corrected diagonal overlaps are 0.99427/0.99548/0.99720, energy order
+  is unchanged, and the true S1 energy/gradient residual is only 5.28e-5 Eh. New
+  checkpoints additionally Procrustes-align the active orbitals and transform the
+  CI coefficients into that aligned representation, so subsequent guesses inherit
+  a continuous full-CAS wavefunction gauge rather than PySCF's arbitrary one.
+- After this gauge correction, all 43 tests, the six-member 100-au stress gate,
+  and both two-member 700-au spawning gates were rerun from step zero. The two
+  pair thresholds give bitwise-identical populations and spawn histories; worst
+  root overlap is 0.97630, metric-norm error is 1.88e-13, quantum-energy drift is
+  0.004673 Eh, and classical-energy drift is 7.98e-4 Eh. Fresh production was
+  relaunched only after those gates passed.
 
 The accepted equilibrium geometry is C=C 1.339 angstrom, C-H 1.086 angstrom, and
 H-C-H 117.6 degrees. Its harmonic force field is a central finite-difference

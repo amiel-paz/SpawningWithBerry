@@ -3,11 +3,17 @@
 from __future__ import annotations
 
 import csv
+import json
 from collections import defaultdict
 from pathlib import Path
 
 import h5py
 import numpy as np
+
+from ..config import AU_TIME_PER_FS, BOHR_PER_ANGSTROM
+
+
+HARTREE_TO_EV = 27.211386245988
 
 
 def bond(geometry: np.ndarray, i: int, j: int) -> float:
@@ -60,6 +66,15 @@ class RunDataset:
                     "raw_norm_before", "raw_norm_after",
                     "quantum_convergence_error", "metric_compatibility_residual",
                     "hamiltonian_hermiticity_residual", "state_population_sum",
+                    "regularization_threshold",
+                    "nuclear_time_step", "total_tbf_pairs", "active_tbf_pairs",
+                    "screened_tbf_pairs", "electronic_calls", "electronic_seconds",
+                    "tbf_electronic_calls", "centroid_electronic_calls",
+                    "scf_seconds", "casscf_seconds", "gradient_seconds", "nac_seconds",
+                    "gradient_evaluations", "nac_evaluations",
+                    "nac_pairs_screened_by_gap", "centroid_cache_hits",
+                    "replay_seconds", "checkpoint_count", "checkpoint_seconds",
+                    "peak_rss_bytes", "cpu_seconds",
                 ):
                     if key in group.attrs:
                         frame[key] = group.attrs[key]
@@ -135,6 +150,113 @@ class RunDataset:
                 step.get("quantum_energy", np.nan),
             ))
         return np.asarray(rows)
+
+    def performance_diagnostics(self) -> np.ndarray:
+        """Return cumulative electronic work, sparsity, timing, and memory telemetry."""
+        fields = (
+            "nuclear_time_step", "total_tbf_pairs", "active_tbf_pairs",
+            "screened_tbf_pairs", "electronic_calls", "electronic_seconds",
+            "tbf_electronic_calls", "centroid_electronic_calls",
+            "scf_seconds", "casscf_seconds", "gradient_seconds", "nac_seconds",
+            "gradient_evaluations", "nac_evaluations",
+            "nac_pairs_screened_by_gap", "centroid_cache_hits",
+            "replay_seconds", "checkpoint_count", "checkpoint_seconds",
+            "peak_rss_bytes", "cpu_seconds",
+        )
+        return np.asarray([
+            (step["time"], *(step.get(field, np.nan) for field in fields))
+            for step in self.steps()
+        ])
+
+    def events(self) -> list[dict]:
+        """Return the cumulative event log from the last committed frame."""
+        with h5py.File(self.path, "r") as handle:
+            steps = handle["steps"]
+            committed = int(steps.attrs.get("committed_through", -1))
+            names = [name for name in steps if int(name) <= committed]
+            if not names:
+                return []
+            payload = steps[max(names)].attrs.get("events_json", "[]")
+            return json.loads(payload)
+
+    def summary(self) -> dict:
+        """Return numerical gates and scientific headline values for one member."""
+        frames = list(self.steps())
+        if not frames:
+            raise ValueError(f"no committed frames in {self.path}")
+        populations = self.populations()
+        gaps = self.energy_gap()
+        diagnostics = self.diagnostics()
+        classical = self.classical_energies()
+        classical_drifts = [
+            float(np.max(np.abs(values[:, 3] - values[0, 3])))
+            for values in classical.values() if len(values)
+        ]
+        spawns = [event for event in self.events() if event.get("kind") == "spawn"]
+        return {
+            "history": str(self.path),
+            "final_time_au": float(frames[-1]["time"]),
+            "final_time_fs": float(frames[-1]["time"] / AU_TIME_PER_FS),
+            "initial_excitation_ev": float(
+                (frames[0]["energies"][0, 1] - frames[0]["energies"][0, 0])
+                * HARTREE_TO_EV
+            ) if frames[0]["energies"].shape[1] > 1 else None,
+            "final_state_populations": populations[-1, 1:].tolist(),
+            "minimum_gap_hartree": float(np.nanmin(gaps[:, 1])),
+            "minimum_gap_ev": float(np.nanmin(gaps[:, 1]) * HARTREE_TO_EV),
+            "minimum_gap_time_fs": float(gaps[np.nanargmin(gaps[:, 1]), 0] / AU_TIME_PER_FS),
+            "accepted_spawn_count": len(spawns),
+            "maximum_metric_norm_error": float(
+                np.nanmax(np.abs(diagnostics[:, 1] - diagnostics[0, 1]))
+            ),
+            "maximum_population_sum_error": float(
+                np.max(np.abs(np.sum(populations[:, 1:], axis=1) - 1.0))
+            ),
+            "maximum_quantum_energy_drift_hartree": float(
+                np.nanmax(np.abs(diagnostics[:, 10] - diagnostics[0, 10]))
+            ),
+            "maximum_classical_energy_drift_hartree": (
+                max(classical_drifts) if classical_drifts else None
+            ),
+        }
+
+    def ethylene_spawn_geometries(
+        self, *, migration_cutoff_angstrom: float = 1.6
+    ) -> list[dict]:
+        """Classify accepted spawn geometries with a documented operational rule.
+
+        A short cross-carbon C--H contact is labelled ethylidene-like; remaining
+        events are labelled twisted/pyramidalized. The descriptor is intentionally
+        exposed so the final report can state the classification convention rather
+        than silently claim the paper's unavailable trajectory labels.
+        """
+        frames = list(self.steps())
+        output = []
+        for event in self.events():
+            if event.get("kind") != "spawn":
+                continue
+            frame = min(frames, key=lambda item: abs(item["time"] - event["time"]))
+            label = event.get("parent")
+            index = frame["labels"].index(label) if label in frame["labels"] else 0
+            geometry = frame["positions"][index] / BOHR_PER_ANGSTROM
+            cross = [
+                bond(geometry, 0, 4), bond(geometry, 0, 5),
+                bond(geometry, 1, 2), bond(geometry, 1, 3),
+            ]
+            minimum = float(min(cross))
+            output.append({
+                "time_au": float(event["time"]),
+                "time_fs": float(event["time"] / AU_TIME_PER_FS),
+                "parent": label,
+                "child": event.get("child"),
+                "minimum_cross_carbon_ch_angstrom": minimum,
+                "classification": (
+                    "ethylidene-like"
+                    if minimum < migration_cutoff_angstrom
+                    else "twisted-pyramidalized"
+                ),
+            })
+        return output
 
     def classical_energies(self) -> dict[str, np.ndarray]:
         series: dict[str, list[tuple[float, float, float, float]]] = defaultdict(list)
@@ -232,6 +354,27 @@ def analyze_run(path: str | Path, output_directory: str | Path, observables=()) 
         output / "propagation_diagnostics.csv", diagnostics, diagnostic_headers
     )
     products.append(diagnostic_csv)
+    performance = dataset.performance_diagnostics()
+    performance_headers = (
+        "time_au", "nuclear_time_step_au", "total_tbf_pairs",
+        "active_tbf_pairs", "screened_tbf_pairs", "electronic_calls",
+        "electronic_seconds", "tbf_electronic_calls", "centroid_electronic_calls",
+        "scf_seconds", "casscf_seconds", "gradient_seconds", "nac_seconds",
+        "gradient_evaluations", "nac_evaluations",
+        "nac_pairs_screened_by_gap", "centroid_cache_hits", "replay_seconds",
+        "checkpoint_count", "checkpoint_seconds", "peak_rss_bytes", "cpu_seconds",
+    )
+    products.append(dataset.export_csv(
+        output / "performance_diagnostics.csv", performance, performance_headers
+    ))
+    summary = dataset.summary()
+    summary["ethylene_spawn_geometries"] = (
+        dataset.ethylene_spawn_geometries()
+        if first["positions"].shape[1] == 6 else []
+    )
+    summary_path = output / "run_summary.json"
+    summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    products.append(summary_path)
     if diagnostics.size:
         panels = (
             (1, "Metric norm"), (4, "Quantum substeps"),

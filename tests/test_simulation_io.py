@@ -1,5 +1,6 @@
 from dataclasses import replace
 import json
+from pathlib import Path
 
 import h5py
 import numpy as np
@@ -12,7 +13,11 @@ from aims_berry import (
     run,
 )
 from aims_berry.analysis import RunDataset
-from aims_berry.electronic.base import WavefunctionState
+from aims_berry.electronic.base import (
+    ElectronicProperties,
+    ElectronicStructureError,
+    WavefunctionState,
+)
 from aims_berry.simulation import SimulationRunner
 from aims_berry.spawning import SpawnCandidate
 
@@ -310,6 +315,148 @@ def test_centroid_evaluations_reuse_pair_wavefunction_state(tmp_path):
     assert previous_ids == [None, "wf-1"]
 
 
+def test_centroid_requests_only_the_required_properties(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nselective centroid\nH 0 0 0\n")
+    requests = []
+
+    def provider(request):
+        requests.append(request)
+        return flat_provider(request)
+
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
+        initial_state=0, time_step=1.0, simulation_time=1.0,
+        electronic_method="custom", coupling_mode="nac", spawn_threshold=1e9,
+        run_directory=tmp_path / "selective-centroid",
+    )
+    runner = SimulationRunner(
+        config, CallableProvider(provider, capabilities=ProviderCapabilities(nacs=True))
+    )
+    left = runner.state.trajectories[0]
+    runner._evaluate_trajectory(0)
+    assert requests[-1].gradient_states == (0,)
+    assert requests[-1].nac_pairs == ((0, 1),)
+    same_state = left.copy_child(0, left.momenta)
+    runner._evaluate_centroid(left, same_state, np.zeros((1, 3)))
+    assert ElectronicProperties.GRADIENTS not in requests[-1].properties
+    assert ElectronicProperties.NACS not in requests[-1].properties
+    other_state = left.copy_child(1, left.momenta)
+    runner._evaluate_centroid(left, other_state, np.array([[0.1, 0.0, 0.0]]))
+    assert requests[-1].nac_pairs == ((0, 1),)
+    assert ElectronicProperties.GRADIENTS not in requests[-1].properties
+
+
+def test_run_dataset_exposes_sparse_work_telemetry(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\ntelemetry\nH 0 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
+        initial_state=0, time_step=0.05, simulation_time=0.05,
+        electronic_method="custom", coupling_mode="nac", spawn_threshold=1e9,
+        run_directory=tmp_path / "telemetry-run",
+    )
+    result = run(
+        config,
+        CallableProvider(flat_provider, capabilities=ProviderCapabilities(nacs=True)),
+    )
+    dataset = RunDataset(result.history)
+    performance = dataset.performance_diagnostics()
+    summary = dataset.summary()
+    assert performance.shape == (2, 22)
+    assert performance[-1, 5] == 2
+    assert summary["maximum_population_sum_error"] < 1e-12
+    assert summary["accepted_spawn_count"] == 0
+
+
+def test_canonical_nuclear_step_selection_and_refinement(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nstep control\nH 0 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
+        initial_state=1, time_step=20.0, coupling_time_step=5.0,
+        minimum_nuclear_time_step=0.625, simulation_time=40.0,
+        electronic_method="custom", coupling_mode="nac", spawn_metric="nac_norm",
+        spawn_threshold=3.0, run_directory=tmp_path / "steps",
+    )
+    runner = SimulationRunner(
+        config, CallableProvider(flat_provider, capabilities=ProviderCapabilities(nacs=True))
+    )
+    nacs = np.zeros((2, 2, 1, 3), complex)
+    nacs[0, 1, 0, 0] = 4.0
+    nacs[1, 0] = -nacs[0, 1].conj()
+    runner.state.trajectories[0].electronic = ElectronicStructureResult(
+        energies=np.array([0.0, 0.01]), gradients=np.zeros((2, 1, 3)), nacs=nacs,
+    ).validate(runner._request(np.zeros((1, 3)), 1, 0.0))
+    assert runner._nuclear_time_step(40.0) == 5.0
+    assert runner._refined_nuclear_time_step(20.0) == 5.0
+    assert runner._refined_nuclear_time_step(5.0) == 2.5
+    assert runner._refined_nuclear_time_step(1.25) == 0.625
+    assert runner._refined_nuclear_time_step(0.625) is None
+    assert runner._regularization_ladder() == (1.0e-8,)
+    canonical = replace(config, regularization_threshold=1.0e-4)
+    canonical_runner = SimulationRunner(
+        canonical,
+        CallableProvider(flat_provider, capabilities=ProviderCapabilities(nacs=True)),
+    )
+    assert canonical_runner._regularization_ladder() == (
+        1.0e-4, 1.0e-5, 1.0e-6, 1.0e-8,
+    )
+
+
+def test_endpoint_energy_gradient_rejection_refines_complete_nuclear_interval(tmp_path):
+    fixture = json.loads(
+        (Path(__file__).parent / "data" / "ethylene_seed87063_continuity_failure.json")
+        .read_text()
+    )
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\ncontinuity refinement\nH 1 0 0\n")
+    calls = []
+    wavefunctions = {}
+
+    def curvature_provider(request):
+        previous_geometry = (
+            None if request.previous is None else wavefunctions[request.previous.identifier]
+        )
+        displacement = (
+            0.0
+            if previous_geometry is None
+            else float(np.linalg.norm(request.geometry - previous_geometry))
+        )
+        calls.append((request.time, displacement))
+        if displacement > 0.05:
+            raise ElectronicStructureError(
+                "energy/gradient continuity failure: "
+                f"residuals=[{fixture['reported_energy_gradient_residual_hartree']}], "
+                f"tolerance={fixture['configured_tolerance_hartree']}"
+            )
+        identifier = f"wf-{len(calls)}"
+        wavefunctions[identifier] = request.geometry.copy()
+        return ElectronicStructureResult(
+            energies=np.asarray([0.5 * request.geometry[0, 0] ** 2]),
+            gradients=request.geometry[None, :, :].copy(),
+            wavefunction=WavefunctionState(identifier),
+        )
+
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=20.0, coupling_time_step=5.0,
+        minimum_nuclear_time_step=0.625, simulation_time=20.0,
+        electronic_method="custom", coupling_mode="nac", spawn_threshold=1e9,
+        energy_tolerance=0.005, run_directory=tmp_path / "continuity-refinement",
+    )
+    result = run(config, CallableProvider(curvature_provider))
+    refinements = [
+        event for event in result.events
+        if event.get("kind") == "nuclear_step_refinement"
+    ]
+    assert result.state.quantum_time == 20.0
+    assert refinements[0]["from_dt"] == 20.0
+    assert refinements[0]["to_dt"] == 5.0
+    assert "energy/gradient continuity failure" in refinements[0]["reason"]
+    assert any(displacement > 0.05 for _time, displacement in calls)
+
+
 def test_replay_history_is_hidden_until_transaction_commit(tmp_path):
     xyz = tmp_path / "h.xyz"
     xyz.write_text("1\nflat\nH 0 0 0\n")
@@ -328,6 +475,8 @@ def test_replay_history_is_hidden_until_transaction_commit(tmp_path):
     assert [step["step"] for step in RunDataset(result.history).steps()] == [0, 1]
     with h5py.File(result.history) as handle:
         assert "00000002" in handle["replay/test-window/steps"]
+        assert "00000002" not in handle["steps"]
+        assert "00000002" in handle["replay/test-window/superseded_steps"]
         assert int(handle["steps"].attrs["committed_through"]) == 1
     runner.writer.commit_replay("test-window", 2)
     assert [step["step"] for step in RunDataset(result.history).steps()] == [0, 1, 2]

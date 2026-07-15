@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import uuid
+import time
 from contextlib import nullcontext
 from pathlib import Path
 from typing import Any
@@ -20,6 +21,34 @@ from .base import (
     ProviderCapabilities,
     WavefunctionState,
 )
+
+
+def _energy_ordered_root_phases(
+    tracking_overlap: np.ndarray,
+    minimum_overlap: float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Phase energy-ordered roots and diagnose any tempting diabatic reassignment.
+
+    The Hungarian assignment is diagnostic only.  Permuting nondegenerate CASSCF
+    roots would change the physical adiabatic surface associated with a state index.
+    """
+    overlap = np.asarray(tracking_overlap, dtype=np.complex128)
+    row, col = linear_sum_assignment(-np.abs(overlap))
+    assignment = col[np.argsort(row)]
+    diagonal = np.diag(overlap)
+    magnitudes = np.abs(diagonal)
+    if magnitudes.size and float(np.min(magnitudes)) < minimum_overlap:
+        raise ElectronicStructureError(
+            "PySCF CI-root continuity failure: "
+            f"diagonal_overlaps={magnitudes.tolist()}, "
+            f"assignment_suggestion={assignment.tolist()}, "
+            f"minimum={minimum_overlap}",
+            retryable=False,
+        )
+    phases = np.exp(
+        -1j * np.angle(np.where(magnitudes > 1.0e-14, diagonal, 1.0))
+    )
+    return phases, assignment, magnitudes
 
 
 class PySCFProvider(BaseProvider):
@@ -116,6 +145,8 @@ class PySCFProvider(BaseProvider):
         return lib.temporary_env(nac_module, grad_elec_core=rohf_core)
 
     def evaluate(self, request: ElectronicStructureRequest) -> ElectronicStructureResult:
+        started = time.perf_counter()
+        timings: dict[str, Any] = {}
         self.capabilities.require(request.properties)
         fci, gto, mcscf, scf = self._imports()
         molecule = gto.M(
@@ -136,7 +167,9 @@ class PySCFProvider(BaseProvider):
             auxiliary_basis = self.options.get("density_fit_auxbasis")
             mean_field = mean_field.density_fit(auxbasis=auxiliary_basis)
         mean_field.conv_tol = float(self.options.get("scf_conv_tol", 1.0e-10))
+        phase_started = time.perf_counter()
         mean_field.kernel()
+        timings["scf_seconds"] = time.perf_counter() - phase_started
         if not mean_field.converged:
             raise ElectronicStructureError("PySCF SCF did not converge", retryable=True)
         target_spin = 0.5 * molecule.spin
@@ -190,6 +223,9 @@ class PySCFProvider(BaseProvider):
         candidates = []
         candidate_energies = []
         candidate_active_overlaps: list[np.ndarray | None] = []
+        candidate_active_overlap_matrices: list[np.ndarray | None] = []
+        candidate_root_overlaps: list[np.ndarray | None] = []
+        casscf_started = time.perf_counter()
         for mo_guess, ci_guess in guesses:
             solver = configured_casscf()
             try:
@@ -216,14 +252,33 @@ class PySCFProvider(BaseProvider):
                     new_active = np.asarray(solver.mo_coeff)[
                         :, solver.ncore:solver.ncore + solver.ncas
                     ]
+                    active_overlap = old_active.conj().T @ cross @ new_active
+                    candidate_active_overlap_matrices.append(active_overlap)
                     candidate_active_overlaps.append(np.linalg.svd(
-                        old_active.conj().T @ cross @ new_active,
-                        compute_uv=False,
+                        active_overlap, compute_uv=False,
                     ))
+                    old_ci = previous.get("ci")
+                    if old_ci is not None and len(old_ci) == len(solver.ci):
+                        candidate_root_overlaps.append(np.asarray([
+                            [
+                                fci.addons.overlap(
+                                    np.asarray(old), np.asarray(new),
+                                    solver.ncas, solver.nelecas,
+                                    s=active_overlap,
+                                )
+                                for new in solver.ci
+                            ]
+                            for old in old_ci
+                        ], dtype=np.complex128))
+                    else:
+                        candidate_root_overlaps.append(None)
                 else:
                     candidate_active_overlaps.append(None)
+                    candidate_active_overlap_matrices.append(None)
+                    candidate_root_overlaps.append(None)
         if not candidates:
             raise ElectronicStructureError("PySCF SA-CASSCF did not converge", retryable=True)
+        timings["casscf_seconds"] = time.perf_counter() - casscf_started
         selection = str(self.options.get("orbital_selection", "energy")).lower()
         if selection == "overlap":
             if any(values is not None for values in candidate_active_overlaps):
@@ -254,19 +309,20 @@ class PySCFProvider(BaseProvider):
             ],
             dtype=float,
         )
+        # Physical state indices remain in adiabatic energy order.  Root-overlap
+        # assignment is used only to diagnose when the nuclear step is too large
+        # for a well-defined same-root phase.
         permutation = np.arange(len(request.states))
+        assignment_suggestion = permutation.copy()
+        ci_root_diagonal_overlaps = None
         phases = np.ones(len(request.states), dtype=np.complex128)
         tracking_overlap = None
+        ci_coefficient_overlap = None
         active_space_singular_values = None
-        if previous is not None and previous.get("ci") is not None and len(previous["ci"]) == len(raw_ci):
-            tracking_overlap = np.asarray([
-                [np.vdot(np.asarray(old).reshape(-1), np.asarray(new).reshape(-1)) for new in raw_ci]
-                for old in previous["ci"]
-            ], dtype=np.complex128)
-            row, col = linear_sum_assignment(-np.abs(tracking_overlap))
-            permutation = col[np.argsort(row)]
-            diagonal = tracking_overlap[np.arange(len(permutation)), permutation]
-            phases = np.exp(-1j * np.angle(np.where(abs(diagonal) > 1.0e-14, diagonal, 1.0)))
+        active_orbital_rotation = None
+        aligned_active_overlap = None
+        transported_mo_coeff = np.asarray(casscf.mo_coeff).copy()
+        transported_ci = [np.asarray(value).copy() for value in raw_ci]
         if previous is not None and previous.get("mo_coeff") is not None:
             previous_molecule = previous.get("molecule")
             if previous_molecule is not None:
@@ -281,6 +337,65 @@ class PySCFProvider(BaseProvider):
                 active_space_singular_values = np.linalg.svd(
                     active_overlap, compute_uv=False
                 )
+                if previous.get("ci") is not None and len(previous["ci"]) == len(raw_ci):
+                    # CI coefficient arrays are defined in their current active-
+                    # orbital basis and therefore cannot be dotted directly when
+                    # active-active rotations occur.  Transform the determinants
+                    # through the old/new active-orbital overlap before tracking
+                    # physical, energy-ordered roots.
+                    ci_coefficient_overlap = np.asarray([
+                        [
+                            np.vdot(
+                                np.asarray(old).reshape(-1),
+                                np.asarray(new).reshape(-1),
+                            )
+                            for new in raw_ci
+                        ]
+                        for old in previous["ci"]
+                    ], dtype=np.complex128)
+                    tracking_overlap = np.asarray([
+                        [
+                            fci.addons.overlap(
+                                np.asarray(old), np.asarray(new),
+                                casscf.ncas, casscf.nelecas,
+                                s=active_overlap,
+                            )
+                            for new in raw_ci
+                        ]
+                        for old in previous["ci"]
+                    ], dtype=np.complex128)
+                    phases, assignment_suggestion, ci_root_diagonal_overlaps = (
+                        _energy_ordered_root_phases(
+                            tracking_overlap,
+                            float(self.options.get("ci_root_overlap_min", 0.0)),
+                        )
+                    )
+                # Put the persisted wavefunction into the closest active-orbital
+                # gauge to the preceding call.  The CI transformation is the
+                # contragredient determinant representation of the same orbital
+                # rotation, so this changes representation but not the physical
+                # CASSCF wavefunction, energies, gradients, or NACs.
+                u_active, _singular_values, vh_active = np.linalg.svd(
+                    active_overlap
+                )
+                active_orbital_rotation = (
+                    vh_active.conj().T @ u_active.conj().T
+                )
+                aligned_active_overlap = active_overlap @ active_orbital_rotation
+                active_slice = slice(
+                    casscf.ncore, casscf.ncore + casscf.ncas
+                )
+                transported_mo_coeff[:, active_slice] = (
+                    np.asarray(casscf.mo_coeff)[:, active_slice]
+                    @ active_orbital_rotation
+                )
+                transported_ci = [
+                    np.asarray(fci.addons.transform_ci_for_orbital_rotation(
+                        value, casscf.ncas, casscf.nelecas,
+                        active_orbital_rotation,
+                    ))
+                    for value in raw_ci
+                ]
                 minimum_overlap = float(
                     self.options.get("active_space_overlap_min", 0.0)
                 )
@@ -295,29 +410,60 @@ class PySCFProvider(BaseProvider):
                         retryable=False,
                     )
 
+        ordered_energies = raw_energies[permutation]
         gradients = None
+        gradient_mask = None
+        gradient_timings: dict[str, float] = {}
         if ElectronicProperties.GRADIENTS in request.properties:
-            gradients_raw = np.asarray([
-                casscf.nuc_grad_method(state=index).kernel()
-                for index in range(len(request.states))
-            ], dtype=float)
-            gradients = gradients_raw[permutation]
+            gradients = np.full(
+                (len(request.states), len(request.atoms), 3), np.nan, dtype=float
+            )
+            gradient_mask = np.zeros(len(request.states), dtype=bool)
+            for state in request.gradient_states or request.states:
+                position = request.states.index(state)
+                raw_state = int(permutation[position])
+                phase_started = time.perf_counter()
+                gradients[position] = casscf.nuc_grad_method(state=raw_state).kernel()
+                gradient_timings[str(state)] = time.perf_counter() - phase_started
+                gradient_mask[position] = True
+        timings["gradient_seconds"] = gradient_timings
         nacs = None
+        nac_mask = None
+        evaluated_nac_pairs: list[list[int]] = []
+        screened_nac_pairs: list[list[int]] = []
+        nac_timings: dict[str, float] = {}
         if ElectronicProperties.NACS in request.properties:
-            raw_nacs = np.zeros((len(request.states), len(request.states), len(request.atoms), 3), dtype=np.complex128)
+            nacs = np.zeros(
+                (len(request.states), len(request.states), len(request.atoms), 3),
+                dtype=np.complex128,
+            )
+            nac_mask = np.zeros((len(request.states), len(request.states)), dtype=bool)
             nac_method = casscf.nac_method()
             use_etfs = bool(self.options.get("use_etfs", True))
+            pairs = request.nac_pairs
+            if pairs is None:
+                pairs = tuple(
+                    (bra, ket) for offset, bra in enumerate(request.states)
+                    for ket in request.states[offset + 1:]
+                )
             with self._rohf_nac_context(casscf):
-                for bra in range(len(request.states)):
-                    for ket in range(bra + 1, len(request.states)):
-                        # PySCF state=(ket,bra) returns <bra|d ket/dR>.
-                        vector = nac_method.kernel(state=(ket, bra), use_etfs=use_etfs)
-                        raw_nacs[bra, ket] = vector
-                        raw_nacs[ket, bra] = -np.asarray(vector).conjugate()
-            nacs = raw_nacs[permutation][:, permutation]
-            nacs = phases.conj()[:, None, None, None] * nacs * phases[None, :, None, None]
-
-        ordered_energies = raw_energies[permutation]
+                for bra, ket in pairs:
+                    i, j = request.states.index(bra), request.states.index(ket)
+                    gap = abs(ordered_energies[i] - ordered_energies[j])
+                    if request.nac_gap_threshold is not None and gap > request.nac_gap_threshold:
+                        screened_nac_pairs.append([int(bra), int(ket)])
+                        continue
+                    raw_bra, raw_ket = int(permutation[i]), int(permutation[j])
+                    phase_started = time.perf_counter()
+                    # PySCF state=(ket,bra) returns <bra|d ket/dR>.
+                    vector = nac_method.kernel(state=(raw_ket, raw_bra), use_etfs=use_etfs)
+                    vector = phases[i].conjugate() * np.asarray(vector) * phases[j]
+                    nacs[i, j] = vector
+                    nacs[j, i] = -vector.conjugate()
+                    nac_mask[i, j] = nac_mask[j, i] = True
+                    evaluated_nac_pairs.append([int(bra), int(ket)])
+                    nac_timings[f"{bra}:{ket}"] = time.perf_counter() - phase_started
+        timings["nac_seconds"] = nac_timings
         energy_gradient_residuals = None
         if (
             gradients is not None
@@ -327,17 +473,23 @@ class PySCFProvider(BaseProvider):
             and previous.get("geometry") is not None
         ):
             displacement = request.geometry - np.asarray(previous["geometry"])
-            predicted_change = 0.5 * np.sum(
-                (np.asarray(previous["gradients"]) + gradients)
-                * displacement[None, :, :],
-                axis=(1, 2),
-            )
             actual_change = ordered_energies - np.asarray(previous["energies"])
-            energy_gradient_residuals = actual_change - predicted_change
+            previous_mask = np.asarray(
+                previous.get("gradient_mask", np.ones(len(request.states))), dtype=bool
+            )
+            available = previous_mask & np.asarray(gradient_mask, dtype=bool)
+            energy_gradient_residuals = np.full(len(request.states), np.nan)
+            if np.any(available):
+                predicted_change = 0.5 * np.sum(
+                    (np.asarray(previous["gradients"])[available] + gradients[available])
+                    * displacement[None, :, :],
+                    axis=(1, 2),
+                )
+                energy_gradient_residuals[available] = actual_change[available] - predicted_change
             tolerance = float(
                 self.options.get("energy_gradient_consistency_tolerance", np.inf)
             )
-            if np.max(np.abs(energy_gradient_residuals)) > tolerance:
+            if np.any(available) and np.max(np.abs(energy_gradient_residuals[available])) > tolerance:
                 raise ElectronicStructureError(
                     "PySCF energy/gradient continuity failure: "
                     f"residuals={energy_gradient_residuals.tolist()}, "
@@ -347,36 +499,72 @@ class PySCFProvider(BaseProvider):
 
         identifier = uuid.uuid4().hex
         ordered_ci = [
-            np.real_if_close(np.asarray(raw_ci[index]) * phases[position])
+            np.real_if_close(np.asarray(transported_ci[index]) * phases[position])
             for position, index in enumerate(permutation)
         ]
+        aligned_ci_coefficient_overlap = None
+        if (
+            previous is not None
+            and previous.get("ci") is not None
+            and len(previous["ci"]) == len(ordered_ci)
+        ):
+            aligned_ci_coefficient_overlap = np.asarray([
+                [
+                    np.vdot(
+                        np.asarray(old).reshape(-1),
+                        np.asarray(new).reshape(-1),
+                    )
+                    for new in ordered_ci
+                ]
+                for old in previous["ci"]
+            ], dtype=np.complex128)
         payload = {
-            "mo_coeff": np.asarray(casscf.mo_coeff),
+            "mo_coeff": transported_mo_coeff,
             "ci": ordered_ci,
             "molecule": molecule,
             "geometry": request.geometry.copy(),
             "energies": ordered_energies.copy(),
             "gradients": None if gradients is None else gradients.copy(),
+            "gradient_mask": None if gradient_mask is None else gradient_mask.copy(),
         }
         self._states[identifier] = payload
         result = ElectronicStructureResult(
             energies=ordered_energies,
             gradients=gradients,
             nacs=nacs,
+            gradient_mask=gradient_mask,
+            nac_mask=nac_mask,
             wavefunction=WavefunctionState(identifier, payload),
             metadata={
                 "provider": "pyscf", "pyscf_converged": True,
                 "state_permutation": permutation.tolist(),
+                "root_assignment_suggestion": assignment_suggestion.tolist(),
+                "ci_root_diagonal_overlaps": ci_root_diagonal_overlaps,
                 "tracking_overlap": tracking_overlap,
+                "ci_coefficient_overlap": ci_coefficient_overlap,
+                "aligned_ci_coefficient_overlap": aligned_ci_coefficient_overlap,
                 "active_space_singular_values": active_space_singular_values,
+                "active_orbital_rotation": active_orbital_rotation,
+                "aligned_active_overlap": aligned_active_overlap,
                 "energy_gradient_residuals": energy_gradient_residuals,
                 "casscf_candidate_energies": candidate_energies,
                 "casscf_candidate_active_overlaps": candidate_active_overlaps,
+                "casscf_candidate_active_overlap_matrices": candidate_active_overlap_matrices,
+                "casscf_candidate_root_overlaps": candidate_root_overlaps,
                 "casscf_selected_candidate": selected_candidate,
                 "spin_squares": spin_squares[permutation].tolist(),
                 "target_spin_square": target_spin_square,
+                "evaluated_gradient_states": (
+                    [] if gradient_mask is None else [
+                        int(request.states[index]) for index in np.flatnonzero(gradient_mask)
+                    ]
+                ),
+                "evaluated_nac_pairs": evaluated_nac_pairs,
+                "screened_nac_pairs": screened_nac_pairs,
+                "timings": timings,
             },
         )
+        timings["total_seconds"] = time.perf_counter() - started
         return result.validate(request)
 
     def dump_state(self, directory: Path) -> dict[str, Any]:
@@ -401,6 +589,10 @@ class PySCFProvider(BaseProvider):
                 gradients=(
                     state["gradients"]
                     if state.get("gradients") is not None else np.asarray([])
+                ),
+                gradient_mask=(
+                    state["gradient_mask"]
+                    if state.get("gradient_mask") is not None else np.asarray([])
                 ),
             )
             manifest[identifier] = filename
@@ -427,6 +619,10 @@ class PySCFProvider(BaseProvider):
                 "molecule": gto.loads(molecule_dump) if gto is not None and molecule_dump else None,
                 "energies": archive["energies"] if "energies" in archive and archive["energies"].size else None,
                 "gradients": archive["gradients"] if "gradients" in archive and archive["gradients"].size else None,
+                "gradient_mask": (
+                    archive["gradient_mask"]
+                    if "gradient_mask" in archive and archive["gradient_mask"].size else None
+                ),
             }
 
 

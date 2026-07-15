@@ -37,6 +37,11 @@ def projected_coupling(trajectory: TrajectoryBasisFunction, nac: np.ndarray) -> 
     return float(abs(np.sum((phase * nac).real * velocity)))
 
 
+def nac_norm(nac: np.ndarray) -> float:
+    """Euclidean NAC magnitude used by the canonical molecular AIMS protocol."""
+    return float(np.linalg.norm(np.asarray(nac)))
+
+
 def energy_matched_momentum(
     momentum: np.ndarray,
     masses: np.ndarray,

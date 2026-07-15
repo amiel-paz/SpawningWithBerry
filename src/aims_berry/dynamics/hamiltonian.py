@@ -31,8 +31,9 @@ def npi_time_derivative(overlap: np.ndarray, dt: float) -> np.ndarray:
 class SaddlePointHamiltonian:
     """Zeroth-order saddle-point AIMS Hamiltonian."""
 
-    def __init__(self, coupling_mode: str = "nac") -> None:
+    def __init__(self, coupling_mode: str = "nac", pair_overlap_threshold: float = 0.0) -> None:
         self.coupling_mode = coupling_mode
+        self.pair_overlap_threshold = float(pair_overlap_threshold)
 
     def build(
         self,
@@ -55,6 +56,10 @@ class SaddlePointHamiltonian:
             for j in range(i, count):
                 right = trajectories[j]
                 nuclear_overlap = gaussian_overlap(left, right, electronic=False)
+                if i != j and abs(nuclear_overlap) < self.pair_overlap_threshold:
+                    overlap[i, j] = overlap[j, i] = 0.0
+                    sdot[i, j] = sdot[j, i] = 0.0
+                    continue
                 centroid = pair_centroid(left, right)
                 if i == j and right.electronic is not None:
                     electronic = right.electronic
@@ -65,7 +70,14 @@ class SaddlePointHamiltonian:
                     value = gaussian_kinetic(left, right) + electronic.energies[state_i] * nuclear_overlap
                 else:
                     value = 0j
-                if self.coupling_mode == "nac" and electronic.nacs is not None:
+                if (
+                    self.coupling_mode == "nac"
+                    and electronic.nacs is not None
+                    and (
+                        electronic.nac_mask is None
+                        or electronic.nac_mask[state_i, state_j]
+                    )
+                ):
                     momentum = gaussian_momentum(left, right)
                     derivative = electronic.nacs[state_i, state_j]
                     # PySpawn Eq. (8)/(16): H_IJ contains 2D_IJ and

@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import numpy as np
@@ -65,9 +66,16 @@ def test_ethylene_production_config_and_wigner_sample_are_reproducible():
     assert config.basis == "6-31g*"
     assert config.geometry.name == "ethylene.xyz"
     assert config.hessian.name == "ethylene_mp2_631gstar_hessian.txt"
-    assert config.nsteps == 2067
-    assert config.time_step == 5.0
+    assert config.nsteps == 517
+    assert config.time_step == 20.0
+    assert config.coupling_time_step == 5.0
+    assert config.minimum_nuclear_time_step == 0.625
     assert config.min_time_step == 0.00244140625
+    assert config.spawn_metric == "nac_norm"
+    assert config.spawn_threshold == 3.0
+    assert config.pair_overlap_threshold == 1.0e-3
+    assert config.nac_gap_threshold == pytest.approx(0.6 / 27.211386245988)
+    assert config.provider_option_dict()["ci_root_overlap_min"] == 0.7
     assert config.simulation_time / AU_TIME_PER_FS == pytest.approx(249.9916951526321)
     assert np.array_equal(first[0], second[0])
     assert np.array_equal(first[1], second[1])
@@ -77,3 +85,19 @@ def test_ethylene_production_config_and_wigner_sample_are_reproducible():
     inv_sqrt_mass = 1.0 / np.sqrt(masses)
     mass_weighted = hessian * inv_sqrt_mass[:, None] * inv_sqrt_mass[None, :]
     assert np.count_nonzero(np.linalg.eigvalsh(mass_weighted) > 1.0e-10) == 12
+
+
+def test_ethylene_protocol_manifest_matches_production_controls():
+    root = Path(__file__).parents[1]
+    config = load_config(root / "examples/ethylene_pyscf/production.in")
+    manifest = json.loads(
+        (root / "examples/ethylene_pyscf/protocol-manifest.json").read_text()
+    )
+    canonical = manifest["canonical_aims_controls"]
+    assert canonical["normal_time_step_au"] == config.time_step
+    assert canonical["coupling_time_step_au"] == config.coupling_time_step
+    assert canonical["spawn_threshold_bohr_inverse"] == config.spawn_threshold
+    assert canonical["pair_overlap_threshold"] == config.pair_overlap_threshold
+    assert manifest["reported_controls"]["electronic_method"].startswith(
+        "equal-weight SA(3)-CAS(2e,2o)/6-31G*"
+    )

@@ -1,6 +1,8 @@
+import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 from scipy.linalg import expm
 
 from aims_berry.core import MatrixSet, TrajectoryBasisFunction
@@ -11,6 +13,10 @@ from aims_berry.dynamics.quantum import (
     metric_norm,
     regularized_metric,
 )
+
+
+def _complex_fixture(value):
+    return np.asarray(value["real"]) + 1j * np.asarray(value["imag"])
 
 
 def trajectory(x, p):
@@ -66,6 +72,53 @@ def test_cayley_reproduces_archived_ethylene_transfer_and_ignores_energy_offset(
     assert np.allclose(np.abs(shifted_result) ** 2, np.abs(propagated) ** 2, atol=1e-12)
 
 
+def test_seed87062_replay_failure_did_not_originate_at_spawn_insertion():
+    payload = json.loads(
+        (Path(__file__).parent / "data" / "ethylene_seed87062_replay_entry.json")
+        .read_text()
+    )
+    canonical = payload["canonical"]
+    insertion = payload["insertion"]
+    old_coefficients = _complex_fixture(canonical["amplitudes"])
+    new_coefficients = _complex_fixture(insertion["amplitudes"])
+    old_matrices = MatrixSet(
+        _complex_fixture(canonical["S"]),
+        _complex_fixture(canonical["H"]),
+        _complex_fixture(canonical["Sdot"]),
+    )
+    new_matrices = MatrixSet(
+        _complex_fixture(insertion["S"]),
+        _complex_fixture(insertion["H"]),
+        _complex_fixture(insertion["Sdot"]),
+    )
+
+    def energy(coefficients, matrices):
+        return float(np.real(
+            np.vdot(coefficients, matrices.hamiltonian @ coefficients)
+            / np.vdot(coefficients, matrices.overlap @ coefficients)
+        ))
+
+    assert new_coefficients[1] == 0j
+    assert metric_norm(new_coefficients, new_matrices.overlap) == pytest.approx(
+        metric_norm(old_coefficients, old_matrices.overlap), abs=1.0e-14
+    )
+    assert energy(new_coefficients, new_matrices) == pytest.approx(
+        energy(old_coefficients, old_matrices), abs=1.0e-14
+    )
+    assert payload["observed_failure_quantum_energy_drift_hartree"] > 0.005
+
+    propagated = adaptive_cayley_step(
+        new_coefficients,
+        new_matrices,
+        new_matrices,
+        payload["frontier_time_au"] - payload["entry_time_au"],
+        convergence_tolerance=1.0e-6,
+        norm_tolerance=1.0e-10,
+        min_time_step=5.0 / 4096.0,
+    )
+    assert abs(propagated.norm_after_raw - propagated.norm_before) < 1.0e-10
+
+
 def test_cayley_uses_full_right_acting_derivative():
     overlap = np.eye(2, dtype=complex)
     hamiltonian = np.array([[0.1, 0.02], [0.02, 0.15]], complex)
@@ -101,7 +154,9 @@ def test_adaptive_cayley_repairs_three_tbf_ethylene_failure():
     )
     assert repaired.substeps <= 4096
     assert abs(repaired.norm_after_raw - repaired.norm_before) < 1.0e-10
-    assert abs(metric_norm(repaired.amplitudes, end.overlap) - repaired.norm_before) < 2.0e-14
+    assert metric_norm(repaired.amplitudes, end.overlap) == pytest.approx(
+        repaired.norm_after_raw, abs=2.0e-14
+    )
 
     reference = adaptive_cayley_step(
         coefficients,
