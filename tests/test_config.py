@@ -66,16 +66,22 @@ def test_ethylene_production_config_and_wigner_sample_are_reproducible():
     assert config.basis == "6-31g*"
     assert config.geometry.name == "ethylene.xyz"
     assert config.hessian.name == "ethylene_mp2_631gstar_hessian.txt"
-    assert config.nsteps == 517
-    assert config.time_step == 20.0
+    assert config.nsteps == 2067
+    assert config.time_step == 5.0
     assert config.coupling_time_step == 5.0
     assert config.minimum_nuclear_time_step == 0.625
+    assert config.classical_energy_tolerance == 2.0e-4
+    assert config.classical_energy_numerical_margin == 1.0e-8
     assert config.min_time_step == 0.00244140625
     assert config.spawn_metric == "nac_norm"
     assert config.spawn_threshold == 3.0
     assert config.pair_overlap_threshold == 1.0e-3
     assert config.nac_gap_threshold == pytest.approx(0.6 / 27.211386245988)
     assert config.provider_option_dict()["ci_root_overlap_min"] == 0.7
+    assert (
+        config.provider_option_dict()["energy_gradient_consistency_tolerance"]
+        == 1.0e-4
+    )
     assert config.simulation_time / AU_TIME_PER_FS == pytest.approx(249.9916951526321)
     assert np.array_equal(first[0], second[0])
     assert np.array_equal(first[1], second[1])
@@ -94,10 +100,31 @@ def test_ethylene_protocol_manifest_matches_production_controls():
         (root / "examples/ethylene_pyscf/protocol-manifest.json").read_text()
     )
     canonical = manifest["canonical_aims_controls"]
-    assert canonical["normal_time_step_au"] == config.time_step
+    assert canonical["normal_time_step_au"] == 20
     assert canonical["coupling_time_step_au"] == config.coupling_time_step
+    assert manifest["deliberate_deviations"][
+        "production_fixed_nuclear_time_step_au"
+    ] == config.time_step
     assert canonical["spawn_threshold_bohr_inverse"] == config.spawn_threshold
     assert canonical["pair_overlap_threshold"] == config.pair_overlap_threshold
     assert manifest["reported_controls"]["electronic_method"].startswith(
         "equal-weight SA(3)-CAS(2e,2o)/6-31G*"
     )
+    local_tolerance = manifest["deliberate_deviations"][
+        "local_energy_gradient_consistency_hartree"
+    ]
+    assert local_tolerance == config.provider_option_dict()[
+        "energy_gradient_consistency_tolerance"
+    ]
+    defect = json.loads(
+        (root / "tests/data/ethylene_seed87066_classical_step_defect.json")
+        .read_text()
+    )
+    assert abs(defect["active_state_energy_gradient_residual_hartree"]) > local_tolerance
+    assert abs(defect["active_state_energy_gradient_residual_hartree"]) < config.energy_tolerance
+    assert manifest["deliberate_deviations"][
+        "classical_energy_tolerance_hartree"
+    ] == config.classical_energy_tolerance
+    assert manifest["deliberate_deviations"][
+        "classical_energy_numerical_margin_hartree"
+    ] == config.classical_energy_numerical_margin

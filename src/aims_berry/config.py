@@ -62,6 +62,8 @@ class SimulationConfig:
     min_time_step: float | None = None
     minimum_nuclear_time_step: float | None = None
     energy_tolerance: float = 5.0e-3
+    classical_energy_tolerance: float | None = None
+    classical_energy_numerical_margin: float = 0.0
     norm_tolerance: float = 1.0e-6
     output_every: int = 1
     checkpoint_keep: int = 2
@@ -109,6 +111,13 @@ class SimulationConfig:
             raise ConfigError("spawn_metric must be projected or nac_norm")
         if self.nac_gap_threshold <= 0:
             raise ConfigError("nac_gap_threshold must be positive")
+        if (
+            self.classical_energy_tolerance is not None
+            and self.classical_energy_tolerance <= 0
+        ):
+            raise ConfigError("classical_energy_tolerance must be positive")
+        if self.classical_energy_numerical_margin < 0:
+            raise ConfigError("classical_energy_numerical_margin must be non-negative")
         if self.pair_overlap_threshold < 0 or self.pair_overlap_threshold >= 1:
             raise ConfigError("pair_overlap_threshold must be in [0, 1)")
 
@@ -160,6 +169,8 @@ _SCALAR_TYPES: dict[str, type] = {
     "overlap_threshold": float,
     "regularization_threshold": float,
     "energy_tolerance": float,
+    "classical_energy_tolerance": float,
+    "classical_energy_numerical_margin": float,
     "norm_tolerance": float,
     "output_every": int,
     "checkpoint_keep": int,

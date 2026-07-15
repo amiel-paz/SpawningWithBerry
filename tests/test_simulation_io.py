@@ -4,6 +4,7 @@ from pathlib import Path
 
 import h5py
 import numpy as np
+import pytest
 
 from aims_berry import (
     CallableProvider,
@@ -33,6 +34,35 @@ def flat_provider(request):
         "gradients": np.zeros((nstate, natom, 3)),
         "nacs": nac,
     }
+
+
+def test_classical_energy_tolerance_can_be_stricter_than_quantum_gate(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nclassical gate\nH 0 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=1.0, simulation_time=0.0,
+        electronic_method="custom", energy_tolerance=5.0e-3,
+        classical_energy_tolerance=2.0e-4,
+        classical_energy_numerical_margin=1.0e-8,
+        run_directory=tmp_path / "classical-gate",
+    )
+    runner = SimulationRunner(config, CallableProvider(flat_provider))
+    trajectory = runner.state.trajectories[0]
+    trajectory.electronic = ElectronicStructureResult(
+        energies=np.asarray([0.0]), gradients=np.zeros((1, 1, 3)),
+    )
+    runner.classical_energy_references[trajectory.identifier] = 0.0
+    trajectory.momenta[0, 0] = np.sqrt(
+        2.0 * trajectory.masses[0, 0] * 3.0e-4
+    )
+    with pytest.raises(RuntimeError, match="classical energy violation"):
+        runner._check_classical_energies()
+    trajectory.momenta[0, 0] = np.sqrt(
+        2.0 * trajectory.masses[0, 0] * (2.0e-4 + 0.5e-8)
+    )
+    runner._check_classical_energies()
+    runner.close()
 
 
 def test_short_run_writes_history_and_exact_checkpoint(tmp_path):

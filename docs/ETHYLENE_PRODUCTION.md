@@ -127,3 +127,38 @@ metric-norm error is `1.88e-13`, quantum-energy drift is `0.004673 Eh`, and maxi
 per-TBF classical-energy drift is `7.98e-4 Eh`. The projected 13-member makespan is
 3.34--3.40 hours. A new production ensemble was then launched from step zero; all
 earlier runs containing bare-CI root tracking remain diagnostic-only.
+
+The next production attempt found a separate nuclear-integration issue in seed
+87066 at 1900 au. A single 20-au interval near a 0.024248-Eh S0/S1 gap produced a
+`-0.001646 Eh` endpoint energy/gradient quadrature residual and a localized
+`-0.001876 Eh` classical-energy defect. The error returned to `-0.000099 Eh` on
+the next frame, so it was bounded finite-step error rather than secular loss, but
+millihartree-scale excursions are not accepted as production quality. The former
+`0.005 Eh` local provider threshold was too loose to activate refinement. Production
+now uses a separate `0.0001 Eh` local consistency gate; the existing transactional
+rollback retries rejected 20-au intervals at 5 au while the 0.005-Eh global energy
+limit remains a hard diagnostic stop.
+
+Using an absolute-energy boundary to select among 20/5/2.5/1.25-au Verlet maps was
+then found to be internally counterproductive: each timestep has a different shadow
+Hamiltonian, so repeated switching created boundary-hugging offsets even when the
+local force quadrature was converged. Production now uses fixed 5-au velocity
+Verlet throughout, retains a `0.0002 Eh` classical hard gate, and refines below
+5 au only as a failure recovery. This is a documented accuracy deviation from the
+canonical 20-au normal step and preserves a single symplectic map during ordinary
+propagation.
+
+The 2000-au fixed-step validation kept the parent below `8.92e-5 Eh`. During the
+spawn replay, the child accumulated just over `1.00e-4 Eh` across 102.5 au. The
+empirical production hard bound is therefore `0.0002 Eh`, still 9.4 times tighter
+than the original defect and 25 times tighter than the former 0.005-Eh stop. An
+explicit `1e-8 Eh` comparison margin covers the CASSCF convergence scale. It does
+not alter, renormalize, or recenter any trajectory energy; all raw drift remains in
+HDF5 and analysis output.
+
+The final fixed-5-au launch gates passed from zero. Through 700 au, seed 87062 has
+maximum per-TBF classical drift `6.729e-5 Eh`, spawns at 515 au, and reaches
+S0/S1 populations 0.673448/0.326552. Seed 87063 has drift `1.893e-5 Eh` and remains
+on S1. The `10^-3` and `10^-4` pair-screening runs are identical frame by frame;
+the worst metric-norm error is `1.90e-13`, root overlap is 0.97569, and the measured
+13-member makespan projection is 6.35 hours.

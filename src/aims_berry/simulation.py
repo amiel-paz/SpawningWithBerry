@@ -728,16 +728,26 @@ class SimulationRunner:
         )
 
     def _check_classical_energies(self) -> None:
+        tolerance = (
+            self.config.energy_tolerance
+            if self.config.classical_energy_tolerance is None
+            else self.config.classical_energy_tolerance
+        )
         for trajectory in self.state.trajectories:
             energy = self._trajectory_energy(trajectory)
             reference = self.classical_energy_references.setdefault(
                 trajectory.identifier, energy
             )
-            if abs(energy - reference) > self.config.energy_tolerance:
+            comparison_limit = (
+                tolerance + self.config.classical_energy_numerical_margin
+            )
+            if abs(energy - reference) > comparison_limit:
                 raise RuntimeError(
                     "classical energy violation: "
                     f"trajectory={trajectory.label}, reference={reference}, "
-                    f"current={energy}, drift={energy - reference}"
+                    f"current={energy}, drift={energy - reference}, "
+                    f"tolerance={tolerance}, "
+                    f"numerical_margin={self.config.classical_energy_numerical_margin}"
                 )
 
     def _check_quantum_energy(self) -> float:

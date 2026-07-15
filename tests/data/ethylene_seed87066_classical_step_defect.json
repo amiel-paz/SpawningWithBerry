@@ -1,0 +1,14 @@
+{
+  "seed": 87066,
+  "interval_end_au": 1900.0,
+  "nuclear_time_step_au": 20.0,
+  "s0_s1_gap_hartree": 0.024248211391977748,
+  "minimum_orbital_aware_root_overlap": 0.8510906602082504,
+  "active_state_energy_gradient_residual_hartree": -0.0016463368865321177,
+  "classical_energy_defect_hartree": -0.0018758962406195678,
+  "next_frame_classical_energy_defect_hartree": -0.00009913946840356402,
+  "old_local_tolerance_hartree": 0.005,
+  "new_local_tolerance_hartree": 0.0001,
+  "classical_energy_numerical_margin_hartree": 1e-8,
+  "diagnosis": "localized 20-au velocity-Verlet quadrature error in a high-curvature region; the old local endpoint threshold did not request transactional refinement"
+}

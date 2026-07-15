@@ -5,7 +5,7 @@ geometry_units angstrom
 
 num_states 3
 initial_state 1
-time_step 20 au
+time_step 5 au
 coupling_time_step 5 au
 min_time_step 0.00244140625 au
 minimum_nuclear_time_step 0.625 au
@@ -33,7 +33,9 @@ provider_option multistart_external_orbitals 1
 provider_option orbital_selection overlap
 provider_option active_space_overlap_min 0.7
 provider_option ci_root_overlap_min 0.7
-provider_option energy_gradient_consistency_tolerance 0.005
+# Local trapezoidal force/energy consistency controls adaptive Verlet refinement.
+# Keep this much tighter than the global 0.005-Eh diagnostic hard stop.
+provider_option energy_gradient_consistency_tolerance 0.0001
 provider_option electronic_workers 1
 
 coupling_mode nac
@@ -51,6 +53,8 @@ pair_overlap_threshold 0.001
 overlap_threshold 0.0001
 regularization_threshold 0.0001
 energy_tolerance 0.005
+classical_energy_tolerance 0.0002
+classical_energy_numerical_margin 0.00000001
 norm_tolerance 1e-6
 output_every 1
 run_directory run-production

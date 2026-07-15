@@ -79,6 +79,27 @@ The rolling status, call counts, memory use, and makespan estimate are written t
   root overlap is 0.97630, metric-norm error is 1.88e-13, quantum-energy drift is
   0.004673 Eh, and classical-energy drift is 7.98e-4 Eh. Fresh production was
   relaunched only after those gates passed.
+- That launch subsequently exposed a localized 1.876-mEh Verlet defect for seed
+  87066 at 1900 au, where the S0/S1 gap narrowed to 0.02425 Eh and the root overlap
+  fell to 0.851. The error disappeared on the following interval, identifying
+  finite-step quadrature rather than secular drift. The local electronic
+  energy/gradient consistency gate is therefore 0.0001 Eh, separate from the
+  0.005-Eh global diagnostic stop; intervals exceeding it transactionally retry
+  from their starting checkpoint at 5 au.
+- Driving an absolute energy wall with variable-step Verlet was also rejected:
+  repeated 20/5/2.5-au transitions change the integrator's shadow Hamiltonian and
+  can manufacture boundary-hugging offsets. Production therefore uses a fixed
+  5-au velocity-Verlet nuclear step. This deliberately departs from the canonical
+  20-au normal step to preserve a single symplectic map. The production hard bound
+  is 0.2 mEh, while the local interval-consistency trigger remains 0.1 mEh. A
+  separate 1e-8-Eh comparison margin reflects the CASSCF
+  convergence floor; raw energies are stored unchanged and are never recentered.
+- Final from-zero gates at fixed 5 au passed. Seed 87062's largest per-TBF
+  classical drift through 700 au is 0.0673 mEh and it reproduces the 515-au spawn;
+  seed 87063's drift is 0.0189 mEh. The `10^-3` and `10^-4` pair thresholds give
+  identical frames, populations, parentage, and spawn decisions. Worst norm error
+  is `1.90e-13`, worst root overlap is 0.97569, and the projected 13-member
+  makespan is 6.35 hours.
 
 The accepted equilibrium geometry is C=C 1.339 angstrom, C-H 1.086 angstrom, and
 H-C-H 117.6 degrees. Its harmonic force field is a central finite-difference
