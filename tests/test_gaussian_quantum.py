@@ -254,3 +254,22 @@ def test_gaussian_tau_matches_finite_difference_metric_derivative():
         displaced.append(overlap_matrix(current))
     finite_difference = (displaced[1] - displaced[0]) / (2.0 * epsilon)
     assert np.max(np.abs(finite_difference - tau - tau.conj().T)) < 1.0e-9
+
+
+def test_adaptive_cayley_accepts_roundoff_sized_final_interval():
+    matrices = MatrixSet(
+        np.eye(1, dtype=complex),
+        np.asarray([[0.2]], dtype=complex),
+        np.zeros((1, 1), dtype=complex),
+    )
+    result = adaptive_cayley_step(
+        np.ones(1, dtype=complex),
+        matrices,
+        matrices,
+        2.0e-12,
+        convergence_tolerance=1.0e-8,
+        norm_tolerance=1.0e-10,
+        min_time_step=2.4e-5,
+    )
+    assert result.substeps == 2
+    assert result.norm_after_raw == pytest.approx(1.0, abs=1.0e-14)

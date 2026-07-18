@@ -26,6 +26,8 @@ from .base import (
 def _energy_ordered_root_phases(
     tracking_overlap: np.ndarray,
     minimum_overlap: float,
+    *,
+    enforce: bool = True,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Phase energy-ordered roots and diagnose any tempting diabatic reassignment.
 
@@ -37,7 +39,7 @@ def _energy_ordered_root_phases(
     assignment = col[np.argsort(row)]
     diagonal = np.diag(overlap)
     magnitudes = np.abs(diagonal)
-    if magnitudes.size and float(np.min(magnitudes)) < minimum_overlap:
+    if enforce and magnitudes.size and float(np.min(magnitudes)) < minimum_overlap:
         raise ElectronicStructureError(
             "PySCF CI-root continuity failure: "
             f"diagonal_overlaps={magnitudes.tolist()}, "
@@ -74,6 +76,14 @@ class PySCFProvider(BaseProvider):
         self.active_orbitals = active_orbitals
         self.state_weights = state_weights
         self.options = options or {}
+        continuity_policy = str(
+            self.options.get("continuity_policy", "error")
+        ).lower()
+        if continuity_policy not in {"error", "record"}:
+            raise ElectronicStructureError(
+                "PySCF continuity_policy must be 'error' or 'record'",
+                retryable=False,
+            )
         self._states: dict[str, dict[str, Any]] = {}
         self._checkpoint_references: frozenset[str] | None = None
 
@@ -167,11 +177,74 @@ class PySCFProvider(BaseProvider):
             auxiliary_basis = self.options.get("density_fit_auxbasis")
             mean_field = mean_field.density_fit(auxbasis=auxiliary_basis)
         mean_field.conv_tol = float(self.options.get("scf_conv_tol", 1.0e-10))
-        phase_started = time.perf_counter()
-        mean_field.kernel()
-        timings["scf_seconds"] = time.perf_counter() - phase_started
-        if not mean_field.converged:
-            raise ElectronicStructureError("PySCF SCF did not converge", retryable=True)
+        previous = self._previous_payload(request.previous)
+        scf_initialization = "rhf_bootstrap"
+        initial_ci = None
+        if (
+            previous is not None
+            and previous.get("mo_coeff") is not None
+            and previous.get("molecule") is not None
+            and self.scf_method != "uhf"
+        ):
+            # RHF/ROHF is only a bootstrap for the first point on an electronic
+            # path.  At later geometries, project the *converged CASSCF* orbital
+            # frame into the new AO basis, symmetrically orthonormalize it, and
+            # enter the next SA-CASSCF macroiteration directly with the prior CI
+            # vectors.  Re-solving HF here discards precisely the multireference
+            # continuation information that dynamics needs.
+            phase_started = time.perf_counter()
+            try:
+                projected = scf.addons.project_mo_nr2nr(
+                    previous["molecule"],
+                    np.asarray(previous["mo_coeff"]),
+                    molecule,
+                )
+                overlap = mean_field.get_ovlp()
+                metric = projected.conj().T @ overlap @ projected
+                eigenvalues, eigenvectors = np.linalg.eigh(metric)
+                if eigenvalues.size == 0 or float(np.min(eigenvalues)) < 1.0e-10:
+                    raise ValueError(
+                        "projected CASSCF orbital frame is linearly dependent"
+                    )
+                inverse_sqrt = (
+                    eigenvectors
+                    @ np.diag(eigenvalues ** -0.5)
+                    @ eigenvectors.conj().T
+                )
+                initial_mos = np.real_if_close(projected @ inverse_sqrt)
+                mean_field.mo_coeff = initial_mos
+                mean_field.mo_energy = np.real_if_close(np.einsum(
+                    "pi,pq,qi->i",
+                    initial_mos.conj(),
+                    mean_field.get_hcore(),
+                    initial_mos,
+                ))
+                mean_field.mo_occ = mean_field.get_occ(
+                    mean_field.mo_energy, initial_mos
+                )
+                mean_field.e_tot = mean_field.energy_tot(
+                    dm=mean_field.make_rdm1(initial_mos, mean_field.mo_occ)
+                )
+                initial_ci = previous.get("ci")
+            except Exception as exc:
+                raise ElectronicStructureError(
+                    f"PySCF CASSCF orbital transport failed: {exc}",
+                    retryable=False,
+                ) from exc
+            timings["orbital_transport_seconds"] = (
+                time.perf_counter() - phase_started
+            )
+            timings["scf_seconds"] = 0.0
+            scf_initialization = "casscf_transport"
+        else:
+            phase_started = time.perf_counter()
+            mean_field.kernel()
+            timings["scf_seconds"] = time.perf_counter() - phase_started
+            if not mean_field.converged:
+                raise ElectronicStructureError(
+                    "PySCF SCF did not converge", retryable=True
+                )
+            initial_mos = np.asarray(mean_field.mo_coeff)
         target_spin = 0.5 * molecule.spin
         target_spin_square = float(
             self.options.get("spin_square", target_spin * (target_spin + 1.0))
@@ -194,11 +267,12 @@ class PySCFProvider(BaseProvider):
                 )
             return solver.state_average(weights)
 
-        previous = self._previous_payload(request.previous)
         template = configured_casscf()
-        initial_mos = np.asarray(mean_field.mo_coeff)
-        initial_ci = None
-        if previous is not None and previous.get("mo_coeff") is not None:
+        if (
+            scf_initialization == "rhf_bootstrap"
+            and previous is not None
+            and previous.get("mo_coeff") is not None
+        ):
             try:
                 initial_mos = mcscf.addons.project_init_guess(
                     template, previous["mo_coeff"], prev_mol=previous.get("molecule")
@@ -321,6 +395,10 @@ class PySCFProvider(BaseProvider):
         active_space_singular_values = None
         active_orbital_rotation = None
         aligned_active_overlap = None
+        continuity_warnings: list[dict[str, Any]] = []
+        continuity_policy = str(
+            self.options.get("continuity_policy", "error")
+        ).lower()
         transported_mo_coeff = np.asarray(casscf.mo_coeff).copy()
         transported_ci = [np.asarray(value).copy() for value in raw_ci]
         if previous is not None and previous.get("mo_coeff") is not None:
@@ -368,8 +446,22 @@ class PySCFProvider(BaseProvider):
                         _energy_ordered_root_phases(
                             tracking_overlap,
                             float(self.options.get("ci_root_overlap_min", 0.0)),
+                            enforce=continuity_policy == "error",
                         )
                     )
+                    root_minimum = float(
+                        self.options.get("ci_root_overlap_min", 0.0)
+                    )
+                    if (
+                        ci_root_diagonal_overlaps.size
+                        and float(np.min(ci_root_diagonal_overlaps)) < root_minimum
+                    ):
+                        continuity_warnings.append({
+                            "kind": "ci_root_overlap",
+                            "diagonal_overlaps": ci_root_diagonal_overlaps.tolist(),
+                            "assignment_suggestion": assignment_suggestion.tolist(),
+                            "minimum": root_minimum,
+                        })
                 # Put the persisted wavefunction into the closest active-orbital
                 # gauge to the preceding call.  The CI transformation is the
                 # contragredient determinant representation of the same orbital
@@ -403,12 +495,19 @@ class PySCFProvider(BaseProvider):
                     active_space_singular_values.size
                     and active_space_singular_values.min() < minimum_overlap
                 ):
-                    raise ElectronicStructureError(
-                        "PySCF active-space continuity failure: "
-                        f"singular_values={active_space_singular_values.tolist()}, "
-                        f"minimum={minimum_overlap}",
-                        retryable=False,
-                    )
+                    warning = {
+                        "kind": "active_space_overlap",
+                        "singular_values": active_space_singular_values.tolist(),
+                        "minimum": minimum_overlap,
+                    }
+                    if continuity_policy == "error":
+                        raise ElectronicStructureError(
+                            "PySCF active-space continuity failure: "
+                            f"singular_values={active_space_singular_values.tolist()}, "
+                            f"minimum={minimum_overlap}",
+                            retryable=False,
+                        )
+                    continuity_warnings.append(warning)
 
         ordered_energies = raw_energies[permutation]
         gradients = None
@@ -490,12 +589,19 @@ class PySCFProvider(BaseProvider):
                 self.options.get("energy_gradient_consistency_tolerance", np.inf)
             )
             if np.any(available) and np.max(np.abs(energy_gradient_residuals[available])) > tolerance:
-                raise ElectronicStructureError(
-                    "PySCF energy/gradient continuity failure: "
-                    f"residuals={energy_gradient_residuals.tolist()}, "
-                    f"tolerance={tolerance}",
-                    retryable=False,
-                )
+                warning = {
+                    "kind": "energy_gradient_residual",
+                    "residuals": energy_gradient_residuals.tolist(),
+                    "tolerance": tolerance,
+                }
+                if continuity_policy == "error":
+                    raise ElectronicStructureError(
+                        "PySCF energy/gradient continuity failure: "
+                        f"residuals={energy_gradient_residuals.tolist()}, "
+                        f"tolerance={tolerance}",
+                        retryable=False,
+                    )
+                continuity_warnings.append(warning)
 
         identifier = uuid.uuid4().hex
         ordered_ci = [
@@ -537,6 +643,7 @@ class PySCFProvider(BaseProvider):
             wavefunction=WavefunctionState(identifier, payload),
             metadata={
                 "provider": "pyscf", "pyscf_converged": True,
+                "scf_initialization": scf_initialization,
                 "state_permutation": permutation.tolist(),
                 "root_assignment_suggestion": assignment_suggestion.tolist(),
                 "ci_root_diagonal_overlaps": ci_root_diagonal_overlaps,
@@ -547,6 +654,8 @@ class PySCFProvider(BaseProvider):
                 "active_orbital_rotation": active_orbital_rotation,
                 "aligned_active_overlap": aligned_active_overlap,
                 "energy_gradient_residuals": energy_gradient_residuals,
+                "continuity_policy": continuity_policy,
+                "continuity_warnings": continuity_warnings,
                 "casscf_candidate_energies": candidate_energies,
                 "casscf_candidate_active_overlaps": candidate_active_overlaps,
                 "casscf_candidate_active_overlap_matrices": candidate_active_overlap_matrices,

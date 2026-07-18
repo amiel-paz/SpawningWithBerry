@@ -24,6 +24,14 @@
     "pair_overlap_threshold": 0.001,
     "regularization_threshold": 0.0001
   },
+  "production_spawn_control": {
+    "source": "PySpawn ethylene examples and the adiabatic electronic equation of motion",
+    "metric": "absolute time-derivative coupling |d_IJ dot v|",
+    "threshold_au": 0.007853981633974483,
+    "threshold_role": "Gaussian-basis convergence control; spawning occurs at the physical coupling maximum",
+    "minimum_parent_population": 0.001,
+    "deviation_from_canonical_molpro_example": "uses the electronic mixing rate rather than the Euclidean NAC norm and lowers the population screen"
+  },
   "paper_specific_screening": {
     "source": "https://doi.org/10.1021/jp9063565",
     "nac_gap_cutoff_ev": 0.6,
@@ -36,6 +44,7 @@
     "hessian": "numerical MP2/6-31G* Hessian at the accepted geometry",
     "initial_conditions": "same distribution and count, but not the paper's original random samples",
     "density_fitting": "enabled after an equilibrium no-density-fitting comparison",
+    "spawn_detection": "time-derivative coupling |d_IJ dot v|; gap-screen or unavailable-NAC boundaries explicitly close pending coupling windows so one state pair cannot suppress another",
     "root_tracking": "adiabatic roots remain energy ordered; orbital-aware many-electron overlaps include the old/new active-orbital transformation, a same-root overlap below 0.7 triggers whole-interval refinement, and each active centroid-pair NAC is parallel-transported and checkpointed by pair identity",
     "local_energy_gradient_consistency_hartree": 0.0001,
     "classical_energy_tolerance_hartree": 0.005,
@@ -46,6 +55,6 @@
     "minimum_nuclear_time_step_au": 0.625,
     "nuclear_time_step_policy": "20 au normally; 5 au in coupling regions; rejected local force-quadrature or root-continuity intervals halve transactionally through 10, 5, 2.5, 1.25, and 0.625 au",
     "classical_energy_gate_policy": "global hard failsafe and diagnostic only; it does not select among Verlet timesteps",
-    "quantum_norm_policy": "endpoint-metric-unitary polar Cayley map with raw coefficients retained and a cumulative 1e-10 norm gate"
+    "quantum_norm_policy": "endpoint-metric-unitary polar Cayley map with raw coefficients retained, a 1e-10 local propagation target, and a cumulative 1e-8 diagnostic stop gate"
   }
 }

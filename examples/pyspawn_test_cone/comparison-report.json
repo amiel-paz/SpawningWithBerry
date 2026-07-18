@@ -1,0 +1,189 @@
+{
+  "candidate": "SpawnWithBerry adaptive metric Cayley",
+  "common_frames": 2002,
+  "final_populations": {
+    "pyspawn": [
+      0.36023681496827403,
+      0.63976845270534
+    ],
+    "spawnwithberry": [
+      0.3743812991354025,
+      0.6256187011035845
+    ]
+  },
+  "matrix_residuals": {
+    "effective_generator_max_abs_error": 0.031234600574676693,
+    "effective_generator_max_relative_error": 0.018717687264805622,
+    "effective_generator_median_abs_error": 0.00027428100559090396,
+    "effective_generator_median_relative_error": 9.963389633595022e-05,
+    "frames": 1997,
+    "overlap_max_abs_error": 0.021936640154203418,
+    "overlap_median_abs_error": 4.218847493575595e-15
+  },
+  "maximum_spawn_coupling_error": 0.0044056484772250215,
+  "maximum_spawn_entry_time_error_au": 1.4210854715202004e-14,
+  "maximum_spawn_peak_time_error_au": 2.842170943040401e-14,
+  "metric_norm": {
+    "pyspawn_final": 1.000005267673614,
+    "pyspawn_max_abs_error": 2.942539314898518e-05,
+    "spawnwithberry_final": 1.0000000002389873,
+    "spawnwithberry_max_abs_error": 2.3898727441462597e-10
+  },
+  "pyspawn_2d_vs_inert_3d_max_residual": 0.0,
+  "pyspawn_final_tbf_count": 6,
+  "pyspawn_spawns": [
+    {
+      "child": "00b0",
+      "coupling": 2.2111571503750267,
+      "entry_time": 22.700000000000056,
+      "maximum_time": 23.10000000000006,
+      "parent": "00",
+      "target_state": 0
+    },
+    {
+      "child": "00b1",
+      "coupling": 2.209192773216194,
+      "entry_time": 72.20000000000016,
+      "maximum_time": 72.50000000000016,
+      "parent": "00",
+      "target_state": 0
+    },
+    {
+      "child": "00b2",
+      "coupling": 2.1728093786514115,
+      "entry_time": 121.59999999999735,
+      "maximum_time": 121.89999999999735,
+      "parent": "00",
+      "target_state": 0
+    },
+    {
+      "child": "00b0b0",
+      "coupling": 2.22616920330225,
+      "entry_time": 162.99999999999503,
+      "maximum_time": 163.29999999999504,
+      "parent": "00b0",
+      "target_state": 1
+    },
+    {
+      "child": "00b3",
+      "coupling": 2.126786529586501,
+      "entry_time": 170.99999999999457,
+      "maximum_time": 171.39999999999458,
+      "parent": "00",
+      "target_state": 0
+    }
+  ],
+  "quantum_energy_final_drift": {
+    "pyspawn": -0.00022060860064132548,
+    "spawnwithberry": -0.00016459793657763733
+  },
+  "quantum_energy_max_drift": {
+    "pyspawn": 0.016904925766844547,
+    "spawnwithberry": 0.0015668022241346335
+  },
+  "reference": "PySpawn native fulldiag",
+  "spawn_count_match": true,
+  "spawnwithberry_final_tbf_count": 6,
+  "spawnwithberry_spawns": [
+    {
+      "child": "00b1",
+      "coupling": 2.2111571503749943,
+      "entry_time": 22.700000000000053,
+      "maximum_time": 23.10000000000006,
+      "parent": "00",
+      "target_state": 0
+    },
+    {
+      "child": "00b2",
+      "coupling": 2.2091927732163272,
+      "entry_time": 72.20000000000017,
+      "maximum_time": 72.50000000000016,
+      "parent": "00",
+      "target_state": 0
+    },
+    {
+      "child": "00b3",
+      "coupling": 2.1728093786514417,
+      "entry_time": 121.59999999999737,
+      "maximum_time": 121.89999999999735,
+      "parent": "00",
+      "target_state": 0
+    },
+    {
+      "child": "00b1b1",
+      "coupling": 2.221763554825025,
+      "entry_time": 162.99999999999503,
+      "maximum_time": 163.299999999995,
+      "parent": "00b1",
+      "target_state": 1
+    },
+    {
+      "child": "00b4",
+      "coupling": 2.126786529587246,
+      "entry_time": 170.99999999999457,
+      "maximum_time": 171.39999999999455,
+      "parent": "00",
+      "target_state": 0
+    }
+  ],
+  "state_population_max_abs_error": [
+    0.09926562745161926,
+    0.09926562745166034
+  ],
+  "state_population_rms_error": [
+    0.012362437002991326,
+    0.01236333455592978
+  ],
+  "tbf_amplitude_magnitude_max_abs_error": 0.11846653175197905,
+  "tbf_amplitude_magnitude_rms_error": 0.0170197753961775,
+  "tbf_population_max_abs_error": 0.09926562745166034,
+  "tbf_population_rms_error": 0.011952613883003973,
+  "trajectory_residuals": {
+    "mapping": [
+      {
+        "max_momentum_error": 1.8109957977685553e-11,
+        "max_position_error": 3.8469227803261674e-14,
+        "ordinal": 0,
+        "pyspawn_label": "00",
+        "spawnwithberry_label": "00"
+      },
+      {
+        "max_momentum_error": 0.5192207644333493,
+        "max_position_error": 0.014350524830839873,
+        "ordinal": 1,
+        "pyspawn_label": "00b0",
+        "spawnwithberry_label": "00b1"
+      },
+      {
+        "max_momentum_error": 0.508446908756536,
+        "max_position_error": 0.014174799663593252,
+        "ordinal": 2,
+        "pyspawn_label": "00b1",
+        "spawnwithberry_label": "00b2"
+      },
+      {
+        "max_momentum_error": 0.4964666902842758,
+        "max_position_error": 0.013860652052565148,
+        "ordinal": 3,
+        "pyspawn_label": "00b2",
+        "spawnwithberry_label": "00b3"
+      },
+      {
+        "max_momentum_error": 0.0029187429632813178,
+        "max_position_error": 3.039761572565247e-05,
+        "ordinal": 4,
+        "pyspawn_label": "00b0b0",
+        "spawnwithberry_label": "00b1b1"
+      },
+      {
+        "max_momentum_error": 0.4799521276461931,
+        "max_position_error": 0.006965167673631645,
+        "ordinal": 5,
+        "pyspawn_label": "00b3",
+        "spawnwithberry_label": "00b4"
+      }
+    ],
+    "max_momentum_error": 0.5192207644333493,
+    "max_position_error": 0.014350524830839873
+  }
+}

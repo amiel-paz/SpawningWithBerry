@@ -30,6 +30,15 @@ def test_parser_comments_quoting_units_and_repeated_records(tmp_path):
     assert config.observables[0].atoms == (0, 1)
 
 
+def test_explicit_cartesian_nuclear_masses_are_parsed_and_validated(tmp_path):
+    config = load_config(_write(tmp_path, "nuclear_masses 1822 1822 1e30\n"))
+    masses, widths = masses_and_widths(
+        ("H",), config.gaussian_widths, config.nuclear_masses
+    )
+    assert np.array_equal(masses, np.asarray((1822.0, 1822.0, 1.0e30)))
+    assert np.array_equal(widths, np.asarray((6.0, 6.0, 6.0)))
+
+
 @pytest.mark.parametrize("extra, match", [
     ("num_states 3\n", "duplicate"),
     ("not_a_keyword 4\n", "unknown keyword"),
@@ -71,13 +80,17 @@ def test_ethylene_production_config_and_wigner_sample_are_reproducible():
     assert config.coupling_time_step == 5.0
     assert config.minimum_nuclear_time_step == 0.625
     assert config.classical_energy_tolerance == 5.0e-3
+    assert config.classical_energy_policy == "record"
     assert config.classical_energy_numerical_margin == 1.0e-8
+    assert config.cumulative_norm_tolerance == 1.0e-8
     assert config.min_time_step == 0.001220703125
-    assert config.spawn_metric == "nac_norm"
-    assert config.spawn_threshold == 3.0
+    assert config.spawn_metric == "projected"
+    assert config.spawn_threshold == pytest.approx(np.pi / 400.0)
+    assert config.population_to_spawn == 1.0e-3
     assert config.pair_overlap_threshold == 1.0e-3
     assert config.nac_gap_threshold == pytest.approx(0.6 / 27.211386245988)
     assert config.provider_option_dict()["ci_root_overlap_min"] == 0.7
+    assert config.provider_option_dict()["continuity_policy"] == "record"
     assert (
         config.provider_option_dict()["energy_gradient_consistency_tolerance"]
         == 1.0e-4
@@ -106,7 +119,9 @@ def test_ethylene_protocol_manifest_matches_production_controls():
     assert manifest["deliberate_deviations"][
         "minimum_nuclear_time_step_au"
     ] == config.minimum_nuclear_time_step
-    assert canonical["spawn_threshold_bohr_inverse"] == config.spawn_threshold
+    production_spawn = manifest["production_spawn_control"]
+    assert production_spawn["threshold_au"] == config.spawn_threshold
+    assert production_spawn["minimum_parent_population"] == config.population_to_spawn
     assert canonical["pair_overlap_threshold"] == config.pair_overlap_threshold
     assert manifest["reported_controls"]["electronic_method"].startswith(
         "equal-weight SA(3)-CAS(2e,2o)/6-31G*"

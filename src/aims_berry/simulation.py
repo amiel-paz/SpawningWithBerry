@@ -21,13 +21,16 @@ import numpy as np
 from .config import SimulationConfig, config_from_dict
 from .core import MatrixSet, SimulationState, TrajectoryBasisFunction
 from .dynamics.classical import berry_boris_step, velocity_verlet
-from .dynamics.hamiltonian import BerryExactHamiltonian, SaddlePointHamiltonian
+from .dynamics.hamiltonian import (
+    BerryExactHamiltonian,
+    SaddlePointHamiltonian,
+    npi_time_derivative,
+)
 from .dynamics.gaussian import gaussian_overlap
 from .dynamics.quantum import (
     QuantumPropagationError,
     adaptive_cayley_step,
     metric_norm,
-    normalize,
     rk45_step,
 )
 from .electronic.base import (
@@ -47,6 +50,7 @@ from .spawning import (
     SpawnMonitor,
     make_coupling_optimized_child,
     make_child,
+    make_isotropic_child,
     overlaps_existing,
     nac_norm,
     prune_by_overlap,
@@ -203,6 +207,7 @@ class SpawnReplaySnapshot:
     monitor: dict[str, Any]
     centroid_wavefunctions: dict[str, str]
     classical_energy_references: dict[str, float]
+    classical_energy_gate_active: dict[str, bool]
     quantum_energy_reference: float | None
     quantum_norm_reference: float | None = None
     forced_nuclear_time_steps: dict[str, float] = dataclasses.field(default_factory=dict)
@@ -219,6 +224,7 @@ class SpawnReplaySnapshot:
             "monitor": self.monitor,
             "centroid_wavefunctions": self.centroid_wavefunctions,
             "classical_energy_references": self.classical_energy_references,
+            "classical_energy_gate_active": self.classical_energy_gate_active,
             "quantum_energy_reference": self.quantum_energy_reference,
             "quantum_norm_reference": self.quantum_norm_reference,
             "forced_nuclear_time_steps": self.forced_nuclear_time_steps,
@@ -245,6 +251,12 @@ class SpawnReplaySnapshot:
             classical_energy_references={
                 str(key): float(value)
                 for key, value in payload.get("classical_energy_references", {}).items()
+            },
+            classical_energy_gate_active={
+                str(key): bool(value)
+                for key, value in payload.get(
+                    "classical_energy_gate_active", {}
+                ).items()
             },
             quantum_energy_reference=(
                 None
@@ -342,7 +354,9 @@ class SimulationRunner:
         self.is_restart = restart
         self.atoms, initial_positions = read_xyz(config.geometry, config.geometry_units)
         self.atomic_numbers = atomic_numbers(self.atoms)
-        masses, widths = masses_and_widths(self.atoms, config.gaussian_widths)
+        masses, widths = masses_and_widths(
+            self.atoms, config.gaussian_widths, config.nuclear_masses
+        )
         self.masses = masses.reshape(initial_positions.shape)
         self.widths = widths.reshape(initial_positions.shape)
         self.rng = np.random.default_rng(config.random_seed)
@@ -356,6 +370,10 @@ class SimulationRunner:
         self.active_spawn_snapshot: SpawnReplaySnapshot | None = None
         self.active_replay: ReplayWindow | None = None
         self.active_step_snapshot: SpawnReplaySnapshot | None = None
+        # The most recently committed interval's start is the lower bracket of
+        # a newly detected threshold crossing.  Retaining it makes spawn entry
+        # semantics agree with PySpawn instead of labeling the upper endpoint.
+        self.previous_step_start_snapshot: SpawnReplaySnapshot | None = None
         self._in_replay = False
         self.deferred_spawns: list[SpawnCandidate] = []
         self.replay_suppressed: dict[tuple[str, int], float] = {}
@@ -381,6 +399,7 @@ class SimulationRunner:
             "replay_seconds": 0.0,
         }
         self.classical_energy_references: dict[str, float] = {}
+        self.classical_energy_gate_active: dict[str, bool] = {}
         self.quantum_energy_reference: float | None = None
         self.quantum_norm_reference: float | None = None
         self.quantum_energy_gate_active = False
@@ -545,21 +564,46 @@ class SimulationRunner:
                 adopt = getattr(self.provider, "adopt_wavefunction", None)
                 if callable(adopt):
                     adopt(result.wavefunction)
+                warnings = result.metadata.get("continuity_warnings", ())
+                if warnings:
+                    with self.metrics_lock:
+                        for warning in warnings:
+                            warning_payload = copy.deepcopy(warning)
+                            warning_kind = warning_payload.pop("kind", "unknown")
+                            self.state.events.append({
+                                "kind": "electronic_continuity_warning",
+                                "continuity_kind": warning_kind,
+                                "time": float(time),
+                                "active_state": int(active_state),
+                                "request_kind": (
+                                    "tbf" if gradients else "centroid"
+                                ),
+                                **warning_payload,
+                            })
                 if result.state_overlaps is not None:
-                    transform = self.gauge_tracker.align(result.state_overlaps)
-                    order = transform.permutation
-                    result.energies = result.energies[order]
-                    if result.gradients is not None:
-                        result.gradients = result.gradients[order]
-                        result.gradient_mask = result.gradient_mask[order]
-                    if result.nacs is not None:
-                        reordered = result.nacs[order][:, order]
-                        result.nacs = transform_nacs(reordered, transform.unitary)
-                        result.nac_mask = result.nac_mask[order][:, order]
-                    result.state_overlaps = transform.aligned_overlap
-                    result.metadata["gauge_permutation"] = order.tolist()
-                    result.metadata["gauge_unitary"] = transform.unitary
-                    result.validate(request)
+                    if self._coupling_mode() == "npi":
+                        # A provider-certified NPI overlap is the physical
+                        # finite-step electronic transport.  Polar-aligning the
+                        # complete manifold here would turn a unitary overlap
+                        # into the identity and erase the time-derivative
+                        # coupling.  Root assignment and phase continuity are
+                        # therefore the provider's responsibility in NPI mode.
+                        result.metadata["gauge_transport"] = "provider_certified_npi"
+                    else:
+                        transform = self.gauge_tracker.align(result.state_overlaps)
+                        order = transform.permutation
+                        result.energies = result.energies[order]
+                        if result.gradients is not None:
+                            result.gradients = result.gradients[order]
+                            result.gradient_mask = result.gradient_mask[order]
+                        if result.nacs is not None:
+                            reordered = result.nacs[order][:, order]
+                            result.nacs = transform_nacs(reordered, transform.unitary)
+                            result.nac_mask = result.nac_mask[order][:, order]
+                        result.state_overlaps = transform.aligned_overlap
+                        result.metadata["gauge_permutation"] = order.tolist()
+                        result.metadata["gauge_unitary"] = transform.unitary
+                        result.validate(request)
                 return result
             except ElectronicStructureError as exc:
                 last_error = exc
@@ -706,10 +750,10 @@ class SimulationRunner:
     def _coupling_region_active(self) -> bool:
         for trajectory in self.state.trajectories:
             electronic = trajectory.electronic
-            if electronic is None or electronic.nacs is None or electronic.nac_mask is None:
+            if electronic is None:
                 continue
             for target in range(self.config.num_states):
-                if target == trajectory.state or not electronic.nac_mask[trajectory.state, target]:
+                if target == trajectory.state:
                     continue
                 gap = abs(
                     electronic.energies[target]
@@ -717,15 +761,41 @@ class SimulationRunner:
                 )
                 if gap > min(self.config.max_energy_gap, self.config.nac_gap_threshold):
                     continue
-                nac = electronic.nac_between(trajectory.state, target)
-                coupling = (
-                    nac_norm(nac)
-                    if self.config.spawn_metric == "nac_norm"
-                    else projected_coupling(trajectory, nac)
-                )
+                if self._coupling_mode() == "npi":
+                    if electronic.state_overlaps is None:
+                        continue
+                    coupling = abs(
+                        self._npi_tdc(electronic)[trajectory.state, target]
+                    )
+                else:
+                    if (
+                        electronic.nacs is None
+                        or electronic.nac_mask is None
+                        or not electronic.nac_mask[trajectory.state, target]
+                    ):
+                        continue
+                    nac = electronic.nac_between(trajectory.state, target)
+                    coupling = (
+                        nac_norm(nac)
+                        if self.config.spawn_metric == "nac_norm"
+                        else projected_coupling(trajectory, nac)
+                    )
                 if coupling >= self.config.spawn_threshold:
                     return True
         return False
+
+    def _npi_tdc(self, electronic: ElectronicStructureResult) -> np.ndarray:
+        if electronic.state_overlaps is None:
+            raise RuntimeError("NPI coupling requested without a state-overlap matrix")
+        interval = float(
+            electronic.metadata.get(
+                "overlap_time_step",
+                self.config.coupling_time_step or self.config.time_step,
+            )
+        )
+        if interval <= 0.0:
+            interval = self.config.coupling_time_step or self.config.time_step
+        return npi_time_derivative(electronic.state_overlaps, interval)
 
     @staticmethod
     def _time_key(value: float) -> str:
@@ -810,13 +880,31 @@ class SimulationRunner:
                 tolerance + self.config.classical_energy_numerical_margin
             )
             if abs(energy - reference) > comparison_limit:
-                raise RuntimeError(
-                    "classical energy violation: "
-                    f"trajectory={trajectory.label}, reference={reference}, "
-                    f"current={energy}, drift={energy - reference}, "
-                    f"tolerance={tolerance}, "
-                    f"numerical_margin={self.config.classical_energy_numerical_margin}"
-                )
+                if self.config.classical_energy_policy == "error":
+                    raise RuntimeError(
+                        "classical energy violation: "
+                        f"trajectory={trajectory.label}, reference={reference}, "
+                        f"current={energy}, drift={energy - reference}, "
+                        f"tolerance={tolerance}, "
+                        f"numerical_margin={self.config.classical_energy_numerical_margin}"
+                    )
+                if not self.classical_energy_gate_active.get(
+                    trajectory.identifier, False
+                ):
+                    self.state.events.append({
+                        "kind": "classical_energy_threshold",
+                        "time": self.state.quantum_time,
+                        "trajectory": trajectory.label,
+                        "trajectory_id": trajectory.identifier,
+                        "reference": reference,
+                        "current": energy,
+                        "drift": energy - reference,
+                        "tolerance": tolerance,
+                        "policy": self.config.classical_energy_policy,
+                    })
+                self.classical_energy_gate_active[trajectory.identifier] = True
+            else:
+                self.classical_energy_gate_active[trajectory.identifier] = False
 
     def _check_quantum_energy(self) -> float:
         if self.state.matrices is None:
@@ -902,6 +990,9 @@ class SimulationRunner:
             classical_energy_references=copy.deepcopy(
                 self.classical_energy_references
             ),
+            classical_energy_gate_active=copy.deepcopy(
+                self.classical_energy_gate_active
+            ),
             quantum_energy_reference=self.quantum_energy_reference,
             quantum_norm_reference=self.quantum_norm_reference,
             forced_nuclear_time_steps=copy.deepcopy(self.forced_nuclear_time_steps),
@@ -913,8 +1004,14 @@ class SimulationRunner:
             },
         )
 
-    def _capture_spawn_snapshot(self, key: tuple[str, int]) -> None:
-        self.active_spawn_snapshot = self._current_snapshot(key)
+    def _capture_spawn_snapshot(
+        self,
+        key: tuple[str, int],
+        source: SpawnReplaySnapshot | None = None,
+    ) -> None:
+        snapshot = self._current_snapshot(key) if source is None else copy.deepcopy(source)
+        snapshot.key = key
+        self.active_spawn_snapshot = snapshot
 
     def _restore_spawn_snapshot(self, snapshot: SpawnReplaySnapshot) -> None:
         self.state = _state_from_payload(_state_payload(snapshot.state))
@@ -929,6 +1026,9 @@ class SimulationRunner:
         self.classical_energy_references = copy.deepcopy(
             snapshot.classical_energy_references
         )
+        self.classical_energy_gate_active = copy.deepcopy(
+            snapshot.classical_energy_gate_active
+        )
         self.quantum_energy_reference = snapshot.quantum_energy_reference
         self.quantum_norm_reference = snapshot.quantum_norm_reference
         self.forced_nuclear_time_steps = copy.deepcopy(
@@ -939,6 +1039,7 @@ class SimulationRunner:
         self.centroid_nac_previous = {
             key: value.copy() for key, value in snapshot.centroid_nacs.items()
         }
+        self.previous_step_start_snapshot = None
 
     def _observe_spawning(self) -> list[SpawnCandidate]:
         if self.config.num_states < 2 or len(self.state.trajectories) >= self.config.max_trajectories:
@@ -946,12 +1047,23 @@ class SimulationRunner:
         contributions = trajectory_populations(self.state)
         emitted: list[SpawnCandidate] = []
         for index, trajectory in enumerate(self.state.trajectories):
-            if trajectory.electronic is None or trajectory.electronic.nacs is None:
+            if trajectory.electronic is None:
                 continue
             for target in range(self.config.num_states):
                 if target == trajectory.state:
                     continue
                 key = (trajectory.identifier, target)
+                # A completed window found during transactional replay is
+                # processed after that replay commits.  Do not start a second
+                # window for the same pair against the first window's snapshot;
+                # doing so produced multiple deferred candidates but only one
+                # rollback state, and the second candidate then failed with a
+                # missing spawn snapshot.
+                if any(
+                    SpawnMonitor.key(candidate) == key
+                    for candidate in self.deferred_spawns
+                ):
+                    continue
                 frontier = self.replay_suppressed.get(key)
                 if frontier is not None:
                     if trajectory.time <= frontier + 1.0e-12:
@@ -962,36 +1074,79 @@ class SimulationRunner:
                         continue
                 else:
                     if contributions[index] < self.config.population_to_spawn:
+                        completed = self.monitor.close(key)
+                        if completed is not None:
+                            emitted.append(completed)
                         continue
                     if trajectory.time - trajectory.last_spawn_time < self.config.spawn_cooldown:
+                        completed = self.monitor.close(key)
+                        if completed is not None:
+                            emitted.append(completed)
                         continue
                 gap = abs(trajectory.electronic.energies[target] - trajectory.electronic.energies[trajectory.state])
                 if gap > self.config.max_energy_gap:
+                    completed = self.monitor.close(key)
+                    if completed is not None:
+                        emitted.append(completed)
                     continue
-                if (
-                    trajectory.electronic.nac_mask is None
-                    or not trajectory.electronic.nac_mask[trajectory.state, target]
-                ):
-                    continue
-                nac = trajectory.electronic.nac_between(trajectory.state, target)
-                coupling = (
-                    nac_norm(nac)
-                    if self.config.spawn_metric == "nac_norm"
-                    else projected_coupling(trajectory, nac)
-                )
+                if self._coupling_mode() == "npi":
+                    if trajectory.electronic.state_overlaps is None:
+                        completed = self.monitor.close(key)
+                        if completed is not None:
+                            emitted.append(completed)
+                        continue
+                    nac = np.zeros_like(trajectory.positions, dtype=np.complex128)
+                    coupling = abs(
+                        self._npi_tdc(trajectory.electronic)[trajectory.state, target]
+                    )
+                else:
+                    if (
+                        trajectory.electronic.nacs is None
+                        or trajectory.electronic.nac_mask is None
+                        or not trajectory.electronic.nac_mask[trajectory.state, target]
+                    ):
+                        completed = self.monitor.close(key)
+                        if completed is not None:
+                            emitted.append(completed)
+                        continue
+                    nac = trajectory.electronic.nac_between(trajectory.state, target)
+                    coupling = (
+                        nac_norm(nac)
+                        if self.config.spawn_metric == "nac_norm"
+                        else projected_coupling(trajectory, nac)
+                    )
                 candidate = SpawnCandidate(
                     index, target, coupling, trajectory.time,
                     trajectory.positions.copy(), trajectory.momenta.copy(), nac.copy(),
                     trajectory.electronic.energies.copy(),
                     parent_id=trajectory.identifier,
                 )
+                crossing_entry = None
+                crossing_snapshot = None
                 if (
                     self.active_spawn_snapshot is None
                     and candidate.coupling >= self.config.spawn_threshold
                     and SpawnMonitor.key(candidate) not in self.monitor.pending
                 ):
-                    self._capture_spawn_snapshot(key)
-                completed = self.monitor.observe(candidate)
+                    crossing_snapshot = self.previous_step_start_snapshot
+                    if crossing_snapshot is not None:
+                        entry_parent = next(
+                            (
+                                value
+                                for value in crossing_snapshot.state.trajectories
+                                if value.identifier == trajectory.identifier
+                            ),
+                            None,
+                        )
+                        if entry_parent is not None:
+                            crossing_entry = dataclasses.replace(
+                                candidate,
+                                time=entry_parent.time,
+                                positions=entry_parent.positions.copy(),
+                                momenta=entry_parent.momenta.copy(),
+                            )
+                    self._capture_spawn_snapshot(key, crossing_snapshot)
+                completed = self.monitor.observe(candidate, entry=crossing_entry)
                 if completed is not None:
                     emitted.append(completed)
         return emitted
@@ -1067,11 +1222,14 @@ class SimulationRunner:
             candidate.parent_index,
         )
         parent = self.state.trajectories[parent_index]
-        child = (
-            make_coupling_optimized_child(candidate, parent, self.config.random_seed + parent.spawn_count)
-            if self.config.spawn_strategy == "coupling_optimized"
-            else make_child(candidate, parent)
-        )
+        if self.config.spawn_strategy == "coupling_optimized":
+            child = make_coupling_optimized_child(
+                candidate, parent, self.config.random_seed + parent.spawn_count
+            )
+        elif self.config.spawn_momentum == "isotropic":
+            child = make_isotropic_child(candidate, parent)
+        else:
+            child = make_child(candidate, parent)
         if child is None:
             self.state.events.append({"kind": "failed_spawn", "time": candidate.time, "reason": "energy_shell"})
             self.active_spawn_snapshot = None
@@ -1244,6 +1402,15 @@ class SimulationRunner:
                 if trajectory.previous_wavefunction is not None
             )
             references.update(self.active_step_snapshot.centroid_wavefunctions.values())
+        if self.previous_step_start_snapshot is not None:
+            references.update(
+                trajectory.previous_wavefunction.identifier
+                for trajectory in self.previous_step_start_snapshot.state.trajectories
+                if trajectory.previous_wavefunction is not None
+            )
+            references.update(
+                self.previous_step_start_snapshot.centroid_wavefunctions.values()
+            )
         set_references = getattr(self.provider, "set_checkpoint_references", None)
         if callable(set_references):
             set_references(frozenset(references))
@@ -1270,10 +1437,15 @@ class SimulationRunner:
                     self.active_step_snapshot.to_dict()
                     if self.active_step_snapshot is not None else None
                 ),
+                "previous_step_start_snapshot": (
+                    self.previous_step_start_snapshot.to_dict()
+                    if self.previous_step_start_snapshot is not None else None
+                ),
                 "last_quantum_diagnostics": copy.deepcopy(
                     self.last_quantum_diagnostics
                 ),
                 "classical_energy_references": self.classical_energy_references,
+                "classical_energy_gate_active": self.classical_energy_gate_active,
                 "quantum_energy_reference": self.quantum_energy_reference,
                 "quantum_norm_reference": self.quantum_norm_reference,
                 "quantum_energy_gate_active": self.quantum_energy_gate_active,
@@ -1389,6 +1561,13 @@ class SimulationRunner:
         self.active_step_snapshot = (
             SpawnReplaySnapshot.from_dict(active_step) if active_step is not None else None
         )
+        previous_step = metadata.get("runtime", {}).get(
+            "previous_step_start_snapshot"
+        )
+        self.previous_step_start_snapshot = (
+            SpawnReplaySnapshot.from_dict(previous_step)
+            if previous_step is not None else None
+        )
         self.last_quantum_diagnostics = dict(
             metadata.get("runtime", {}).get("last_quantum_diagnostics", {})
         )
@@ -1396,6 +1575,12 @@ class SimulationRunner:
             str(key): float(value)
             for key, value in metadata.get("runtime", {}).get(
                 "classical_energy_references", {}
+            ).items()
+        }
+        self.classical_energy_gate_active = {
+            str(key): bool(value)
+            for key, value in metadata.get("runtime", {}).get(
+                "classical_energy_gate_active", {}
             ).items()
         }
         quantum_reference = metadata.get("runtime", {}).get("quantum_energy_reference")
@@ -1640,7 +1825,9 @@ class SimulationRunner:
                         raise RuntimeError(
                             f"quantum norm violation: before={before}, after={after}"
                         )
-                    self.state.amplitudes = normalize(propagated, end_matrices.overlap)
+                    # Preserve the accepted raw solution.  The norm gate above
+                    # detects drift; rescaling here would conceal it.
+                    self.state.amplitudes = propagated
                     self.last_quantum_diagnostics = {
                         "quantum_substeps": 1,
                         "raw_norm_before": before,
@@ -1656,7 +1843,10 @@ class SimulationRunner:
                 endpoint_norm = metric_norm(
                     self.state.amplitudes, end_matrices.overlap
                 )
-                absolute_norm_tolerance = min(self.config.norm_tolerance, 1.0e-10)
+                # The adaptive step still targets a 1e-10 local metric defect.
+                # Accumulated roundoff is monitored separately so a harmless
+                # long-time O(1e-10) drift does not terminate production.
+                absolute_norm_tolerance = self.config.cumulative_norm_tolerance
                 if abs(endpoint_norm - self.quantum_norm_reference) > absolute_norm_tolerance:
                     raise RuntimeError(
                         "cumulative quantum norm violation: "
@@ -1706,8 +1896,9 @@ class SimulationRunner:
                     self.config.num_states,
                     self.last_quantum_diagnostics,
                 ))
+            self.previous_step_start_snapshot = self.active_step_snapshot
+            self.active_step_snapshot = None
             if not self._in_replay:
-                self.active_step_snapshot = None
                 self._checkpoint()
         if self.state.quantum_time < self.config.simulation_time - 1.0e-12:
             self._checkpoint()
@@ -1751,10 +1942,20 @@ def run(
 def restart_from_checkpoint(
     checkpoint_directory: str | Path,
     provider: ElectronicStructureProvider | None = None,
+    *,
+    simulation_time: float | None = None,
 ) -> SimulationResult:
     checkpoint_directory = Path(checkpoint_directory).resolve()
     current = checkpoint_directory if checkpoint_directory.name == "current" else checkpoint_directory / "current"
     metadata = json.loads((current / "checkpoint.json").read_text())
     config = config_from_dict(metadata["config"])
+    if simulation_time is not None:
+        endpoint = float(simulation_time)
+        if not np.isfinite(endpoint) or endpoint < float(metadata["quantum_time"]):
+            raise ValueError(
+                "restart simulation_time must be finite and no earlier than "
+                f"the checkpoint time {metadata['quantum_time']}"
+            )
+        config = dataclasses.replace(config, simulation_time=endpoint)
     config = dataclasses.replace(config, run_directory=current.parent.parent)
     return run(config, provider, restart=True)

@@ -241,8 +241,14 @@ def adaptive_cayley_step(
     if convergence_tolerance <= 0 or norm_tolerance <= 0:
         raise ValueError("adaptive tolerances must be positive")
     floor = dt / 4096.0 if min_time_step is None else float(min_time_step)
-    if floor <= 0 or floor > dt:
-        raise ValueError("min_time_step must be in (0, dt]")
+    if floor <= 0:
+        raise ValueError("min_time_step must be positive")
+    # A simulation endpoint can leave an interval a few ulps shorter than the
+    # configured absolute floor.  Treat that residual as its own interval with
+    # the normal relative refinement budget; using floor=dt would permit no
+    # fine solution against which to test the first Cayley map.
+    if floor > dt:
+        floor = dt / 4096.0
     maximum = max(1, int(np.floor(dt / floor + 1.0e-12)))
     maximum_power = 1 << int(np.floor(np.log2(maximum)))
 

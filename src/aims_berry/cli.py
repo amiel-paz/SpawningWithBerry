@@ -22,6 +22,11 @@ def _parser() -> argparse.ArgumentParser:
     execute.add_argument("input", type=Path)
     restart = commands.add_parser("restart", help="resume an exact checkpoint")
     restart.add_argument("checkpoint", type=Path)
+    restart.add_argument(
+        "--simulation-time",
+        type=float,
+        help="extend the checkpoint endpoint in atomic units",
+    )
     analyze = commands.add_parser("analyze", help="export observables and plots")
     analyze.add_argument("history", type=Path, help="simulation.h5 or its run directory")
     analyze.add_argument("--input", type=Path, help="input file defining observable records")
@@ -32,7 +37,7 @@ def _parser() -> argparse.ArgumentParser:
 def _validated_config(path: Path):
     config = load_config(path)
     atoms, positions = read_xyz(config.geometry, config.geometry_units)
-    masses_and_widths(atoms, config.gaussian_widths)
+    masses_and_widths(atoms, config.gaussian_widths, config.nuclear_masses)
     if config.momenta is not None and not config.momenta.is_file():
         raise ConfigError(f"momenta file does not exist: {config.momenta}")
     if config.hessian is not None and not config.hessian.is_file():
@@ -60,7 +65,10 @@ def main(argv: list[str] | None = None) -> int:
         print(result.history)
         return 0
     if args.command == "restart":
-        result = restart_from_checkpoint(args.checkpoint)
+        result = restart_from_checkpoint(
+            args.checkpoint,
+            simulation_time=args.simulation_time,
+        )
         print(result.history)
         return 0
     history = args.history / "simulation.h5" if args.history.is_dir() else args.history

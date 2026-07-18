@@ -25,11 +25,14 @@ polar factor of the linear Cayley propagator, enforcing the TDSE's metric-unitar
 structure for every coefficient vector rather than normalizing a particular state.
 A material cumulative norm drift remains a hard failure.
 
-Spawning controls are `spawn_strategy`, `spawn_threshold`, `population_to_spawn`,
-`spawn_metric`, `spawn_overlap_max`, `spawn_cooldown`, `max_trajectories`, and
-`max_energy_gap`. `spawn_metric` may be `projected` or `nac_norm`; thresholds have
-the corresponding units. `nac_gap_threshold` suppresses requested NAC pairs above
-the configured energy gap.
+Spawning controls are `spawn_strategy`, `spawn_momentum`, `spawn_threshold`,
+`population_to_spawn`, `spawn_metric`, `spawn_overlap_max`, `spawn_cooldown`,
+`max_trajectories`, and `max_energy_gap`. `spawn_metric` may be `projected`,
+`nac_norm`, or `tdc`; the latter is the absolute provider-certified NPI
+time-derivative coupling. `spawn_momentum isotropic` reproduces PySpawn's
+direction-preserving energy-shell rescaling for overlap-only providers;
+`spawn_momentum nac` is the normal analytic-NAC adjustment. `nac_gap_threshold`
+suppresses requested NAC pairs above the configured energy gap.
 Numerical/storage controls include `regularization_threshold`, `overlap_threshold`,
 `pair_overlap_threshold`, `energy_tolerance`, `quantum_energy_policy`,
 `classical_energy_tolerance`,
@@ -66,3 +69,6 @@ observable dihedral torsion 2 0 1 4
 
 Coordinates are converted to bohr at input. Energies, gradients, momenta, masses,
 NACs, propagation times, and all provider requests/results are in atomic units.
+`gaussian_widths` and `nuclear_masses` accept either one value per atom or three
+Cartesian values per atom; explicit masses are principally useful for analytic
+models and exact cross-engine fixtures.

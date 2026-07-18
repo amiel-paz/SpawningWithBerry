@@ -32,6 +32,12 @@ def test_ethylene_overlap_assignment_is_diagnostic_not_an_adiabatic_permutation(
     assert diagonal[1] == pytest.approx(0.09290320)
     with pytest.raises(ElectronicStructureError, match="CI-root continuity failure"):
         _energy_ordered_root_phases(overlap, 0.7)
+    recorded_phases, recorded_assignment, recorded_diagonal = (
+        _energy_ordered_root_phases(overlap, 0.7, enforce=False)
+    )
+    assert np.allclose(np.abs(recorded_phases), 1.0)
+    assert recorded_assignment.tolist() == fixture["rejected_assignment_suggestion"]
+    assert recorded_diagonal[1] == pytest.approx(0.09290320)
 
     # The raw CI arrays live in different active-orbital gauges.  Once the
     # determinant overlap includes that orbital transformation, all three
@@ -68,6 +74,43 @@ def test_active_orbital_alignment_contragrediently_transforms_ci_coefficients():
         ci_rotated, 2, (1, 1), orbital_rotation.T
     )
     assert np.allclose(ci_aligned, ci_old, atol=1.0e-12)
+
+
+@pytest.mark.skipif(importlib.util.find_spec("pyscf") is None, reason="PySCF optional dependency is not installed")
+def test_ethylene_continuation_enters_casscf_without_repeating_rhf():
+    root = Path(__file__).parents[1]
+    config = load_config(root / "examples/ethylene_pyscf/production.in")
+    atoms, geometry = read_xyz(config.geometry, config.geometry_units)
+    provider = from_config(config)
+    properties = frozenset({ElectronicProperties.ENERGIES})
+    first_request = ElectronicStructureRequest(
+        atoms=atoms,
+        atomic_numbers=atomic_numbers(atoms),
+        geometry=geometry,
+        states=(0, 1, 2),
+        active_state=1,
+        time=0.0,
+        properties=properties,
+    )
+    first = provider.evaluate(first_request)
+    displaced = geometry.copy()
+    displaced[0, 0] += 1.0e-3
+    second = provider.evaluate(ElectronicStructureRequest(
+        atoms=atoms,
+        atomic_numbers=atomic_numbers(atoms),
+        geometry=displaced,
+        states=(0, 1, 2),
+        active_state=1,
+        time=1.0,
+        properties=properties,
+        previous=first.wavefunction,
+    ))
+    assert first.metadata["scf_initialization"] == "rhf_bootstrap"
+    assert first.metadata["timings"]["scf_seconds"] > 0.0
+    assert second.metadata["scf_initialization"] == "casscf_transport"
+    assert second.metadata["timings"]["scf_seconds"] == 0.0
+    assert second.metadata["timings"]["orbital_transport_seconds"] > 0.0
+    assert np.all(np.isfinite(second.energies))
 
 
 @pytest.mark.skipif(importlib.util.find_spec("pyscf") is None, reason="PySCF optional dependency is not installed")

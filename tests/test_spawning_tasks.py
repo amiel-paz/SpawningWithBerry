@@ -1,10 +1,20 @@
+import dataclasses
+
 import numpy as np
+import pytest
 
 from aims_berry.core import MatrixSet, SimulationState, TrajectoryBasisFunction
 from aims_berry.dynamics.gaussian import gaussian_momentum
-from aims_berry.dynamics.hamiltonian import SaddlePointHamiltonian
+from aims_berry.dynamics.hamiltonian import SaddlePointHamiltonian, npi_time_derivative
 from aims_berry.electronic.base import ElectronicStructureResult
-from aims_berry.spawning import SpawnCandidate, energy_matched_momentum, make_child, prune_by_overlap
+from aims_berry.spawning import (
+    SpawnCandidate,
+    SpawnMonitor,
+    energy_matched_momentum,
+    make_child,
+    make_isotropic_child,
+    prune_by_overlap,
+)
 from aims_berry.tasks import TaskKind, TaskQueue
 
 
@@ -27,6 +37,23 @@ def test_child_creation_is_same_position_and_deterministically_labeled():
     assert child.label == "00b1" and child.parent_id == parent.identifier
     assert parent.spawn_count == 0
     assert parent.last_spawn_time == -np.inf
+
+
+def test_pyspawn_isotropic_child_keeps_direction_and_matches_energy():
+    parent = TrajectoryBasisFunction(
+        np.zeros((1, 3)), np.array([[-5.0, 1.0, 0.0]]),
+        np.full((1, 3), 6.0), np.full((1, 3), 1822.0), 1,
+    )
+    candidate = SpawnCandidate(
+        0, 0, 2.0, 23.1, parent.positions.copy(), parent.momenta.copy(),
+        np.zeros((1, 3)), np.array([-0.5, 0.5]),
+    )
+    child = make_isotropic_child(candidate, parent)
+    assert child is not None
+    assert np.cross(parent.momenta[0], child.momenta[0])[2] == 0.0
+    parent_total = np.sum(parent.momenta**2 / (2 * parent.masses)) + 0.5
+    child_total = np.sum(child.momenta**2 / (2 * child.masses)) - 0.5
+    assert np.isclose(child_total, parent_total, atol=1.0e-14, rtol=0.0)
 
 
 def test_task_queue_restart_preserves_dependencies_and_order():
@@ -108,3 +135,86 @@ def test_pair_overlap_screening_issues_no_centroid_call():
     assert matrices.overlap[0, 1] == 0
     assert matrices.hamiltonian[0, 1] == 0
     assert matrices.sdot[0, 1] == 0
+
+
+def test_npi_electronic_transport_populates_both_ordered_tau_elements():
+    left = TrajectoryBasisFunction(
+        np.zeros((1, 3)), np.zeros((1, 3)), np.ones((1, 3)), np.ones((1, 3)), 0,
+    )
+    right = TrajectoryBasisFunction(
+        np.zeros((1, 3)), np.zeros((1, 3)), np.ones((1, 3)), np.ones((1, 3)), 1,
+    )
+    angle = 0.2
+    overlap = np.asarray([
+        [np.cos(angle), -np.sin(angle)],
+        [np.sin(angle), np.cos(angle)],
+    ])
+    result = ElectronicStructureResult(
+        energies=np.asarray([0.0, 0.1]),
+        gradients=np.zeros((2, 1, 3)),
+        state_overlaps=overlap,
+    )
+    left.electronic = right.electronic = result
+    matrices = SaddlePointHamiltonian("npi").build(
+        [left, right], lambda *_args: result,
+        [np.zeros((1, 3)), np.zeros((1, 3))],
+        [np.zeros((1, 3)), np.zeros((1, 3))],
+        0.1,
+    )
+    electronic_tau = npi_time_derivative(overlap, 0.1)
+    assert matrices.sdot[0, 1] == pytest.approx(electronic_tau[0, 1])
+    assert matrices.sdot[1, 0] == pytest.approx(electronic_tau[1, 0])
+    effective = matrices.hamiltonian - 1j * matrices.sdot
+    assert np.max(np.abs(effective - effective.conj().T)) < 1.0e-12
+
+
+def test_screened_coupling_closes_pending_spawn_window():
+    monitor = SpawnMonitor(0.01)
+    candidate = SpawnCandidate(
+        parent_index=0,
+        target_state=0,
+        coupling=0.02,
+        time=5.0,
+        positions=np.zeros((1, 3)),
+        momenta=np.ones((1, 3)),
+        nac=np.ones((1, 3)),
+        energies=np.array([0.0, 0.1]),
+        parent_id="parent",
+    )
+    assert monitor.observe(candidate) is None
+
+    completed = monitor.close(("parent", 0))
+
+    assert completed is not None
+    assert completed.time == 5.0
+    assert completed.entry_time == 5.0
+    assert monitor.pending == {}
+    assert monitor.entries == {}
+
+
+def test_spawn_monitor_can_record_lower_crossing_bracket():
+    monitor = SpawnMonitor(0.01)
+    upper = SpawnCandidate(
+        parent_index=0,
+        target_state=1,
+        coupling=0.02,
+        time=320.0,
+        positions=np.ones((1, 3)),
+        momenta=np.ones((1, 3)),
+        nac=np.ones((1, 3)),
+        energies=np.array([0.0, 0.1]),
+        parent_id="parent",
+    )
+    lower = dataclasses.replace(
+        upper,
+        time=310.0,
+        positions=np.zeros((1, 3)),
+        momenta=np.zeros((1, 3)),
+    )
+    assert monitor.observe(upper, entry=lower) is None
+    below = dataclasses.replace(upper, coupling=0.0, time=350.0)
+    completed = monitor.observe(below)
+    assert completed is not None
+    assert completed.entry_time == 310.0
+    assert np.array_equal(completed.entry_positions, lower.positions)
+    assert np.array_equal(completed.entry_momenta, lower.momenta)

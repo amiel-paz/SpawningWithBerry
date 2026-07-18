@@ -33,6 +33,9 @@ provider_option multistart_external_orbitals 1
 provider_option orbital_selection overlap
 provider_option active_space_overlap_min 0.7
 provider_option ci_root_overlap_min 0.7
+# Complete the paper-style ensemble even when a converged SA-CASSCF solution
+# changes electronic character. Every threshold crossing remains in metadata.
+provider_option continuity_policy record
 # Local trapezoidal force/energy consistency controls adaptive Verlet refinement.
 # Keep this much tighter than the global 0.005-Eh diagnostic hard stop.
 provider_option energy_gradient_consistency_tolerance 0.0001
@@ -41,9 +44,12 @@ provider_option electronic_workers 1
 coupling_mode nac
 quantum_integrator cayley
 spawn_strategy nac
-spawn_metric nac_norm
-spawn_threshold 3.0
-population_to_spawn 0.01
+# Spawn on the physical electronic mixing rate |d_IJ . v|.  The value below
+# matches the published PySpawn ethylene example; it is a basis-convergence
+# control, not a surrogate for the nonadiabatic dynamics.
+spawn_metric projected
+spawn_threshold 0.007853981633974483
+population_to_spawn 0.001
 spawn_overlap_max 0.6
 spawn_cooldown 0
 max_trajectories 32
@@ -54,9 +60,11 @@ overlap_threshold 0.0001
 regularization_threshold 0.0001
 energy_tolerance 0.005
 quantum_energy_policy record
+classical_energy_policy record
 classical_energy_tolerance 0.005
 classical_energy_numerical_margin 0.00000001
 norm_tolerance 1e-6
+cumulative_norm_tolerance 1e-8
 output_every 1
 run_directory run-production
 

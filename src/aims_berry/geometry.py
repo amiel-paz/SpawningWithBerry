@@ -49,12 +49,22 @@ def atomic_numbers(atoms: tuple[str, ...]) -> np.ndarray:
         raise ConfigError(f"unsupported element {exc.args[0]!r}; supply a custom provider") from exc
 
 
-def masses_and_widths(atoms: tuple[str, ...], explicit_widths: tuple[float, ...] = ()) -> tuple[np.ndarray, np.ndarray]:
+def masses_and_widths(
+    atoms: tuple[str, ...],
+    explicit_widths: tuple[float, ...] = (),
+    explicit_masses: tuple[float, ...] = (),
+) -> tuple[np.ndarray, np.ndarray]:
     try:
         masses = np.repeat([ATOMIC_MASSES_AMU[a] * AMU_TO_ELECTRON_MASS for a in atoms], 3)
         default_widths = np.repeat([GAUSSIAN_WIDTHS[a] for a in atoms], 3)
     except KeyError as exc:
         raise ConfigError(f"no mass/width default for element {exc.args[0]!r}") from exc
+    if explicit_masses:
+        masses = np.asarray(explicit_masses, dtype=float)
+        if masses.size not in (len(atoms), 3 * len(atoms)):
+            raise ConfigError("nuclear_masses must have natom or 3*natom entries")
+        if masses.size == len(atoms):
+            masses = np.repeat(masses, 3)
     if explicit_widths:
         widths = np.asarray(explicit_widths, dtype=float)
         if widths.size not in (len(atoms), 3 * len(atoms)):
@@ -65,6 +75,8 @@ def masses_and_widths(atoms: tuple[str, ...], explicit_widths: tuple[float, ...]
         widths = default_widths
     if np.any(widths <= 0):
         raise ConfigError("Gaussian widths must be positive")
+    if np.any(~np.isfinite(masses)) or np.any(masses <= 0):
+        raise ConfigError("nuclear masses must be positive and finite")
     return masses.astype(float), widths.astype(float)
 
 

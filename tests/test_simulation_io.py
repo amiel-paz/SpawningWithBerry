@@ -20,7 +20,8 @@ from aims_berry.electronic.base import (
     ElectronicStructureError,
     WavefunctionState,
 )
-from aims_berry.simulation import SimulationRunner
+from aims_berry.simulation import SimulationRunner, restart_from_checkpoint
+from aims_berry.models.pyspawn_cone import PySpawnTestCone
 from aims_berry.spawning import SpawnCandidate
 
 
@@ -35,6 +36,56 @@ def flat_provider(request):
         "gradients": np.zeros((nstate, natom, 3)),
         "nacs": nac,
     }
+
+
+def test_certified_npi_transport_is_not_polar_aligned_away(tmp_path):
+    xyz = tmp_path / "cone.xyz"
+    xyz.write_text("1\ncone\nH 0.45 0.10 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
+        initial_state=1, time_step=0.1, simulation_time=0.0,
+        electronic_method="analytic_model", coupling_mode="npi",
+        spawn_metric="tdc", spawn_momentum="isotropic",
+        run_directory=tmp_path / "cone-run",
+    )
+    runner = SimulationRunner(config, PySpawnTestCone())
+    first = runner._evaluate(np.asarray([[0.45, 0.10, 0.0]]), 1, 0.0)
+    second = runner._evaluate(
+        np.asarray([[0.44, 0.11, 0.0]]), 1, 0.1, first.wavefunction
+    )
+    assert second.metadata["gauge_transport"] == "provider_certified_npi"
+    assert abs(second.state_overlaps[0, 1]) > 1.0e-4
+    assert abs(runner._npi_tdc(second)[0, 1]) > 1.0e-3
+    runner.close()
+
+
+def test_checkpoint_restart_can_extend_simulation_endpoint(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nextended restart\nH 0 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=0.1, simulation_time=0.2,
+        electronic_method="custom", run_directory=tmp_path / "extended-restart",
+    )
+    provider = CallableProvider(flat_provider)
+    initial = run(config, provider)
+    assert initial.state.quantum_time == pytest.approx(0.2)
+
+    extended = restart_from_checkpoint(
+        initial.checkpoint,
+        CallableProvider(flat_provider),
+        simulation_time=0.4,
+    )
+
+    assert extended.state.quantum_time == pytest.approx(0.4)
+    metadata = json.loads((extended.checkpoint / "checkpoint.json").read_text())
+    assert metadata["config"]["simulation_time"] == pytest.approx(0.4)
+    with pytest.raises(ValueError, match="no earlier"):
+        restart_from_checkpoint(
+            extended.checkpoint,
+            CallableProvider(flat_provider),
+            simulation_time=0.3,
+        )
 
 
 def test_classical_energy_tolerance_can_be_stricter_than_quantum_gate(tmp_path):
@@ -63,6 +114,41 @@ def test_classical_energy_tolerance_can_be_stricter_than_quantum_gate(tmp_path):
         2.0 * trajectory.masses[0, 0] * (2.0e-4 + 0.5e-8)
     )
     runner._check_classical_energies()
+    runner.close()
+
+
+def test_classical_energy_record_policy_logs_and_continues(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nclassical record policy\nH 0 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=1.0, simulation_time=0.0,
+        electronic_method="custom", classical_energy_tolerance=2.0e-4,
+        classical_energy_policy="record",
+        run_directory=tmp_path / "classical-record",
+    )
+    runner = SimulationRunner(config, CallableProvider(flat_provider))
+    trajectory = runner.state.trajectories[0]
+    trajectory.electronic = ElectronicStructureResult(
+        energies=np.asarray([0.0]), gradients=np.zeros((1, 1, 3)),
+    )
+    runner.classical_energy_references[trajectory.identifier] = 0.0
+    trajectory.momenta[0, 0] = np.sqrt(
+        2.0 * trajectory.masses[0, 0] * 3.0e-4
+    )
+    runner._check_classical_energies()
+    runner._check_classical_energies()
+    events = [
+        event for event in runner.state.events
+        if event.get("kind") == "classical_energy_threshold"
+    ]
+    assert len(events) == 1
+    assert events[0]["policy"] == "record"
+    assert runner.classical_energy_gate_active[trajectory.identifier]
+    snapshot = runner._current_snapshot((trajectory.identifier, 0))
+    runner.classical_energy_gate_active.clear()
+    runner._restore_spawn_snapshot(snapshot)
+    assert runner.classical_energy_gate_active[trajectory.identifier]
     runner.close()
 
 
@@ -254,7 +340,7 @@ def test_spawn_rolls_back_and_replays_coupled_amplitudes_across_restart(tmp_path
         CallableProvider(localized_coupling_provider, capabilities=capabilities),
     )
     spawn = next(event for event in resumed.events if event.get("kind") == "spawn")
-    assert spawn["threshold_entry_time"] == 4.0
+    assert spawn["threshold_entry_time"] == 3.0
     assert spawn["time"] == 6.0
     assert spawn["replay_frontier_time"] == 9.0
     assert len(resumed.state.trajectories) == 2
@@ -264,7 +350,7 @@ def test_spawn_rolls_back_and_replays_coupled_amplitudes_across_restart(tmp_path
     ]
     assert np.allclose(resumed.state.amplitudes, uninterrupted.state.amplitudes, atol=1e-12)
     with h5py.File(resumed.history) as handle:
-        entry = handle["steps/00000004"]
+        entry = handle["steps/00000003"]
         assert entry["amplitudes"].shape == (2,)
         assert entry["amplitudes"][1] == 0j
 
@@ -300,10 +386,10 @@ def test_injected_replay_failure_restarts_from_transaction_entry(tmp_path, monke
         run(config, CallableProvider(localized_coupling_provider, capabilities=capabilities))
     checkpoint = config.run_directory / "checkpoint/current/checkpoint.json"
     failed_metadata = json.loads(checkpoint.read_text())
-    assert failed_metadata["step"] == 4
+    assert failed_metadata["step"] == 3
     assert failed_metadata["runtime"]["active_replay"] is not None
     with h5py.File(config.run_directory / "simulation.h5") as handle:
-        assert int(handle["steps"].attrs["committed_through"]) == 4
+        assert int(handle["steps"].attrs["committed_through"]) == 3
         assert sorted(handle["replay"].keys())
 
     monkeypatch.setattr(simulation_module, "adaptive_cayley_step", original)
@@ -724,6 +810,91 @@ def test_centroid_nac_phase_tracking_skips_gap_screened_pair(tmp_path):
     result = runner._evaluate_centroid(left, right, np.zeros((1, 3)))
     assert not result.nac_mask[0, 1]
     assert runner.centroid_nac_previous == {}
+    runner.close()
+
+
+def test_gap_screening_closes_active_spawn_window(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nspawn screen boundary\nH 0 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
+        initial_state=1, time_step=1.0, simulation_time=0.0,
+        electronic_method="custom", coupling_mode="nac",
+        spawn_metric="projected", spawn_threshold=0.01,
+        max_energy_gap=0.01, run_directory=tmp_path / "spawn-screen-boundary",
+    )
+    runner = SimulationRunner(
+        config,
+        CallableProvider(flat_provider, capabilities=ProviderCapabilities(nacs=True)),
+    )
+    trajectory = runner.state.trajectories[0]
+    trajectory.momenta[:] = trajectory.masses
+    nacs = np.zeros((2, 2, 1, 3), complex)
+    nacs[1, 0, 0, 0] = 0.02
+    nacs[0, 1] = -nacs[1, 0].conj()
+    trajectory.electronic = ElectronicStructureResult(
+        energies=np.array([0.0, 0.005]), nacs=nacs,
+        nac_mask=np.array([[False, True], [True, False]]),
+    )
+    runner.state.matrices = MatrixSet(
+        np.eye(1), np.zeros((1, 1)), np.zeros((1, 1))
+    )
+    assert runner._observe_spawning() == []
+    key = (trajectory.identifier, 0)
+    assert key in runner.monitor.pending
+    assert runner.active_spawn_snapshot is not None
+
+    trajectory.electronic = ElectronicStructureResult(
+        energies=np.array([0.0, 0.02]), nacs=nacs,
+        nac_mask=np.zeros((2, 2), bool),
+    )
+    completed = runner._observe_spawning()
+
+    assert len(completed) == 1
+    assert completed[0].target_state == 0
+    assert completed[0].coupling == pytest.approx(0.02)
+    assert key not in runner.monitor.pending
+    runner.close()
+
+
+def test_deferred_replay_candidate_blocks_duplicate_window(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\ndeferred spawn\nH 0 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
+        initial_state=1, time_step=1.0, simulation_time=0.0,
+        electronic_method="custom", coupling_mode="nac",
+        spawn_metric="projected", spawn_threshold=0.01,
+        run_directory=tmp_path / "deferred-spawn",
+    )
+    runner = SimulationRunner(
+        config,
+        CallableProvider(flat_provider, capabilities=ProviderCapabilities(nacs=True)),
+    )
+    trajectory = runner.state.trajectories[0]
+    trajectory.momenta[:] = trajectory.masses
+    nacs = np.zeros((2, 2, 1, 3), complex)
+    nacs[1, 0, 0, 0] = 0.02
+    nacs[0, 1] = -nacs[1, 0].conj()
+    trajectory.electronic = ElectronicStructureResult(
+        energies=np.array([0.0, 0.005]), nacs=nacs,
+        nac_mask=np.array([[False, True], [True, False]]),
+    )
+    runner.state.matrices = MatrixSet(
+        np.eye(1), np.zeros((1, 1)), np.zeros((1, 1))
+    )
+    runner.deferred_spawns.append(
+        SpawnCandidate(
+            0, 0, 0.02, 0.0, trajectory.positions.copy(),
+            trajectory.momenta.copy(), nacs[1, 0].copy(),
+            trajectory.electronic.energies.copy(),
+            parent_id=trajectory.identifier,
+        )
+    )
+
+    assert runner._observe_spawning() == []
+    assert runner.monitor.pending == {}
+    assert runner.active_spawn_snapshot is None
     runner.close()
 
 

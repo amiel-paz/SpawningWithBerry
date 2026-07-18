@@ -1,4 +1,6 @@
 .DS_Store
+.codex/
+/tmp/
 __pycache__/
 *.py[cod]
 .venv/

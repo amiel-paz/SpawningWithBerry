@@ -83,6 +83,30 @@ def make_child(candidate: SpawnCandidate, parent: TrajectoryBasisFunction) -> Tr
     return child
 
 
+def make_isotropic_child(
+    candidate: SpawnCandidate, parent: TrajectoryBasisFunction
+) -> TrajectoryBasisFunction | None:
+    """Create the isotropically rescaled child used by PySpawn's NPI path.
+
+    This keeps the momentum direction fixed and scales its magnitude to put the
+    child on the parent's classical energy shell.  It is useful when an overlap-
+    based provider supplies a time-derivative coupling but no NAC direction.
+    """
+    kinetic = float(np.sum(candidate.momenta**2 / (2.0 * parent.masses)))
+    target_kinetic = float(
+        kinetic
+        + candidate.energies[parent.state]
+        - candidate.energies[candidate.target_state]
+    )
+    if target_kinetic < 0.0 or kinetic <= 0.0:
+        return None
+    momentum = candidate.momenta * np.sqrt(target_kinetic / kinetic)
+    child = parent.copy_child(candidate.target_state, momentum)
+    child.positions = candidate.positions.copy()
+    child.time = candidate.time
+    return child
+
+
 def make_coupling_optimized_child(
     candidate: SpawnCandidate, parent: TrajectoryBasisFunction, seed: int
 ) -> TrajectoryBasisFunction | None:
@@ -167,12 +191,16 @@ class SpawnMonitor:
     def key(candidate: SpawnCandidate) -> tuple[str, int]:
         return (candidate.parent_id or str(candidate.parent_index), candidate.target_state)
 
-    def observe(self, candidate: SpawnCandidate) -> SpawnCandidate | None:
+    def observe(
+        self,
+        candidate: SpawnCandidate,
+        entry: SpawnCandidate | None = None,
+    ) -> SpawnCandidate | None:
         key = self.key(candidate)
         previous = self.pending.get(key)
         if candidate.coupling >= self.threshold:
             if previous is None:
-                self.entries[key] = candidate
+                self.entries[key] = candidate if entry is None else entry
             if previous is None or candidate.coupling > previous.coupling:
                 self.pending[key] = candidate
             return None
@@ -186,6 +214,25 @@ class SpawnMonitor:
                 entry_momenta=entry.momenta.copy(),
             )
         return None
+
+    def close(self, key: tuple[str, int]) -> SpawnCandidate | None:
+        """Close a threshold region when its coupling becomes unavailable.
+
+        Selective NAC evaluation and energy-gap screening are numerical workload
+        controls.  They must behave like a below-threshold observation at the
+        boundary of the evaluated region; otherwise a pending spawn can remain
+        open forever and suppress unrelated electronic-state pairs.
+        """
+        previous = self.pending.pop(key, None)
+        entry = self.entries.pop(key, None)
+        if previous is None or entry is None:
+            return None
+        return dataclasses.replace(
+            previous,
+            entry_time=entry.time,
+            entry_positions=entry.positions.copy(),
+            entry_momenta=entry.momenta.copy(),
+        )
 
     def flush(self) -> list[SpawnCandidate]:
         values = [

@@ -48,7 +48,8 @@ class SimulationConfig:
     coupling_mode: Literal["auto", "npi", "nac"] = "auto"
     quantum_integrator: Literal["cayley", "rk45"] = "cayley"
     spawn_strategy: Literal["nac", "coupling_optimized"] = "nac"
-    spawn_metric: Literal["projected", "nac_norm"] = "projected"
+    spawn_momentum: Literal["nac", "isotropic"] = "nac"
+    spawn_metric: Literal["projected", "nac_norm", "tdc"] = "projected"
     spawn_threshold: float = 0.01
     population_to_spawn: float = 1.0e-3
     spawn_overlap_max: float = 0.8
@@ -63,14 +64,17 @@ class SimulationConfig:
     minimum_nuclear_time_step: float | None = None
     energy_tolerance: float = 5.0e-3
     quantum_energy_policy: Literal["record", "error"] = "record"
+    classical_energy_policy: Literal["record", "error"] = "error"
     classical_energy_tolerance: float | None = None
     classical_energy_numerical_margin: float = 0.0
     norm_tolerance: float = 1.0e-6
+    cumulative_norm_tolerance: float = 1.0e-8
     output_every: int = 1
     checkpoint_keep: int = 2
     electronic_retries: int = 2
     run_directory: Path = Path("run")
     gaussian_widths: tuple[float, ...] = ()
+    nuclear_masses: tuple[float, ...] = ()
     provider_options: tuple[tuple[str, Any], ...] = ()
     observables: tuple[ObservableSpec, ...] = ()
     source: Path | None = None
@@ -108,10 +112,16 @@ class SimulationConfig:
             raise ConfigError("quantum_integrator must be cayley or rk45")
         if self.quantum_energy_policy not in {"record", "error"}:
             raise ConfigError("quantum_energy_policy must be record or error")
+        if self.classical_energy_policy not in {"record", "error"}:
+            raise ConfigError("classical_energy_policy must be record or error")
         if self.spawn_strategy not in {"nac", "coupling_optimized"}:
             raise ConfigError("spawn_strategy must be nac or coupling_optimized")
-        if self.spawn_metric not in {"projected", "nac_norm"}:
-            raise ConfigError("spawn_metric must be projected or nac_norm")
+        if self.spawn_momentum not in {"nac", "isotropic"}:
+            raise ConfigError("spawn_momentum must be nac or isotropic")
+        if self.spawn_metric not in {"projected", "nac_norm", "tdc"}:
+            raise ConfigError("spawn_metric must be projected, nac_norm, or tdc")
+        if self.coupling_mode == "nac" and self.spawn_metric == "tdc":
+            raise ConfigError("spawn_metric tdc requires coupling_mode auto or npi")
         if self.nac_gap_threshold <= 0:
             raise ConfigError("nac_gap_threshold must be positive")
         if (
@@ -121,6 +131,10 @@ class SimulationConfig:
             raise ConfigError("classical_energy_tolerance must be positive")
         if self.classical_energy_numerical_margin < 0:
             raise ConfigError("classical_energy_numerical_margin must be non-negative")
+        if self.norm_tolerance <= 0:
+            raise ConfigError("norm_tolerance must be positive")
+        if self.cumulative_norm_tolerance <= 0:
+            raise ConfigError("cumulative_norm_tolerance must be positive")
         if self.pair_overlap_threshold < 0 or self.pair_overlap_threshold >= 1:
             raise ConfigError("pair_overlap_threshold must be in [0, 1)")
 
@@ -160,6 +174,7 @@ _SCALAR_TYPES: dict[str, type] = {
     "coupling_mode": str,
     "quantum_integrator": str,
     "spawn_strategy": str,
+    "spawn_momentum": str,
     "spawn_metric": str,
     "spawn_threshold": float,
     "population_to_spawn": float,
@@ -173,9 +188,11 @@ _SCALAR_TYPES: dict[str, type] = {
     "regularization_threshold": float,
     "energy_tolerance": float,
     "quantum_energy_policy": str,
+    "classical_energy_policy": str,
     "classical_energy_tolerance": float,
     "classical_energy_numerical_margin": float,
     "norm_tolerance": float,
+    "cumulative_norm_tolerance": float,
     "output_every": int,
     "checkpoint_keep": int,
     "electronic_retries": int,
@@ -185,7 +202,7 @@ _TIME_KEYS = {
     "time_step", "coupling_time_step", "simulation_time", "min_time_step",
     "minimum_nuclear_time_step",
 }
-_LIST_KEYS = {"state_weights", "gaussian_widths"}
+_LIST_KEYS = {"state_weights", "gaussian_widths", "nuclear_masses"}
 _REQUIRED = {"provider", "geometry", "num_states", "initial_state", "time_step", "simulation_time"}
 
 
@@ -284,6 +301,7 @@ def config_from_dict(data: dict[str, Any]) -> SimulationConfig:
             values[key] = Path(values[key])
     values["state_weights"] = tuple(values.get("state_weights", ()))
     values["gaussian_widths"] = tuple(values.get("gaussian_widths", ()))
+    values["nuclear_masses"] = tuple(values.get("nuclear_masses", ()))
     values["provider_options"] = tuple(tuple(item) for item in values.get("provider_options", ()))
     values["observables"] = tuple(ObservableSpec(item["kind"], item["name"], tuple(item["atoms"])) for item in values.get("observables", ()))
     return SimulationConfig(**values)

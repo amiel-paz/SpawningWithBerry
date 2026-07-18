@@ -52,7 +52,10 @@ class SaddlePointHamiltonian:
         sdot = np.zeros((count, count), dtype=np.complex128)
         for i, left in enumerate(trajectories):
             for j, right in enumerate(trajectories):
-                sdot[i, j] = gaussian_sdot(left, right, velocities[j], forces[j])
+                sdot[i, j] = gaussian_sdot(
+                    left, right, velocities[j], forces[j]
+                )
+        for i, left in enumerate(trajectories):
             for j in range(i, count):
                 right = trajectories[j]
                 nuclear_overlap = gaussian_overlap(left, right, electronic=False)
@@ -87,6 +90,16 @@ class SaddlePointHamiltonian:
                 elif self.coupling_mode == "npi" and electronic.state_overlaps is not None:
                     tdc = npi_time_derivative(electronic.state_overlaps, dt)
                     sdot[i, j] += tdc[state_i, state_j] * nuclear_overlap
+                    if i != j:
+                        # Nuclear tau=<chi_i|dot chi_j> is one-sided, but the
+                        # electronic state-transport generator is
+                        # anti-Hermitian.  Populate its reverse ordered matrix
+                        # element explicitly; omitting it makes H-i*tau
+                        # one-way and suppresses the reciprocal population
+                        # transfer present in PySpawn's NPI Hamiltonian.
+                        sdot[j, i] += (
+                            tdc[state_j, state_i] * nuclear_overlap.conjugate()
+                        )
                 hamiltonian[i, j] = value
                 hamiltonian[j, i] = value.conjugate()
         hamiltonian = 0.5 * (hamiltonian + hamiltonian.conj().T)

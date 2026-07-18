@@ -47,6 +47,25 @@ def _provider_options(config, workers: int) -> tuple[tuple[str, object], ...]:
     return tuple(options.items())
 
 
+def _apply_completion_policies(checkpoint_config, input_config):
+    """Apply explicitly mutable run policies when resuming scientific state.
+
+    Nuclear/electronic state, RNG, queues, and all numerical controls still come
+    from the checkpoint.  These two policies only decide whether already-recorded
+    diagnostics stop the run or are retained as warnings.
+    """
+    options = checkpoint_config.provider_option_dict()
+    input_options = input_config.provider_option_dict()
+    if "continuity_policy" in input_options:
+        options["continuity_policy"] = input_options["continuity_policy"]
+    return dataclasses.replace(
+        checkpoint_config,
+        provider_options=tuple(options.items()),
+        classical_energy_policy=input_config.classical_energy_policy,
+        quantum_energy_policy=input_config.quantum_energy_policy,
+    )
+
+
 def _run_member(args: argparse.Namespace) -> int:
     base = load_config(args.input)
     ensemble_directory = base.run_directory.with_name(args.ensemble_name)
@@ -55,6 +74,7 @@ def _run_member(args: argparse.Namespace) -> int:
     if (checkpoint / "checkpoint.json").is_file():
         metadata = json.loads((checkpoint / "checkpoint.json").read_text())
         config = config_from_dict(metadata["config"])
+        config = _apply_completion_policies(config, base)
         config = dataclasses.replace(config, run_directory=member_directory)
         restart = True
     else:
@@ -170,13 +190,21 @@ def _stop_processes(processes: dict[int, tuple[subprocess.Popen, object]]) -> No
             os.killpg(process.pid, signal.SIGKILL)
 
 
-def _run_batch(args: argparse.Namespace, seeds: list[int], workers: int) -> list[float]:
+def _run_batch(
+    args: argparse.Namespace,
+    seeds: list[int],
+    workers: int,
+    prior_failures: list[dict] | None = None,
+) -> tuple[list[float], list[dict]]:
     base = load_config(args.input)
     ensemble_directory = base.run_directory.with_name(args.ensemble_name)
     ensemble_directory.mkdir(parents=True, exist_ok=True)
     processes: dict[int, tuple[subprocess.Popen, object]] = {}
     launched: dict[int, float] = {}
     durations: list[float] = []
+    completed_seeds: set[int] = set()
+    member_failures: list[dict] = []
+    prior_failures = [] if prior_failures is None else list(prior_failures)
     environment = dict(os.environ)
     environment.update({
         "OMP_NUM_THREADS": str(ELECTRONIC_THREADS),
@@ -187,6 +215,16 @@ def _run_batch(args: argparse.Namespace, seeds: list[int], workers: int) -> list
     for seed in seeds:
         member = ensemble_directory / f"seed-{seed}"
         member.mkdir(parents=True, exist_ok=True)
+        failure_path = member / "failure.json"
+        if failure_path.is_file():
+            record = json.loads(failure_path.read_text())
+            member_failures.append(record)
+            print(
+                f"skipping quarantined seed {seed}; remove {failure_path} "
+                "after post-mortem repair to retry it",
+                flush=True,
+            )
+            continue
         stream = (member / "runner.log").open("a")
         command = [
             sys.executable,
@@ -233,10 +271,28 @@ def _run_batch(args: argparse.Namespace, seeds: list[int], workers: int) -> list
                 (failed if code else completed).append((seed, code, elapsed))
             for seed, code, elapsed in completed:
                 durations.append(elapsed)
+                completed_seeds.add(seed)
                 del processes[seed]
-            if failed:
-                seed, code, _elapsed = failed[0]
-                raise RuntimeError(f"seed {seed} exited with status {code}")
+            for seed, code, elapsed in failed:
+                record = {
+                    "seed": seed,
+                    "exit_code": code,
+                    "elapsed_seconds": elapsed,
+                    "progress": _member_progress(
+                        ensemble_directory / f"seed-{seed}"
+                    ),
+                }
+                member_failures.append(record)
+                _write_status(
+                    ensemble_directory / f"seed-{seed}" / "failure.json",
+                    record,
+                )
+                del processes[seed]
+                print(
+                    f"quarantined failed seed {seed} with status {code}; "
+                    "continuing ensemble",
+                    flush=True,
+                )
 
             pids = {process.pid for process, _stream in processes.values()}
             rss = _process_tree_rss(pids) if pids else 0
@@ -262,6 +318,8 @@ def _run_batch(args: argparse.Namespace, seeds: list[int], workers: int) -> list
             _write_status(ensemble_directory / "ensemble-status.json", {
                 "active_seeds": sorted(processes),
                 "batch_seeds": seeds,
+                "completed_seeds": sorted(completed_seeds),
+                "failed_members": prior_failures + member_failures,
                 "rss_bytes": rss,
                 "peak_rss_bytes": peak_rss,
                 "swap_growth_bytes": swap_growth,
@@ -284,7 +342,7 @@ def _run_batch(args: argparse.Namespace, seeds: list[int], workers: int) -> list
         for _process, stream in processes.values():
             if not stream.closed:
                 stream.close()
-    return durations
+    return durations, member_failures
 
 
 def main() -> int:
@@ -297,10 +355,15 @@ def main() -> int:
         raise ValueError("production-count must be positive")
     seeds = list(range(args.first_seed, args.first_seed + args.count))
     durations: list[float] = []
+    failures: list[dict] = []
     for offset in range(0, len(seeds), args.parallel_members):
         batch = seeds[offset:offset + args.parallel_members]
         workers = max(1, ELECTRONIC_SLOTS // len(batch))
-        durations.extend(_run_batch(args, batch, workers))
+        batch_durations, batch_failures = _run_batch(
+            args, batch, workers, failures
+        )
+        durations.extend(batch_durations)
+        failures.extend(batch_failures)
     if args.simulation_time and durations:
         base = load_config(args.input)
         extrapolated = (
@@ -313,6 +376,18 @@ def main() -> int:
                 f"projected makespan {extrapolated:.2f} h exceeds "
                 f"{args.max_projected_hours:.2f} h gate"
             )
+    if failures:
+        base = load_config(args.input)
+        ensemble_directory = base.run_directory.with_name(args.ensemble_name)
+        _write_status(ensemble_directory / "ensemble-failures.json", {
+            "failed_members": failures,
+            "failed_seeds": [item["seed"] for item in failures],
+        })
+        print(
+            "ensemble completed with quarantined seed failures: "
+            + ", ".join(str(item["seed"]) for item in failures),
+            flush=True,
+        )
     return 0
 
 
