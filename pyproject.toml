@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "aims-berry"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Modular ab initio multiple spawning dynamics with Berry-phase support"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -23,6 +23,9 @@ all = ["pyscf>=2.13,<3", "matplotlib>=3.8", "cma>=4"]
 
 [project.scripts]
 aims-berry = "aims_berry.cli:main"
+
+[tool.hatch.version]
+path = "src/aims_berry/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/aims_berry"]

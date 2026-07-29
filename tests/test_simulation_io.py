@@ -11,6 +11,7 @@ from aims_berry import (
     ElectronicStructureResult,
     ProviderCapabilities,
     SimulationConfig,
+    __version__,
     run,
 )
 from aims_berry.analysis import RunDataset
@@ -309,6 +310,9 @@ def test_short_run_writes_history_and_exact_checkpoint(tmp_path):
     assert result.history.is_file()
     assert (result.checkpoint / "checkpoint.json").is_file()
     assert (result.checkpoint.parent / "previous" / "checkpoint.json").is_file()
+    checkpoint_metadata = json.loads((result.checkpoint / "checkpoint.json").read_text())
+    assert checkpoint_metadata["version_info"]["version"] == __version__
+    assert checkpoint_metadata["version_info"]["last_update"]
     with h5py.File(result.history) as handle:
         assert sorted(handle["steps"]) == ["00000000", "00000001", "00000002"]
         assert handle["steps/00000002/amplitudes"].shape == (1,)

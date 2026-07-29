@@ -6,6 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
+from ._version import version_info, version_string
 from .analysis import analyze_run
 from .config import ConfigError, load_config
 from .geometry import masses_and_widths, read_xyz
@@ -15,8 +16,10 @@ from .simulation import restart_from_checkpoint, run
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="aims-berry")
-    parser.add_argument("--version", action="version", version="%(prog)s 0.1.0")
+    parser.add_argument("--version", action="version", version=version_string())
     commands = parser.add_subparsers(dest="command", required=True)
+    version = commands.add_parser("version", help="show package and source revision")
+    version.add_argument("--json", action="store_true", dest="as_json")
     validate = commands.add_parser("validate", help="parse and validate an input file")
     validate.add_argument("input", type=Path)
     execute = commands.add_parser("run", help="start a simulation")
@@ -55,6 +58,16 @@ def _validated_config(path: Path):
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.command == "version":
+        info = version_info()
+        if args.as_json:
+            print(json.dumps(info, indent=2, sort_keys=True))
+        else:
+            print(version_string())
+            print(f"source: {info['source']}")
+            print(f"python: {info['python']}")
+            print(f"package: {info['package_path']}")
+        return 0
     if args.command == "validate":
         config, atoms, positions = _validated_config(args.input)
         print(json.dumps({

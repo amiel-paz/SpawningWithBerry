@@ -22,6 +22,18 @@ aims-berry analyze examples/h3_pyscf/run/simulation.h5 \
   --input examples/h3_pyscf/aims.in --output examples/h3_pyscf/analysis
 ```
 
+Check exactly which release and source revision is running:
+
+```bash
+aims-berry --version
+aims-berry version --json
+```
+
+The detailed report includes the semantic package version, last-update timestamp,
+Git commit and dirty-worktree status when run from a checkout, Python version, and
+loaded package path. New HDF5 histories and checkpoints record the same provenance,
+so a result remains traceable after it is copied to another machine.
+
 Restart exactly from the most recent completed task:
 
 ```bash

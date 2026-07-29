@@ -1,7 +1,7 @@
 """Public API for :mod:`aims_berry`."""
 
 from .config import ConfigError, SimulationConfig, load_config
-from ._version import __version__
+from ._version import __version__, version_info
 from .electronic.base import (
     ElectronicProperties,
     ElectronicStructureProvider,
@@ -30,4 +30,5 @@ __all__ = [
     "load_config",
     "run",
     "__version__",
+    "version_info",
 ]

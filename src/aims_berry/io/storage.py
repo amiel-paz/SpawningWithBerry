@@ -12,7 +12,7 @@ from typing import Any
 import h5py
 import numpy as np
 
-from .._version import __version__
+from .._version import __version__, version_info
 from ..config import BOHR_PER_ANGSTROM, SimulationConfig
 from ..core import SimulationState
 from ..electronic.base import ElectronicStructureProvider
@@ -35,9 +35,16 @@ class HDF5Writer:
         self.xyz_root = self.path.parent / "geometries" if config.write_xyz else None
         mode = "a" if restart else "w"
         self.replay_window: str | None = None
+        provenance = version_info()
         with h5py.File(self.path, mode, libver="latest") as handle:
             handle.attrs["schema_version"] = 3
             handle.attrs["aims_berry_version"] = __version__
+            handle.attrs["aims_berry_last_update"] = provenance["last_update"]
+            handle.attrs["aims_berry_source"] = provenance["source"]
+            if provenance["commit"] is not None:
+                handle.attrs["aims_berry_commit"] = provenance["commit"]
+            if provenance["dirty"] is not None:
+                handle.attrs["aims_berry_dirty"] = provenance["dirty"]
             handle.attrs["units"] = "atomic"
             handle.attrs["config_json"] = json.dumps(config.to_dict(), sort_keys=True)
             strings = h5py.string_dtype("utf-8")
@@ -415,6 +422,7 @@ class CheckpointManager:
         metadata = {
             "schema_version": 3,
             "version": __version__,
+            "version_info": version_info(),
             "quantum_time": state.quantum_time,
             "step": state.step,
             "events": state.events,

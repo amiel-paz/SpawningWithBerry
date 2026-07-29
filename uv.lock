@@ -4,7 +4,6 @@ requires-python = ">=3.12"
 
 [[package]]
 name = "aims-berry"
-version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "h5py" },
@@ -50,7 +49,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9" },
     { name = "scipy", specifier = ">=1.11" },
 ]
-provides-extras = ["pyscf", "analysis", "optimize", "dev", "all"]
+provides-extras = ["all", "analysis", "dev", "optimize", "pyscf"]
 
 [[package]]
 name = "cma"
