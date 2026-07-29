@@ -9,6 +9,7 @@ from pathlib import Path
 from .analysis import analyze_run
 from .config import ConfigError, load_config
 from .geometry import masses_and_widths, read_xyz
+from .io import export_xyz_history
 from .simulation import restart_from_checkpoint, run
 
 
@@ -31,6 +32,13 @@ def _parser() -> argparse.ArgumentParser:
     analyze.add_argument("history", type=Path, help="simulation.h5 or its run directory")
     analyze.add_argument("--input", type=Path, help="input file defining observable records")
     analyze.add_argument("--output", type=Path, default=Path("analysis"))
+    export_xyz = commands.add_parser(
+        "export-xyz", help="export committed TBF geometries from simulation.h5"
+    )
+    export_xyz.add_argument(
+        "history", type=Path, help="simulation.h5 or its run directory"
+    )
+    export_xyz.add_argument("--output", type=Path, default=Path("geometries"))
     return parser
 
 
@@ -70,6 +78,9 @@ def main(argv: list[str] | None = None) -> int:
             simulation_time=args.simulation_time,
         )
         print(result.history)
+        return 0
+    if args.command == "export-xyz":
+        print(export_xyz_history(args.history, args.output))
         return 0
     history = args.history / "simulation.h5" if args.history.is_dir() else args.history
     observables = load_config(args.input).observables if args.input else ()

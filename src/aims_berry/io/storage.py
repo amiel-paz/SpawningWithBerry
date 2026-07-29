@@ -13,16 +13,26 @@ import h5py
 import numpy as np
 
 from .._version import __version__
-from ..config import SimulationConfig
+from ..config import BOHR_PER_ANGSTROM, SimulationConfig
 from ..core import SimulationState
 from ..electronic.base import ElectronicStructureProvider
+from ..geometry import read_xyz
 from ..tasks import TaskQueue
 
 
 class HDF5Writer:
-    def __init__(self, path: str | Path, config: SimulationConfig, *, restart: bool = False) -> None:
+    def __init__(
+        self,
+        path: str | Path,
+        config: SimulationConfig,
+        atoms: tuple[str, ...] | None = None,
+        *,
+        restart: bool = False,
+    ) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.atoms = tuple(atoms or read_xyz(config.geometry, config.geometry_units)[0])
+        self.xyz_root = self.path.parent / "geometries" if config.write_xyz else None
         mode = "a" if restart else "w"
         self.replay_window: str | None = None
         with h5py.File(self.path, mode, libver="latest") as handle:
@@ -30,12 +40,25 @@ class HDF5Writer:
             handle.attrs["aims_berry_version"] = __version__
             handle.attrs["units"] = "atomic"
             handle.attrs["config_json"] = json.dumps(config.to_dict(), sort_keys=True)
+            strings = h5py.string_dtype("utf-8")
+            if "atoms" in handle:
+                stored_atoms = tuple(_text(value) for value in handle["atoms"][:])
+                if stored_atoms != self.atoms:
+                    raise ValueError(
+                        f"history atoms {stored_atoms} do not match input atoms {self.atoms}"
+                    )
+            else:
+                handle.create_dataset(
+                    "atoms", data=np.asarray(self.atoms, dtype=strings)
+                )
             steps = handle.require_group("steps")
             handle.require_group("replay")
             if "committed_through" not in steps.attrs:
                 steps.attrs["committed_through"] = max(
                     (int(name) for name in steps), default=-1
                 )
+        if self.xyz_root is not None:
+            export_xyz_history(self.path, self.xyz_root)
 
     def begin_replay(
         self, window: str, *, entry_step: int, frontier_step: int
@@ -59,6 +82,8 @@ class HDF5Writer:
             handle["steps"].attrs["committed_through"] = int(entry_step)
             handle.attrs["active_replay"] = self.replay_window
             handle.flush()
+        if self.xyz_root is not None:
+            export_xyz_history(self.path, self.xyz_root)
 
     def reset_replay(self, window: str) -> None:
         """Discard provisional frames but retain the replay transaction metadata."""
@@ -89,6 +114,8 @@ class HDF5Writer:
                 del handle.attrs["active_replay"]
             handle.flush()
         self.replay_window = None
+        if self.xyz_root is not None:
+            export_xyz_history(self.path, self.xyz_root)
 
     def write_step(
         self,
@@ -212,6 +239,117 @@ class HDF5Writer:
                     int(steps.attrs.get("committed_through", -1)), state.step
                 )
             handle.flush()
+        if self.xyz_root is not None and self.replay_window is None:
+            _write_xyz_step(
+                self.xyz_root,
+                self.atoms,
+                name,
+                state.quantum_time,
+                np.asarray([trajectory.positions for trajectory in trajectories]),
+                [trajectory.label for trajectory in trajectories],
+                [trajectory.identifier for trajectory in trajectories],
+                [trajectory.state for trajectory in trajectories],
+            )
+
+
+def _text(value: Any) -> str:
+    return value.decode() if isinstance(value, bytes) else str(value)
+
+
+def _safe_filename(value: str) -> str:
+    safe = "".join(
+        character if character.isalnum() or character in "-_." else "_"
+        for character in value
+    ).strip(".")
+    return safe or "tbf"
+
+
+def _write_xyz_step(
+    output: Path,
+    atoms: tuple[str, ...],
+    step_name: str,
+    time_au: float,
+    positions_bohr: np.ndarray,
+    labels: list[str],
+    identifiers: list[str],
+    states: list[int],
+) -> None:
+    output.mkdir(parents=True, exist_ok=True)
+    target = output / f"step-{step_name}"
+    temporary = output / f".step-{step_name}-{uuid.uuid4().hex}.tmp"
+    temporary.mkdir()
+    try:
+        for index, (positions, label, identifier, state) in enumerate(
+            zip(positions_bohr, labels, identifiers, states, strict=True)
+        ):
+            if positions.shape != (len(atoms), 3):
+                raise ValueError(
+                    f"XYZ positions must have shape ({len(atoms)}, 3), "
+                    f"got {positions.shape}"
+                )
+            name = f"tbf-{index:04d}-{_safe_filename(label)}.xyz"
+            lines = [
+                str(len(atoms)),
+                (
+                    f"step={int(step_name)} time_au={float(time_au):.16g} "
+                    f"tbf_index={index} label={label} id={identifier} state={int(state)}"
+                ),
+            ]
+            for atom, coordinate in zip(atoms, positions / BOHR_PER_ANGSTROM, strict=True):
+                lines.append(
+                    f"{atom:<3s} {coordinate[0]: .12f} "
+                    f"{coordinate[1]: .12f} {coordinate[2]: .12f}"
+                )
+            (temporary / name).write_text("\n".join(lines) + "\n")
+        if target.exists():
+            shutil.rmtree(target)
+        os.replace(temporary, target)
+    except BaseException:
+        if temporary.exists():
+            shutil.rmtree(temporary)
+        raise
+
+
+def export_xyz_history(
+    history: str | Path,
+    output_directory: str | Path,
+) -> Path:
+    """Export every committed TBF geometry as an Angstrom XYZ file."""
+    history = Path(history)
+    if history.is_dir():
+        history = history / "simulation.h5"
+    output = Path(output_directory)
+    output.mkdir(parents=True, exist_ok=True)
+    with h5py.File(history, "r") as handle:
+        if "steps" not in handle:
+            raise ValueError(f"{history} is not an aims_berry history")
+        if "atoms" in handle:
+            atoms = tuple(_text(value) for value in handle["atoms"][:])
+        else:
+            config = json.loads(handle.attrs["config_json"])
+            atoms = read_xyz(config["geometry"], config.get("geometry_units", "angstrom"))[0]
+        steps = handle["steps"]
+        committed = int(steps.attrs.get("committed_through", -1))
+        names = sorted(
+            (name for name in steps if int(name) <= committed), key=int
+        )
+        expected = {f"step-{name}" for name in names}
+        for child in output.glob("step-*"):
+            if child.is_dir() and child.name not in expected:
+                shutil.rmtree(child)
+        for name in names:
+            group = steps[name]
+            _write_xyz_step(
+                output,
+                atoms,
+                name,
+                float(group.attrs["time"]),
+                group["positions"][:],
+                [_text(value) for value in group["labels"][:]],
+                [_text(value) for value in group["ids"][:]],
+                group["states"][:].astype(int).tolist(),
+            )
+    return output
 
 
 def _json_default(value: Any) -> Any:

@@ -36,7 +36,11 @@ suppresses requested NAC pairs above the configured energy gap.
 Numerical/storage controls include `regularization_threshold`, `overlap_threshold`,
 `pair_overlap_threshold`, `energy_tolerance`, `quantum_energy_policy`,
 `classical_energy_tolerance`,
-`output_every`, `electronic_retries`, `checkpoint_keep`, and `run_directory`.
+`output_every`, `write_xyz`, `electronic_retries`, `checkpoint_keep`, and
+`run_directory`. `write_xyz true` writes one Angstrom XYZ file per TBF under
+`run_directory/geometries/step-<frame>/` whenever a committed HDF5 frame is
+written; its cadence therefore follows `output_every`. Replay-staged frames are
+not exported.
 `classical_energy_tolerance` optionally imposes a per-TBF energy-drift hard stop;
 when omitted it inherits `energy_tolerance`. Local energy/gradient work consistency,
 electronic continuity, and coupling-region entry drive transactional nuclear-step

@@ -88,6 +88,26 @@ def test_checkpoint_restart_can_extend_simulation_endpoint(tmp_path):
         )
 
 
+def test_optional_xyz_history_export_uses_angstrom_and_committed_frames(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nxyz export\nH 1 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=0.1, simulation_time=0.0,
+        electronic_method="custom", write_xyz=True,
+        run_directory=tmp_path / "xyz-run",
+    )
+    result = run(config, CallableProvider(flat_provider))
+    exported = result.run_directory / "geometries/step-00000000/tbf-0000-00.xyz"
+    lines = exported.read_text().splitlines()
+    assert lines[0] == "1"
+    assert "step=0" in lines[1]
+    assert "state=0" in lines[1]
+    assert float(lines[2].split()[1]) == pytest.approx(1 / 1.8897261254578281)
+    with h5py.File(result.history) as handle:
+        assert [value.decode() if isinstance(value, bytes) else value for value in handle["atoms"][:]] == ["H"]
+
+
 def test_classical_energy_tolerance_can_be_stricter_than_quantum_gate(tmp_path):
     xyz = tmp_path / "h.xyz"
     xyz.write_text("1\nclassical gate\nH 0 0 0\n")
@@ -905,7 +925,7 @@ def test_replay_history_is_hidden_until_transaction_commit(tmp_path):
         provider="custom", geometry=xyz, geometry_units="bohr", num_states=2,
         initial_state=0, time_step=0.05, simulation_time=0.1,
         electronic_method="custom", coupling_mode="nac", spawn_threshold=1e9,
-        run_directory=tmp_path / "transaction",
+        write_xyz=True, run_directory=tmp_path / "transaction",
     )
     runner = SimulationRunner(
         config, CallableProvider(flat_provider, capabilities=ProviderCapabilities(nacs=True))
@@ -914,6 +934,9 @@ def test_replay_history_is_hidden_until_transaction_commit(tmp_path):
     runner.writer.begin_replay("test-window", entry_step=1, frontier_step=2)
     runner.writer.write_step(result.state, config.num_states, {"quantum_substeps": 8})
     assert [step["step"] for step in RunDataset(result.history).steps()] == [0, 1]
+    assert sorted(path.name for path in (result.run_directory / "geometries").glob("step-*")) == [
+        "step-00000000", "step-00000001",
+    ]
     with h5py.File(result.history) as handle:
         assert "00000002" in handle["replay/test-window/steps"]
         assert "00000002" not in handle["steps"]
@@ -921,6 +944,9 @@ def test_replay_history_is_hidden_until_transaction_commit(tmp_path):
         assert int(handle["steps"].attrs["committed_through"]) == 1
     runner.writer.commit_replay("test-window", 2)
     assert [step["step"] for step in RunDataset(result.history).steps()] == [0, 1, 2]
+    assert sorted(path.name for path in (result.run_directory / "geometries").glob("step-*")) == [
+        "step-00000000", "step-00000001", "step-00000002",
+    ]
     with h5py.File(result.history) as handle:
         assert "test-window" not in handle["replay"]
         assert handle["steps/00000002"].attrs["quantum_substeps"] == 8

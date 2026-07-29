@@ -70,6 +70,7 @@ class SimulationConfig:
     norm_tolerance: float = 1.0e-6
     cumulative_norm_tolerance: float = 1.0e-8
     output_every: int = 1
+    write_xyz: bool = False
     checkpoint_keep: int = 2
     electronic_retries: int = 2
     run_directory: Path = Path("run")
@@ -135,6 +136,8 @@ class SimulationConfig:
             raise ConfigError("norm_tolerance must be positive")
         if self.cumulative_norm_tolerance <= 0:
             raise ConfigError("cumulative_norm_tolerance must be positive")
+        if self.output_every < 1:
+            raise ConfigError("output_every must be positive")
         if self.pair_overlap_threshold < 0 or self.pair_overlap_threshold >= 1:
             raise ConfigError("pair_overlap_threshold must be in [0, 1)")
 
@@ -194,6 +197,7 @@ _SCALAR_TYPES: dict[str, type] = {
     "norm_tolerance": float,
     "cumulative_norm_tolerance": float,
     "output_every": int,
+    "write_xyz": bool,
     "checkpoint_keep": int,
     "electronic_retries": int,
     "run_directory": Path,
@@ -276,7 +280,13 @@ def load_config(path: str | Path) -> SimulationConfig:
                 if len(values) != 1:
                     raise ValueError("expected exactly one value")
                 typ = _SCALAR_TYPES[key]
-                raw[key] = typ(values[0])
+                if typ is bool:
+                    value = _atom_value(values[0])
+                    if not isinstance(value, bool):
+                        raise ValueError("expected true/false, yes/no, or on/off")
+                    raw[key] = value
+                else:
+                    raw[key] = typ(values[0])
             else:
                 raise ValueError(f"unknown keyword {key!r}")
         except (TypeError, ValueError) as exc:

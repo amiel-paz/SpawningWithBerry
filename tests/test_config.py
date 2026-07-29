@@ -23,11 +23,18 @@ def _write(tmp_path: Path, extra: str = "") -> Path:
 
 
 def test_parser_comments_quoting_units_and_repeated_records(tmp_path):
-    config = load_config(_write(tmp_path))
+    config = load_config(_write(tmp_path, "write_xyz yes\n"))
     assert config.geometry == tmp_path / "quoted geometry.xyz"
     assert config.time_step == pytest.approx(0.5 * AU_TIME_PER_FS)
     assert config.provider_option_dict() == {"label": "first", "scale": 2.5}
     assert config.observables[0].atoms == (0, 1)
+    assert config.write_xyz is True
+
+
+@pytest.mark.parametrize("value", ["maybe", "1", "banana"])
+def test_write_xyz_requires_an_explicit_boolean(tmp_path, value):
+    with pytest.raises(ConfigError, match="expected true/false"):
+        load_config(_write(tmp_path, f"write_xyz {value}\n"))
 
 
 def test_explicit_cartesian_nuclear_masses_are_parsed_and_validated(tmp_path):

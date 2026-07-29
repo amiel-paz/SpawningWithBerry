@@ -442,7 +442,12 @@ class SimulationRunner:
                 initializer=_initialize_electronic_worker,
                 initargs=(self.provider,),
             )
-        self.writer = HDF5Writer(self.run_directory / "simulation.h5", config, restart=restart)
+        self.writer = HDF5Writer(
+            self.run_directory / "simulation.h5",
+            config,
+            self.atoms,
+            restart=restart,
+        )
         self._validate_capabilities()
 
     def _validate_capabilities(self) -> None:

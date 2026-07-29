@@ -336,7 +336,7 @@ def analyze_run(path: str | Path, output_directory: str | Path, observables=()) 
     figure, axis = plt.subplots()
     for state in range(populations.shape[1] - 1):
         axis.plot(populations[:, 0], populations[:, state + 1], label=f"S{state}")
-    axis.set(xlabel="Time (a.u.)", ylabel="Population", ylim=(0, 1.05))
+    axis.set(xlabel="Time (a.u.)", ylabel="Population", ylim=(0, 1))
     axis.legend()
     target = output / "state_populations.png"
     figure.savefig(target, dpi=160, bbox_inches="tight")
@@ -384,6 +384,11 @@ def analyze_run(path: str | Path, output_directory: str | Path, observables=()) 
         for axis, (column, label) in zip(axes, panels):
             axis.plot(diagnostics[:, 0], diagnostics[:, column])
             axis.set_ylabel(label)
+            if column == 1:
+                # Keep the physical norm scale consistent across runs.  Raw
+                # values, including roundoff-sized excursions above unity,
+                # remain unchanged in HDF5 and propagation_diagnostics.csv.
+                axis.set_ylim(0, 1)
         axes[-1].set_xlabel("Time (a.u.)")
         target = output / "propagation_diagnostics.png"
         figure.savefig(target, dpi=160, bbox_inches="tight")
