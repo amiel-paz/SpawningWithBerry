@@ -57,6 +57,13 @@ recenters the recorded raw energy. TBF pairs whose analytic nuclear overlap is b
 `pair_overlap_threshold` receive exactly zero off-diagonal matrix elements and do
 not issue a centroid electronic-structure request.
 
+Every committed frame stores the provider-returned absolute energy of every
+electronic state for every TBF, together with the active-state potential energy,
+nuclear kinetic energy, classical total, birth/reference total, classical drift,
+absolute quantum energy, quantum reference, and quantum drift. `aims-berry analyze`
+exports the combined per-TBF traces as `absolute_energies-<label>.csv`; no scalar
+propagation energy shift is applied to these recorded values.
+
 `energy_tolerance` marks quantum-energy excursions for diagnostics.
 `quantum_energy_policy record` (the default) preserves the raw TDSE solution and
 records threshold crossings; `error` makes the same threshold a hard stop.  This

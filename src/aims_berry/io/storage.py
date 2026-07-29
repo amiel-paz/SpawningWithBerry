@@ -122,6 +122,8 @@ class HDF5Writer:
         state: SimulationState,
         num_states: int,
         diagnostics: dict[str, Any] | None = None,
+        classical_energy_references: dict[str, float] | None = None,
+        quantum_energy_reference: float | None = None,
     ) -> None:
         with h5py.File(self.path, "a", libver="latest") as handle:
             steps = (
@@ -189,6 +191,20 @@ class HDF5Writer:
             group.create_dataset("classical_kinetic_energy", data=kinetic)
             group.create_dataset("classical_potential_energy", data=potential)
             group.create_dataset("classical_total_energy", data=kinetic + potential)
+            references = np.asarray([
+                (
+                    classical_energy_references.get(
+                        trajectory.identifier, kinetic[index] + potential[index]
+                    )
+                    if classical_energy_references is not None
+                    else kinetic[index] + potential[index]
+                )
+                for index, trajectory in enumerate(trajectories)
+            ])
+            group.create_dataset("classical_reference_energy", data=references)
+            group.create_dataset(
+                "classical_energy_drift", data=kinetic + potential - references
+            )
             projected = np.full((len(trajectories), num_states), np.nan + 0j)
             for index, trajectory in enumerate(trajectories):
                 if trajectory.electronic is None or trajectory.electronic.nacs is None:
@@ -214,10 +230,18 @@ class HDF5Writer:
                 group.create_dataset("S", data=state.matrices.overlap)
                 group.create_dataset("Sdot", data=state.matrices.sdot)
                 denominator = np.vdot(state.amplitudes, state.matrices.overlap @ state.amplitudes)
-                group.attrs["quantum_energy"] = float(np.real(
+                quantum_energy = float(np.real(
                     np.vdot(state.amplitudes, state.matrices.hamiltonian @ state.amplitudes)
                     / denominator
                 ))
+                reference = (
+                    quantum_energy
+                    if quantum_energy_reference is None
+                    else float(quantum_energy_reference)
+                )
+                group.attrs["quantum_energy"] = quantum_energy
+                group.attrs["quantum_energy_reference"] = reference
+                group.attrs["quantum_energy_drift"] = quantum_energy - reference
                 group.attrs["hamiltonian_hermiticity_residual"] = float(
                     np.max(np.abs(
                         state.matrices.hamiltonian - state.matrices.hamiltonian.conj().T

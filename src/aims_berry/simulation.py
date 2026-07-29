@@ -865,13 +865,20 @@ class SimulationRunner:
         return True
 
     @staticmethod
-    def _trajectory_energy(trajectory: TrajectoryBasisFunction) -> float:
+    def _trajectory_energy_components(
+        trajectory: TrajectoryBasisFunction,
+    ) -> tuple[float, float, float]:
         if trajectory.electronic is None:
             raise RuntimeError(f"trajectory {trajectory.label} has no electronic energy")
-        return float(
+        kinetic = float(
             np.sum(trajectory.momenta**2 / (2.0 * trajectory.masses))
-            + trajectory.electronic.energies[trajectory.state]
         )
+        potential = float(trajectory.electronic.energies[trajectory.state])
+        return kinetic, potential, kinetic + potential
+
+    @classmethod
+    def _trajectory_energy(cls, trajectory: TrajectoryBasisFunction) -> float:
+        return cls._trajectory_energy_components(trajectory)[2]
 
     def _check_classical_energies(self) -> None:
         tolerance = (
@@ -880,7 +887,7 @@ class SimulationRunner:
             else self.config.classical_energy_tolerance
         )
         for trajectory in self.state.trajectories:
-            energy = self._trajectory_energy(trajectory)
+            kinetic, potential, energy = self._trajectory_energy_components(trajectory)
             reference = self.classical_energy_references.setdefault(
                 trajectory.identifier, energy
             )
@@ -892,6 +899,7 @@ class SimulationRunner:
                     raise RuntimeError(
                         "classical energy violation: "
                         f"trajectory={trajectory.label}, reference={reference}, "
+                        f"kinetic={kinetic}, potential={potential}, "
                         f"current={energy}, drift={energy - reference}, "
                         f"tolerance={tolerance}, "
                         f"numerical_margin={self.config.classical_energy_numerical_margin}"
@@ -905,6 +913,8 @@ class SimulationRunner:
                         "trajectory": trajectory.label,
                         "trajectory_id": trajectory.identifier,
                         "reference": reference,
+                        "kinetic": kinetic,
+                        "potential": potential,
                         "current": energy,
                         "drift": energy - reference,
                         "tolerance": tolerance,
@@ -1325,7 +1335,11 @@ class SimulationRunner:
             window_id, entry_step=self.state.step, frontier_step=frontier_step
         )
         self.writer.write_step(
-            self.state, self.config.num_states, {"spawn_insertion": 1}
+            self.state,
+            self.config.num_states,
+            {"spawn_insertion": 1},
+            self.classical_energy_references,
+            self.quantum_energy_reference,
         )
         self._checkpoint()
         self._run_active_replay(reset_staging=False)
@@ -1343,7 +1357,11 @@ class SimulationRunner:
             )
             self.writer.reset_replay(window.identifier)
             self.writer.write_step(
-                self.state, self.config.num_states, {"spawn_insertion": 1}
+                self.state,
+                self.config.num_states,
+                {"spawn_insertion": 1},
+                self.classical_energy_references,
+                self.quantum_energy_reference,
             )
         self._in_replay = True
         replay_started = walltime.perf_counter()
@@ -1353,7 +1371,11 @@ class SimulationRunner:
             self._restore_spawn_snapshot(window.entry)
             self.writer.reset_replay(window.identifier)
             self.writer.write_step(
-                self.state, self.config.num_states, {"spawn_insertion": 1}
+                self.state,
+                self.config.num_states,
+                {"spawn_insertion": 1},
+                self.classical_energy_references,
+                self.quantum_energy_reference,
             )
             self._checkpoint()
             raise
@@ -1663,8 +1685,19 @@ class SimulationRunner:
                 self._evaluate_trajectory(index)
             self._build_matrices()
             self._check_classical_energies()
-            self._check_quantum_energy()
-            self.writer.write_step(self.state, self.config.num_states)
+            initial_quantum_energy = self._check_quantum_energy()
+            self.last_quantum_diagnostics = {
+                "quantum_energy_checked": initial_quantum_energy,
+                "quantum_energy_reference": self.quantum_energy_reference,
+                "quantum_energy_drift": 0.0,
+            }
+            self.writer.write_step(
+                self.state,
+                self.config.num_states,
+                self.last_quantum_diagnostics,
+                self.classical_energy_references,
+                self.quantum_energy_reference,
+            )
             self._checkpoint()
         target_time = self.config.simulation_time
         if stop_after_time is not None:
@@ -1881,6 +1914,12 @@ class SimulationRunner:
                     )
                 quantum_energy = self._check_quantum_energy()
                 self.last_quantum_diagnostics["quantum_energy_checked"] = quantum_energy
+                self.last_quantum_diagnostics["quantum_energy_reference"] = (
+                    self.quantum_energy_reference
+                )
+                self.last_quantum_diagnostics["quantum_energy_drift"] = (
+                    quantum_energy - self.quantum_energy_reference
+                )
                 self.last_quantum_diagnostics["state_population_sum"] = population_sum
 
             try:
@@ -1916,6 +1955,8 @@ class SimulationRunner:
                     self.state,
                     self.config.num_states,
                     self.last_quantum_diagnostics,
+                    self.classical_energy_references,
+                    self.quantum_energy_reference,
                 ))
             self.previous_step_start_snapshot = self.active_step_snapshot
             self.active_step_snapshot = None
@@ -1937,7 +1978,11 @@ class SimulationRunner:
                 self._evaluate_trajectory(index)
             self._build_matrices()
             self.writer.write_step(
-                self.state, self.config.num_states, self.last_quantum_diagnostics
+                self.state,
+                self.config.num_states,
+                self.last_quantum_diagnostics,
+                self.classical_energy_references,
+                self.quantum_energy_reference,
             )
         self._checkpoint()
         return SimulationResult(

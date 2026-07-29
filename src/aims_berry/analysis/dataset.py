@@ -56,13 +56,15 @@ class RunDataset:
                 }
                 for key in (
                     "classical_kinetic_energy", "classical_potential_energy",
-                    "classical_total_energy", "projected_couplings",
+                    "classical_total_energy", "classical_reference_energy",
+                    "classical_energy_drift", "projected_couplings",
                     "retained_overlap_eigenvalues",
                 ):
                     if key in group:
                         frame[key] = group[key][...]
                 for key in (
                     "metric_norm", "quantum_energy", "quantum_substeps",
+                    "quantum_energy_reference", "quantum_energy_drift",
                     "raw_norm_before", "raw_norm_after",
                     "quantum_convergence_error", "metric_compatibility_residual",
                     "hamiltonian_hermiticity_residual", "state_population_sum",
@@ -271,6 +273,37 @@ class RunDataset:
                 ))
         return {label: np.asarray(values) for label, values in series.items()}
 
+    def absolute_energies(self) -> dict[str, np.ndarray]:
+        """All provider state energies and classical components for every TBF."""
+        series: dict[str, list[tuple[float, ...]]] = defaultdict(list)
+        fallback_references: dict[str, float] = {}
+        for step in self.steps():
+            if "classical_total_energy" not in step:
+                continue
+            for index, label in enumerate(step["labels"]):
+                total = float(step["classical_total_energy"][index])
+                fallback = fallback_references.setdefault(label, total)
+                reference = float(
+                    step.get(
+                        "classical_reference_energy",
+                        np.full(len(step["labels"]), fallback),
+                    )[index]
+                )
+                drift = float(
+                    step.get(
+                        "classical_energy_drift",
+                        step["classical_total_energy"] - reference,
+                    )[index]
+                )
+                series[label].append((
+                    float(step["time"]), float(step["states"][index]),
+                    *np.asarray(step["energies"][index], dtype=float).tolist(),
+                    float(step["classical_kinetic_energy"][index]),
+                    float(step["classical_potential_energy"][index]),
+                    total, reference, drift,
+                ))
+        return {label: np.asarray(values) for label, values in series.items()}
+
     @staticmethod
     def ensemble_populations(paths: list[str | Path], state: int = 1) -> tuple[np.ndarray, np.ndarray]:
         runs = [RunDataset(path).populations() for path in paths]
@@ -400,4 +433,18 @@ def analyze_run(path: str | Path, output_directory: str | Path, observables=()) 
             values,
             ("time_au", "kinetic_hartree", "potential_hartree", "total_hartree"),
         ))
+    absolute = dataset.absolute_energies()
+    if absolute:
+        num_states = next(iter(absolute.values())).shape[1] - 7
+        headers = (
+            "time_au", "active_state",
+            *(f"electronic_state_{state}_hartree" for state in range(num_states)),
+            "kinetic_hartree", "active_potential_hartree",
+            "classical_total_hartree", "classical_reference_hartree",
+            "classical_drift_hartree",
+        )
+        for label, values in absolute.items():
+            products.append(dataset.export_csv(
+                output / f"absolute_energies-{label}.csv", values, headers
+            ))
     return products

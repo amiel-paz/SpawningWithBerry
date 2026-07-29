@@ -136,8 +136,10 @@ def test_classical_energy_tolerance_can_be_stricter_than_quantum_gate(tmp_path):
     trajectory.momenta[0, 0] = np.sqrt(
         2.0 * trajectory.masses[0, 0] * 3.0e-4
     )
-    with pytest.raises(RuntimeError, match="classical energy violation"):
+    with pytest.raises(RuntimeError, match="classical energy violation") as caught:
         runner._check_classical_energies()
+    assert "kinetic=" in str(caught.value)
+    assert "potential=" in str(caught.value)
     trajectory.momenta[0, 0] = np.sqrt(
         2.0 * trajectory.masses[0, 0] * (2.0e-4 + 0.5e-8)
     )
@@ -205,7 +207,27 @@ def test_classical_energy_violation_retries_velocity_verlet_transactionally(tmp_
     assert result.state.step == 1
     with h5py.File(result.history) as handle:
         assert sorted(handle["steps"], key=int) == ["00000000", "00000001"]
-        assert handle["steps/00000001"].attrs["nuclear_time_step"] == pytest.approx(0.25)
+        endpoint = handle["steps/00000001"]
+        assert endpoint.attrs["nuclear_time_step"] == pytest.approx(0.25)
+        assert endpoint.attrs["quantum_energy_reference"] == pytest.approx(
+            handle["steps/00000000"].attrs["quantum_energy"]
+        )
+        assert endpoint.attrs["quantum_energy_drift"] == pytest.approx(
+            endpoint.attrs["quantum_energy"]
+            - endpoint.attrs["quantum_energy_reference"]
+        )
+        assert endpoint["classical_reference_energy"][0] == pytest.approx(0.5)
+        assert endpoint["classical_energy_drift"][0] == pytest.approx(
+            endpoint["classical_total_energy"][0] - 0.5
+        )
+        assert endpoint["classical_potential_energy"][0] == pytest.approx(
+            endpoint["energies"][0, endpoint["states"][0]]
+        )
+    absolute = RunDataset(result.history).absolute_energies()["00"]
+    assert absolute.shape == (2, 8)
+    assert absolute[0, 2] == pytest.approx(0.5)
+    assert absolute[-1, -2] == pytest.approx(0.5)
+    assert absolute[-1, -1] == pytest.approx(absolute[-1, -3] - 0.5)
     runner.close()
 
 
