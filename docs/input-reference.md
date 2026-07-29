@@ -35,17 +35,23 @@ direction-preserving energy-shell rescaling for overlap-only providers;
 suppresses requested NAC pairs above the configured energy gap.
 Numerical/storage controls include `regularization_threshold`, `overlap_threshold`,
 `pair_overlap_threshold`, `energy_tolerance`, `quantum_energy_policy`,
-`classical_energy_tolerance`,
+`classical_energy_tolerance`, `adaptive_classical_timestep`,
 `output_every`, `write_xyz`, `electronic_retries`, `checkpoint_keep`, and
 `run_directory`. `write_xyz true` writes one Angstrom XYZ file per TBF under
 `run_directory/geometries/step-<frame>/` whenever a committed HDF5 frame is
 written; its cadence therefore follows `output_every`. Replay-staged frames are
 not exported.
-`classical_energy_tolerance` optionally imposes a per-TBF energy-drift hard stop;
-when omitted it inherits `energy_tolerance`. Local energy/gradient work consistency,
-electronic continuity, and coupling-region entry drive transactional nuclear-step
-refinement. The global energy gate deliberately does not switch between Verlet
-maps. `classical_energy_numerical_margin` is an explicit
+`classical_energy_tolerance` optionally imposes a per-TBF energy-drift gate; when
+omitted it inherits `energy_tolerance`. With the default
+`adaptive_classical_timestep true` and `classical_energy_policy error`, a rejected
+velocity-Verlet interval is restored transactionally and retried at half the nuclear
+step until it passes or reaches `minimum_nuclear_time_step`. If no explicit floor is
+given, the fallback is `time_step / 32`. At the floor the run stops with the original
+diagnostic; tolerances are never loosened. `classical_energy_policy record` records
+and continues without timestep refinement, while `adaptive_classical_timestep false`
+restores immediate fail-fast behavior. Local energy/gradient work consistency,
+electronic continuity, and coupling-region entry also drive transactional
+nuclear-step refinement. `classical_energy_numerical_margin` is an explicit
 comparison-only allowance for electronic convergence noise; it never changes or
 recenters the recorded raw energy. TBF pairs whose analytic nuclear overlap is below
 `pair_overlap_threshold` receive exactly zero off-diagonal matrix elements and do

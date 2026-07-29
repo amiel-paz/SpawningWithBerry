@@ -65,6 +65,7 @@ class SimulationConfig:
     energy_tolerance: float = 5.0e-3
     quantum_energy_policy: Literal["record", "error"] = "record"
     classical_energy_policy: Literal["record", "error"] = "error"
+    adaptive_classical_timestep: bool = True
     classical_energy_tolerance: float | None = None
     classical_energy_numerical_margin: float = 0.0
     norm_tolerance: float = 1.0e-6
@@ -192,6 +193,7 @@ _SCALAR_TYPES: dict[str, type] = {
     "energy_tolerance": float,
     "quantum_energy_policy": str,
     "classical_energy_policy": str,
+    "adaptive_classical_timestep": bool,
     "classical_energy_tolerance": float,
     "classical_energy_numerical_margin": float,
     "norm_tolerance": float,

@@ -816,8 +816,11 @@ class SimulationRunner:
         return min(float(selected), target_time - self.state.quantum_time)
 
     def _refined_nuclear_time_step(self, current: float) -> float | None:
-        coupling_dt = self.config.coupling_time_step or self.config.time_step
-        floor = self.config.minimum_nuclear_time_step or coupling_dt
+        floor = (
+            self.config.minimum_nuclear_time_step
+            if self.config.minimum_nuclear_time_step is not None
+            else self.config.time_step / 32.0
+        )
         candidate = max(0.5 * current, floor)
         return None if candidate >= current - 1.0e-15 else candidate
 
@@ -1754,11 +1757,24 @@ class SimulationRunner:
                 ):
                     continue
                 raise
-            # Local force-quadrature and electronic-continuity failures drive
-            # transactional step refinement.  The global classical-energy gate
-            # remains a hard failsafe; using it to switch Verlet maps causes
-            # shadow-Hamiltonian boundary hugging.
-            self._check_classical_energies()
+            # A classical-energy failure rejects the complete velocity-Verlet
+            # interval.  Restore its exact start state and halve only the
+            # nuclear step; no provisional matrices, tasks, RNG changes, or
+            # electronic references survive the rejection.  At the configured
+            # floor the original diagnostic is raised without loosening the
+            # scientific tolerance.
+            try:
+                self._check_classical_energies()
+            except RuntimeError as exc:
+                if (
+                    self.config.adaptive_classical_timestep
+                    and "classical energy violation" in str(exc)
+                    and self._retry_nuclear_step(
+                        self.active_step_snapshot, dt, str(exc)
+                    )
+                ):
+                    continue
+                raise
 
             quantum = self.queue.add(
                 TaskKind.QUANTUM,

@@ -38,6 +38,14 @@ def flat_provider(request):
     }
 
 
+def harmonic_provider(request):
+    geometry = np.asarray(request.geometry)
+    return {
+        "energies": np.asarray([0.5 * geometry[0, 0] ** 2]),
+        "gradients": geometry[None, :, :].copy(),
+    }
+
+
 def test_certified_npi_transport_is_not_polar_aligned_away(tmp_path):
     xyz = tmp_path / "cone.xyz"
     xyz.write_text("1\ncone\nH 0.45 0.10 0\n")
@@ -169,6 +177,59 @@ def test_classical_energy_record_policy_logs_and_continues(tmp_path):
     runner.classical_energy_gate_active.clear()
     runner._restore_spawn_snapshot(snapshot)
     assert runner.classical_energy_gate_active[trajectory.identifier]
+    runner.close()
+
+
+def test_classical_energy_violation_retries_velocity_verlet_transactionally(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nadaptive classical step\nH 1 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=1.0, minimum_nuclear_time_step=0.25,
+        simulation_time=1.0, electronic_method="custom",
+        nuclear_masses=(1.0, 1.0e30, 1.0e30),
+        classical_energy_tolerance=1.0e-3,
+        run_directory=tmp_path / "adaptive-classical",
+    )
+    runner = SimulationRunner(config, CallableProvider(harmonic_provider))
+    result = runner.propagate(stop_after_step=1)
+    refinements = [
+        event for event in result.events
+        if event.get("kind") == "nuclear_step_refinement"
+    ]
+    assert result.state.quantum_time == pytest.approx(0.25)
+    assert [(event["from_dt"], event["to_dt"]) for event in refinements] == [
+        (1.0, 0.5), (0.5, 0.25),
+    ]
+    assert all("classical energy violation" in event["reason"] for event in refinements)
+    assert result.state.step == 1
+    with h5py.File(result.history) as handle:
+        assert sorted(handle["steps"], key=int) == ["00000000", "00000001"]
+        assert handle["steps/00000001"].attrs["nuclear_time_step"] == pytest.approx(0.25)
+    runner.close()
+
+
+def test_classical_energy_adaptation_stops_with_diagnostic_at_floor(tmp_path):
+    xyz = tmp_path / "h.xyz"
+    xyz.write_text("1\nadaptive floor\nH 1 0 0\n")
+    config = SimulationConfig(
+        provider="custom", geometry=xyz, geometry_units="bohr", num_states=1,
+        initial_state=0, time_step=1.0, minimum_nuclear_time_step=0.5,
+        simulation_time=1.0, electronic_method="custom",
+        nuclear_masses=(1.0, 1.0e30, 1.0e30),
+        classical_energy_tolerance=1.0e-3,
+        run_directory=tmp_path / "adaptive-floor",
+    )
+    runner = SimulationRunner(config, CallableProvider(harmonic_provider))
+    with pytest.raises(RuntimeError, match="classical energy violation"):
+        runner.propagate()
+    checkpoint = json.loads(
+        (config.run_directory / "checkpoint/current/checkpoint.json").read_text()
+    )
+    assert checkpoint["runtime"]["active_step_snapshot"] is not None
+    assert checkpoint["runtime"]["forced_nuclear_time_steps"] == {
+        "0.000000000000": 0.5
+    }
     runner.close()
 
 
