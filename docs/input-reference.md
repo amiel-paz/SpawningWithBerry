@@ -42,10 +42,12 @@ maintains a live `run_directory/readable/` mirror of committed frames. It contai
 coherent state populations, quantum/norm diagnostics, per-TBF absolute and classical
 energies, complex coefficients, Cartesian positions and momenta, projected
 couplings, gross per-TBF population partitions, gradient/NAC norms, TBF
-identity/parentage, and event/spawn logs as CSV/JSON. The mirror appends during
+identity/parentage, and event/spawn logs as CSV/DAT/JSON. The mirror appends during
 ordinary propagation and is rebuilt after a
 rollback or replay commit, so it never exposes provisional replay frames. Set
 `write_readable false` only when the additional filesystem writes are unwanted.
+Every tabular CSV has a matching space-delimited `.dat` file with a `#` header;
+whitespace-containing text fields are quoted.
 `write_xyz true` writes one Angstrom XYZ file per TBF under
 `run_directory/geometries/step-<frame>/` whenever a committed HDF5 frame is
 written; its cadence therefore follows `output_every`. Replay-staged frames are

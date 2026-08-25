@@ -9,7 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __release_date__ = "2026-08-25"
 
 # Build systems may replace these values or set the matching environment

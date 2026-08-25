@@ -26,22 +26,24 @@ Every run also maintains a human-readable mirror by default:
 
 ```text
 run/readable/
-├── populations.csv
-├── quantum_diagnostics.csv
+├── populations.{csv,dat}
+├── quantum_diagnostics.{csv,dat}
 ├── events.jsonl
-├── spawns.csv
+├── spawns.{csv,dat}
 ├── run_status.json
 └── tbfs/
-    ├── index.csv
+    ├── index.{csv,dat}
     └── <label-id>/
-        ├── energies.csv
-        ├── phase_space.csv
-        ├── couplings.csv
-        └── derivative_norms.csv
+        ├── energies.{csv,dat}
+        ├── phase_space.{csv,dat}
+        ├── couplings.{csv,dat}
+        └── derivative_norms.{csv,dat}
 ```
 
 These files contain committed frames only and update while propagation runs. HDF5
-remains the authoritative full-array record. Existing histories can be exported
+remains the authoritative full-array record. The `.dat` variants are
+space-delimited plaintext with `#` header lines; CSV remains available for
+spreadsheet/dataframe tools. Existing histories can be exported
 without rerunning dynamics using `aims-berry export-readable run/simulation.h5
 --output run/readable`. Set `write_readable false` to disable the live mirror.
 

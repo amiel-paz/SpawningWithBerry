@@ -44,6 +44,10 @@ def _atomic_text(path: Path, text: str) -> None:
 
 
 def _append_csv(path: Path, headers: Iterable[str], rows: Iterable[Iterable[Any]]) -> None:
+    """Append identical rows to CSV and space-delimited ``.dat`` tables."""
+
+    headers = tuple(headers)
+    rows = [tuple(row) for row in rows]
     path.parent.mkdir(parents=True, exist_ok=True)
     exists = path.exists() and path.stat().st_size > 0
     with path.open("a", newline="") as stream:
@@ -51,6 +55,35 @@ def _append_csv(path: Path, headers: Iterable[str], rows: Iterable[Iterable[Any]
         if not exists:
             writer.writerow(headers)
         writer.writerows(rows)
+    dat_path = path.with_suffix(".dat")
+    dat_exists = dat_path.exists() and dat_path.stat().st_size > 0
+    with dat_path.open("a", newline="") as stream:
+        if not dat_exists:
+            stream.write("# " + " ".join(headers) + "\n")
+        writer = csv.writer(stream, delimiter=" ", lineterminator="\n")
+        writer.writerows(rows)
+
+
+def _write_csv(path: Path, headers: Iterable[str], rows: Iterable[Iterable[Any]]) -> None:
+    """Atomically replace matching CSV and space-delimited ``.dat`` tables."""
+
+    headers = tuple(headers)
+    rows = [tuple(row) for row in rows]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    csv_temporary = path.with_name(f".{path.name}-{uuid.uuid4().hex}.tmp")
+    with csv_temporary.open("w", newline="") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(headers)
+        writer.writerows(rows)
+    os.replace(csv_temporary, path)
+
+    dat_path = path.with_suffix(".dat")
+    dat_temporary = dat_path.with_name(f".{dat_path.name}-{uuid.uuid4().hex}.tmp")
+    with dat_temporary.open("w", newline="") as stream:
+        stream.write("# " + " ".join(headers) + "\n")
+        writer = csv.writer(stream, delimiter=" ", lineterminator="\n")
+        writer.writerows(rows)
+    os.replace(dat_temporary, dat_path)
 
 
 def _json_default(value: Any) -> Any:
@@ -92,21 +125,24 @@ simulation.h5 remains the authoritative, full-precision scientific history.
 These CSV/JSON files mirror committed HDF5 frames only; replay-staged frames are
 excluded. Times and quantities use atomic units unless a column says otherwise.
 
-populations.csv
+Each CSV table has a matching space-delimited .dat file. The .dat header starts
+with #, and text containing whitespace is quoted.
+
+populations.csv / populations.dat
   Coherent electronic-state populations. Their sum equals the metric norm.
-quantum_diagnostics.csv
+quantum_diagnostics.csv / quantum_diagnostics.dat
   Norm, quantum energy, drift, integration, gap, coupling, and basis diagnostics.
-tbfs/index.csv
+tbfs/index.csv / tbfs/index.dat
   Stable TBF identity, label, parent, birth time, and initial electronic state.
-tbfs/<label-id>/energies.csv
+tbfs/<label-id>/energies.csv / energies.dat
   Absolute electronic energies and per-TBF classical KE/PE/total/reference/drift.
-tbfs/<label-id>/phase_space.csv
+tbfs/<label-id>/phase_space.csv / phase_space.dat
   Complex coefficient and every nuclear position/momentum component.
-tbfs/<label-id>/couplings.csv
+tbfs/<label-id>/couplings.csv / couplings.dat
   Complex projected derivative couplings d_IJ dot v and their magnitudes.
-tbfs/<label-id>/derivative_norms.csv
+tbfs/<label-id>/derivative_norms.csv / derivative_norms.dat
   Norms of each evaluated gradient and NAC vector; full arrays remain in HDF5.
-events.jsonl and spawns.csv
+events.jsonl and spawns.csv / spawns.dat
   Task/spawn/replay history and a compact spawn-only table.
 
 coefficient_abs2 is |c_N|^2, not a physical standalone TBF population in a
@@ -297,14 +333,11 @@ def _write_events(root: Path, events: list[dict[str, Any]]) -> None:
             event.get("child", ""), event.get("target_state", ""),
             event.get("coupling", ""), event.get("reason", ""),
         ))
-    target = root / "spawns.csv"
-    temporary = target.with_name(f".{target.name}-{uuid.uuid4().hex}.tmp")
-    temporary.parent.mkdir(parents=True, exist_ok=True)
-    with temporary.open("w", newline="") as stream:
-        writer = csv.writer(stream)
-        writer.writerow(("time_au", "kind", "parent", "child", "target_state", "coupling", "reason"))
-        writer.writerows(spawn_rows)
-    os.replace(temporary, target)
+    _write_csv(
+        root / "spawns.csv",
+        ("time_au", "kind", "parent", "child", "target_state", "coupling", "reason"),
+        spawn_rows,
+    )
 
 
 def _write_status(root: Path, handle: h5py.File, names: list[str]) -> None:
@@ -348,7 +381,7 @@ def _populate(root: Path, handle: h5py.File, names: list[str], atoms: tuple[str,
     _write_status(root, handle, names)
     _atomic_text(
         root / "manifest.json",
-        json.dumps({"schema_version": 1, "exported_steps": names}, indent=2) + "\n",
+        json.dumps({"schema_version": 2, "exported_steps": names}, indent=2) + "\n",
     )
 
 
@@ -390,6 +423,7 @@ def export_readable_history(
         exported = [str(name) for name in manifest.get("exported_steps", [])]
         must_rebuild = (
             in_progress.exists()
+            or manifest.get("schema_version") != 2
             or exported != names[: len(exported)]
             or (changed_step is not None and f"{changed_step:08d}" in exported)
         )
@@ -416,7 +450,7 @@ def export_readable_history(
             _write_status(root, handle, names)
             _atomic_text(
                 root / "manifest.json",
-                json.dumps({"schema_version": 1, "exported_steps": names}, indent=2) + "\n",
+                json.dumps({"schema_version": 2, "exported_steps": names}, indent=2) + "\n",
             )
         finally:
             in_progress.unlink(missing_ok=True)

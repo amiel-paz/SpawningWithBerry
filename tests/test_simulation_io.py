@@ -323,14 +323,22 @@ def test_short_run_writes_history_and_exact_checkpoint(tmp_path):
         population_rows = list(csv.DictReader(stream))
     assert [int(row["step"]) for row in population_rows] == [0, 1, 2]
     assert float(population_rows[-1]["state_0"]) == pytest.approx(1.0)
+    population_dat = (readable / "populations.dat").read_text().splitlines()
+    assert population_dat[0] == "# step time_au time_fs state_0 state_1"
+    assert population_dat[-1].split()[0] == "2"
     with (readable / "quantum_diagnostics.csv").open(newline="") as stream:
         diagnostic_rows = list(csv.DictReader(stream))
     assert float(diagnostic_rows[-1]["metric_norm"]) == pytest.approx(1.0)
     tbf_directory = next(path for path in (readable / "tbfs").iterdir() if path.is_dir())
     assert (tbf_directory / "energies.csv").is_file()
+    assert (tbf_directory / "energies.dat").is_file()
     assert (tbf_directory / "phase_space.csv").is_file()
+    assert (tbf_directory / "phase_space.dat").is_file()
     assert (tbf_directory / "couplings.csv").is_file()
+    assert (tbf_directory / "couplings.dat").is_file()
     assert (tbf_directory / "derivative_norms.csv").is_file()
+    assert (tbf_directory / "derivative_norms.dat").is_file()
+    assert (readable / "spawns.dat").is_file()
     with (tbf_directory / "phase_space.csv").open(newline="") as stream:
         phase_rows = list(csv.DictReader(stream))
     assert float(phase_rows[-1]["gross_tbf_population"]) == pytest.approx(1.0)
