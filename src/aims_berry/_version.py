@@ -9,8 +9,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-__version__ = "0.2.0"
-__release_date__ = "2026-07-29"
+__version__ = "0.3.0"
+__release_date__ = "2026-08-25"
 
 # Build systems may replace these values or set the matching environment
 # variables when producing an archive without its Git metadata.

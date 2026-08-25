@@ -10,7 +10,7 @@ from ._version import version_info, version_string
 from .analysis import analyze_run
 from .config import ConfigError, load_config
 from .geometry import masses_and_widths, read_xyz
-from .io import export_xyz_history
+from .io import export_readable_history, export_xyz_history
 from .simulation import restart_from_checkpoint, run
 
 
@@ -42,6 +42,13 @@ def _parser() -> argparse.ArgumentParser:
         "history", type=Path, help="simulation.h5 or its run directory"
     )
     export_xyz.add_argument("--output", type=Path, default=Path("geometries"))
+    export_readable = commands.add_parser(
+        "export-readable", help="export committed history as readable CSV/JSON files"
+    )
+    export_readable.add_argument(
+        "history", type=Path, help="simulation.h5 or its run directory"
+    )
+    export_readable.add_argument("--output", type=Path, default=Path("readable"))
     return parser
 
 
@@ -94,6 +101,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "export-xyz":
         print(export_xyz_history(args.history, args.output))
+        return 0
+    if args.command == "export-readable":
+        print(export_readable_history(args.history, args.output))
         return 0
     history = args.history / "simulation.h5" if args.history.is_dir() else args.history
     observables = load_config(args.input).observables if args.input else ()

@@ -22,6 +22,29 @@ aims-berry analyze examples/h3_pyscf/run/simulation.h5 \
   --input examples/h3_pyscf/aims.in --output examples/h3_pyscf/analysis
 ```
 
+Every run also maintains a human-readable mirror by default:
+
+```text
+run/readable/
+├── populations.csv
+├── quantum_diagnostics.csv
+├── events.jsonl
+├── spawns.csv
+├── run_status.json
+└── tbfs/
+    ├── index.csv
+    └── <label-id>/
+        ├── energies.csv
+        ├── phase_space.csv
+        ├── couplings.csv
+        └── derivative_norms.csv
+```
+
+These files contain committed frames only and update while propagation runs. HDF5
+remains the authoritative full-array record. Existing histories can be exported
+without rerunning dynamics using `aims-berry export-readable run/simulation.h5
+--output run/readable`. Set `write_readable false` to disable the live mirror.
+
 Check exactly which release and source revision is running:
 
 ```bash

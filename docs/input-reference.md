@@ -36,8 +36,17 @@ suppresses requested NAC pairs above the configured energy gap.
 Numerical/storage controls include `regularization_threshold`, `overlap_threshold`,
 `pair_overlap_threshold`, `energy_tolerance`, `quantum_energy_policy`,
 `classical_energy_tolerance`, `adaptive_classical_timestep`,
-`output_every`, `write_xyz`, `electronic_retries`, `checkpoint_keep`, and
-`run_directory`. `write_xyz true` writes one Angstrom XYZ file per TBF under
+`output_every`, `write_readable`, `write_xyz`, `electronic_retries`,
+`checkpoint_keep`, and `run_directory`. `write_readable` defaults to `true` and
+maintains a live `run_directory/readable/` mirror of committed frames. It contains
+coherent state populations, quantum/norm diagnostics, per-TBF absolute and classical
+energies, complex coefficients, Cartesian positions and momenta, projected
+couplings, gross per-TBF population partitions, gradient/NAC norms, TBF
+identity/parentage, and event/spawn logs as CSV/JSON. The mirror appends during
+ordinary propagation and is rebuilt after a
+rollback or replay commit, so it never exposes provisional replay frames. Set
+`write_readable false` only when the additional filesystem writes are unwanted.
+`write_xyz true` writes one Angstrom XYZ file per TBF under
 `run_directory/geometries/step-<frame>/` whenever a committed HDF5 frame is
 written; its cadence therefore follows `output_every`. Replay-staged frames are
 not exported.

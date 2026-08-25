@@ -42,7 +42,14 @@ def test_classical_energy_timestep_adaptation_is_enabled_by_default(tmp_path):
     ).adaptive_classical_timestep is False
 
 
-@pytest.mark.parametrize("keyword", ["write_xyz", "adaptive_classical_timestep"])
+def test_readable_history_is_enabled_by_default(tmp_path):
+    assert load_config(_write(tmp_path)).write_readable is True
+    assert load_config(_write(tmp_path, "write_readable false\n")).write_readable is False
+
+
+@pytest.mark.parametrize(
+    "keyword", ["write_xyz", "write_readable", "adaptive_classical_timestep"]
+)
 @pytest.mark.parametrize("value", ["maybe", "1", "banana"])
 def test_boolean_controls_require_an_explicit_boolean(tmp_path, keyword, value):
     with pytest.raises(ConfigError, match="expected true/false"):

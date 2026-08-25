@@ -1,4 +1,5 @@
 from dataclasses import replace
+import csv
 import json
 from pathlib import Path
 
@@ -317,6 +318,25 @@ def test_short_run_writes_history_and_exact_checkpoint(tmp_path):
         assert sorted(handle["steps"]) == ["00000000", "00000001", "00000002"]
         assert handle["steps/00000002/amplitudes"].shape == (1,)
         assert handle["steps/00000002/nacs"].shape == (1, 2, 2, 1, 3)
+    readable = result.run_directory / "readable"
+    with (readable / "populations.csv").open(newline="") as stream:
+        population_rows = list(csv.DictReader(stream))
+    assert [int(row["step"]) for row in population_rows] == [0, 1, 2]
+    assert float(population_rows[-1]["state_0"]) == pytest.approx(1.0)
+    with (readable / "quantum_diagnostics.csv").open(newline="") as stream:
+        diagnostic_rows = list(csv.DictReader(stream))
+    assert float(diagnostic_rows[-1]["metric_norm"]) == pytest.approx(1.0)
+    tbf_directory = next(path for path in (readable / "tbfs").iterdir() if path.is_dir())
+    assert (tbf_directory / "energies.csv").is_file()
+    assert (tbf_directory / "phase_space.csv").is_file()
+    assert (tbf_directory / "couplings.csv").is_file()
+    assert (tbf_directory / "derivative_norms.csv").is_file()
+    with (tbf_directory / "phase_space.csv").open(newline="") as stream:
+        phase_rows = list(csv.DictReader(stream))
+    assert float(phase_rows[-1]["gross_tbf_population"]) == pytest.approx(1.0)
+    status = json.loads((readable / "run_status.json").read_text())
+    assert status["last_step"] == 2
+    assert status["populations"] == pytest.approx([1.0, 0.0])
     populations = RunDataset(result.history).populations()
     assert populations.shape == (3, 3)
     assert np.allclose(populations[:, 1:].sum(axis=1), 1.0, atol=1e-10)
@@ -1024,6 +1044,8 @@ def test_replay_history_is_hidden_until_transaction_commit(tmp_path):
     assert sorted(path.name for path in (result.run_directory / "geometries").glob("step-*")) == [
         "step-00000000", "step-00000001",
     ]
+    with (result.run_directory / "readable/populations.csv").open(newline="") as stream:
+        assert [int(row["step"]) for row in csv.DictReader(stream)] == [0, 1]
     with h5py.File(result.history) as handle:
         assert "00000002" in handle["replay/test-window/steps"]
         assert "00000002" not in handle["steps"]
@@ -1034,6 +1056,8 @@ def test_replay_history_is_hidden_until_transaction_commit(tmp_path):
     assert sorted(path.name for path in (result.run_directory / "geometries").glob("step-*")) == [
         "step-00000000", "step-00000001", "step-00000002",
     ]
+    with (result.run_directory / "readable/populations.csv").open(newline="") as stream:
+        assert [int(row["step"]) for row in csv.DictReader(stream)] == [0, 1, 2]
     with h5py.File(result.history) as handle:
         assert "test-window" not in handle["replay"]
         assert handle["steps/00000002"].attrs["quantum_substeps"] == 8

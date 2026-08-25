@@ -15,10 +15,10 @@ from aims_berry.io.storage import HDF5Writer
 def test_version_info_has_release_and_runtime_provenance() -> None:
     info = version_info()
 
-    assert __version__ == "0.2.0"
+    assert __version__ == "0.3.0"
     assert info["name"] == "aims-berry"
     assert info["version"] == __version__
-    assert info["release_date"] == "2026-07-29"
+    assert info["release_date"] == "2026-08-25"
     assert info["last_update"]
     assert info["python"]
     assert info["package_path"].endswith("aims_berry")

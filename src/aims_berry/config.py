@@ -71,6 +71,7 @@ class SimulationConfig:
     norm_tolerance: float = 1.0e-6
     cumulative_norm_tolerance: float = 1.0e-8
     output_every: int = 1
+    write_readable: bool = True
     write_xyz: bool = False
     checkpoint_keep: int = 2
     electronic_retries: int = 2
@@ -199,6 +200,7 @@ _SCALAR_TYPES: dict[str, type] = {
     "norm_tolerance": float,
     "cumulative_norm_tolerance": float,
     "output_every": int,
+    "write_readable": bool,
     "write_xyz": bool,
     "checkpoint_keep": int,
     "electronic_retries": int,

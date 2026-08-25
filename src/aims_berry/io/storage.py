@@ -18,6 +18,7 @@ from ..core import SimulationState
 from ..electronic.base import ElectronicStructureProvider
 from ..geometry import read_xyz
 from ..tasks import TaskQueue
+from .readable import export_readable_history
 
 
 class HDF5Writer:
@@ -33,6 +34,7 @@ class HDF5Writer:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.atoms = tuple(atoms or read_xyz(config.geometry, config.geometry_units)[0])
         self.xyz_root = self.path.parent / "geometries" if config.write_xyz else None
+        self.readable_root = self.path.parent / "readable" if config.write_readable else None
         mode = "a" if restart else "w"
         self.replay_window: str | None = None
         provenance = version_info()
@@ -66,6 +68,8 @@ class HDF5Writer:
                 )
         if self.xyz_root is not None:
             export_xyz_history(self.path, self.xyz_root)
+        if self.readable_root is not None:
+            export_readable_history(self.path, self.readable_root)
 
     def begin_replay(
         self, window: str, *, entry_step: int, frontier_step: int
@@ -91,6 +95,8 @@ class HDF5Writer:
             handle.flush()
         if self.xyz_root is not None:
             export_xyz_history(self.path, self.xyz_root)
+        if self.readable_root is not None:
+            export_readable_history(self.path, self.readable_root)
 
     def reset_replay(self, window: str) -> None:
         """Discard provisional frames but retain the replay transaction metadata."""
@@ -123,6 +129,8 @@ class HDF5Writer:
         self.replay_window = None
         if self.xyz_root is not None:
             export_xyz_history(self.path, self.xyz_root)
+        if self.readable_root is not None:
+            export_readable_history(self.path, self.readable_root)
 
     def write_step(
         self,
@@ -280,6 +288,12 @@ class HDF5Writer:
                 [trajectory.label for trajectory in trajectories],
                 [trajectory.identifier for trajectory in trajectories],
                 [trajectory.state for trajectory in trajectories],
+            )
+        if self.readable_root is not None and self.replay_window is None:
+            export_readable_history(
+                self.path,
+                self.readable_root,
+                changed_step=state.step,
             )
 
 
